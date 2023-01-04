@@ -5,7 +5,7 @@ function share_() {
         // 截取标题
         var title = document.title;
         var subTitle = title.endsWith("| 芊芊晚") ? title.substring(0, title.length - 14) : title;
-        navigator.clipboard.writeText('芊芊晚的站内分享\n标题：' + subTitle + '\n链接：' + url + '\n欢迎来访！🍭🍭🍭');
+        navigator.clipboard.writeText('芊芊晚的博客分享\n标题：' + subTitle + '\n链接：' + url + '\n欢迎来访！🍭🍭🍭');
         new Vue({
             data: function () {
                 this.$notify({
