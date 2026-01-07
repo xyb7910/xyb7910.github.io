@@ -36,7 +36,7 @@
 }
 .post {
   margin: 2.8rem 0 5rem;
-  font-size: 17px;
+  font-size: 1rem;
 }
 .post[indent="true"] >p,
 .post[indent="true"] >.hbe-container>div>p {

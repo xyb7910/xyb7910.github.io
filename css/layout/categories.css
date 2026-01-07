@@ -5,19 +5,6 @@
   position: relative;
   user-select: none;
 }
-.category-container:after {
-  content: "";
-  background-image: url("/assets/images/Hexo-Theme-MEOW.png");
-  background-size: cover;
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 100px;
-  height: 100px;
-  opacity: 0.7;
-  animation: run-bounce 1.5s linear infinite alternate;
-  z-index: -1;
-}
 .categories-list {
   padding: 0;
   display: flex;
