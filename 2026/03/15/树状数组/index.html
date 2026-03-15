@@ -1,0 +1,1163 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>树状数组 - Yanpb's Blog</title>
+
+  
+    <meta name="description" content="树状数组（Binary Indexed Tree）树状数组（也称为Fenwick Tree）是一种高效的前缀和查询与单点更新的数据结构，相较于线段树，它实现更简单、空间复杂度更低，能在 $O(\log n)$ 的时间复杂度内完成单点修改和前缀和查询操作，是竞赛和工程中处理区间问题的常用工具。 围绕树状数组的核心原理、实现及应用展开，包含lowbit运算、基础操作、经典例题（逆序对、区间更新、二分查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树状数组">
+<meta property="og:url" content="https://xyb7910.github.io/2026/03/15/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/">
+<meta property="og:site_name" content="Yanpb&#39;s Blog">
+<meta property="og:description" content="树状数组（Binary Indexed Tree）树状数组（也称为Fenwick Tree）是一种高效的前缀和查询与单点更新的数据结构，相较于线段树，它实现更简单、空间复杂度更低，能在 $O(\log n)$ 的时间复杂度内完成单点修改和前缀和查询操作，是竞赛和工程中处理区间问题的常用工具。 围绕树状数组的核心原理、实现及应用展开，包含lowbit运算、基础操作、经典例题（逆序对、区间更新、二分查">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xyb7910.github.io/images/20260202-110623.jpeg?_t=1773586148010">
+<meta property="article:published_time" content="2026-03-15T14:42:26.000Z">
+<meta property="article:modified_time" content="2026-03-15T14:43:06.781Z">
+<meta property="article:author" content="Yan peng bo">
+<meta property="article:tag" content="树状数组">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xyb7910.github.io/images/20260202-110623.jpeg?_t=1773586148010">
+  
+  
+  
+  <meta name="keywords" content="树状数组">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Yan peng bo","sameAs":[],"image":"https://xyb7910.github.io/images/20260202-110623.jpeg?_t=1773586148010"},"dateCreated":"2026-03-15T22:42:26+08:00","dateModified":"2026-03-15T22:43:06+08:00","datePublished":"2026-03-15T22:42:26+08:00","description":"","headline":"树状数组","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyb7910.github.io/2026/03/15/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/"},"publisher":{"@type":"Organization","name":"Yan peng bo","sameAs":[],"image":"https://xyb7910.github.io/images/20260202-110623.jpeg?_t=1773586148010","logo":{"@type":"ImageObject","url":"https://xyb7910.github.io/images/20260202-110623.jpeg?_t=1773586148010"}},"url":"https://xyb7910.github.io/2026/03/15/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/","keywords":"树状数组","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://xyb7910.github.io/images/20260202-110623.jpeg?_t=1773586148010" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Yanpb's Blog</div><div class="sub cap">硬核少年 寻找最优解</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/03/15/C-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="title">C++ Lambda表达式</span></a><a class="item title" href="/2026/03/15/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/"><span class="title">树状数组</span></a><a class="item title" href="/2026/03/15/%E5%BF%AB%E9%80%9F%E5%B9%82%E3%80%81%E9%80%86%E5%85%83%E4%B8%8E%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97/"><span class="title">快速幂、逆元与扩展欧几里得</span></a><a class="item title" href="/2026/03/15/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97%E4%B8%8E%E5%8D%95%E8%B0%83%E6%A0%88/"><span class="title">单调队列与单调栈</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-03-15T14:42:26.000Z">2026-03-15</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-03-15T14:43:06.781Z">2026-03-15</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>树状数组</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="树状数组（Binary-Indexed-Tree）"><a href="#树状数组（Binary-Indexed-Tree）" class="headerlink" title="树状数组（Binary Indexed Tree）"></a>树状数组（Binary Indexed Tree）</h1><p>树状数组（也称为Fenwick Tree）是一种高效的<strong>前缀和查询</strong>与<strong>单点更新</strong>的数据结构，相较于线段树，它实现更简单、空间复杂度更低，能在 $O(\log n)$ 的时间复杂度内完成单点修改和前缀和查询操作，是竞赛和工程中处理区间问题的常用工具。</p>
+<p>围绕树状数组的核心原理、实现及应用展开，包含<code>lowbit</code>运算、基础操作、经典例题（逆序对、区间更新、二分查询）和高维树状数组拓展，所有例题均适配 $10^5 \sim 2\times10^5$ 级别的数据范围，符合算法竞赛的实际要求。</p>
+<h3 id="主讲知识点框架"><a href="#主讲知识点框架" class="headerlink" title="主讲知识点框架"></a>主讲知识点框架</h3><ol>
+<li><code>lowbit</code>运算：树状数组的核心数学基础</li>
+<li>树状数组基础：定义、单点修改、前缀和查询（例题1）</li>
+<li>经典应用：逆序对统计（例题2）、区间更新+区间查询（例题3）</li>
+<li>进阶操作：树状数组上的二分查询（例题4）</li>
+<li>拓展内容：高维树状数组（二维，例题5）</li>
+</ol>
+<h2 id="一、核心基础：lowbit运算"><a href="#一、核心基础：lowbit运算" class="headerlink" title="一、核心基础：lowbit运算"></a>一、核心基础：lowbit运算</h2><h3 id="1-1-定义"><a href="#1-1-定义" class="headerlink" title="1.1 定义"></a>1.1 定义</h3><p><code>lowbit(x)</code>表示<strong>非负整数x的二进制表示中，最低位的1所对应的值</strong>。</p>
+<p>例如：</p>
+<ul>
+<li>$x&#x3D;6$ （二进制<code>110</code>），<code>lowbit(x)=2</code>（二进制<code>10</code>）</li>
+<li>$x&#x3D;8$ （二进制<code>1000</code>），<code>lowbit(x)=8</code>（二进制<code>1000</code>）</li>
+<li>$x&#x3D;5$ （二进制<code>101</code>），<code>lowbit(x)=1</code>（二进制<code>1</code>）</li>
+</ul>
+<h3 id="1-2-计算公式"><a href="#1-2-计算公式" class="headerlink" title="1.2 计算公式"></a>1.2 计算公式</h3><p>在计算机中，利用<strong>补码特性</strong>可通过位运算直接计算：</p>
+<p>$\boldsymbol{lowbit(x) &#x3D; x &amp; (-x)}$</p>
+<p><strong>原理</strong>：计算机中负数以补码形式存储，<code>-x = ~x + 1</code>（按位取反<code>+1</code>）。对<code>x</code>和<code>-x</code>做按位与运算时，仅最低位的 <code>1</code> 会被保留，其余位全部置<code>0</code>，恰好得到<code>lowbit</code>值。</p>
+<h3 id="1-3-代码实现"><a href="#1-3-代码实现" class="headerlink" title="1.3 代码实现"></a>1.3 代码实现</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p><strong>注</strong>：<code>inline</code>关键字用于内联函数，减少函数调用开销，适配竞赛的高效要求。</p>
+<h3 id="1-4-编程技巧拓展"><a href="#1-4-编程技巧拓展" class="headerlink" title="1.4 编程技巧拓展"></a>1.4 编程技巧拓展</h3><p><strong>lowbit</strong> 不仅用于树状数组，也是竞赛中的常用位运算技巧：</p>
+<ol>
+<li>状态压缩中，快速枚举一个二进制数的所有子集；</li>
+<li>快速判断一个数是否为2的整数次幂：lowbit(x) &#x3D;&#x3D; x；</li>
+<li>快速消除一个数的最低位1：x -&#x3D; lowbit(x)，可用于统计二进制中1的个数。</li>
+</ol>
+<h2 id="二、树状数组基础定义与操作"><a href="#二、树状数组基础定义与操作" class="headerlink" title="二、树状数组基础定义与操作"></a>二、树状数组基础定义与操作</h2><h3 id="2-1-数组定义"><a href="#2-1-数组定义" class="headerlink" title="2.1 数组定义"></a>2.1 数组定义</h3><p>树状数组用一个一维数组<code>c[]</code>模拟树形结构，每个节点 <code>c[x]</code> 管理一段长度为 <code>lowbit(x)</code> 的连续区间，维护这段区间的区间和。</p>
+<p><code>c[]</code>（通常称为<strong>树组</strong>），满足<strong>父子节点关系</strong>：</p>
+<ul>
+<li>节点<code>i</code>的父节点为<code>i + lowbit(i)</code></li>
+<li>节点<code>i</code>的子节点为<code>i - lowbit(i)</code></li>
+<li>树状数组的下标<strong>从1开始</strong>（避免<code>lowbit(0)</code>无意义）。</li>
+</ul>
+<h3 id="2-2-两个核心操作"><a href="#2-2-两个核心操作" class="headerlink" title="2.2 两个核心操作"></a>2.2 两个核心操作</h3><p>树状数组的核心能力是<strong>单点修改</strong>和<strong>前缀和查询</strong>，时间复杂度均为 $O(\log n)$ 。</p>
+<h4 id="操作1：单点修改-modify-x-s"><a href="#操作1：单点修改-modify-x-s" class="headerlink" title="操作1：单点修改 modify(x, s)"></a>操作1：单点修改 <code>modify(x, s)</code></h4><p><strong>功能</strong>：将原数组<code>a[x]</code>的值<strong>增加s</strong>（若需赋值为d，可计算<code>s = d - a[x]</code>后调用）。</p>
+<p><strong>原理</strong>：从<code>x</code>出发，不断向上更新父节点的树组值，直到超出数组长度<code>n</code>。</p>
+<p><strong>代码实现</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">201000</span>;</span><br><span class="line"><span class="type">int</span> n, q;</span><br><span class="line"><span class="type">int</span> a[N]; <span class="comment">// 原数组</span></span><br><span class="line">ll c[N];  <span class="comment">// 树状数组</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, ll s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (; x &lt;= n; x += <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        c[x] += s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="操作2：前缀和查询-query-x"><a href="#操作2：前缀和查询-query-x" class="headerlink" title="操作2：前缀和查询 query(x)"></a>操作2：前缀和查询 <code>query(x)</code></h4><p><strong>功能</strong>：查询原数组<code>a[1~x]</code>的前缀和，即 $\sum_{i&#x3D;1}^x a[i]$ 。</p>
+<p><strong>原理</strong>：从<code>x</code>出发，不断向下累加子节点的树组值，直到<code>x=0</code>。</p>
+<p><strong>代码实现</strong>：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; x; x -= <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        res += c[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="操作3-区间和查询"><a href="#操作3-区间和查询" class="headerlink" title="操作3:区间和查询"></a>操作3:区间和查询</h4><p>树状数组原生仅支持前缀和查询，<strong>区间[l,r]的和 &#x3D; 前缀和query(r) - 前缀和query(l-1)</strong>。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ll <span class="title">range_query</span><span class="params">(<span class="type">int</span> l, <span class="type">int</span> r)</span> </span>&#123; <span class="comment">// 查询a[l]~a[r]的和</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">query</span>(r) - <span class="built_in">query</span>(l<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-树状数组的初始化"><a href="#2-3-树状数组的初始化" class="headerlink" title="2.3 树状数组的初始化"></a>2.3 树状数组的初始化</h3><p>初始化树状数组需将原数组<code>a[]</code>的每个元素作为<strong>单点修改</strong>操作插入树组：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读入n个原数组元素，初始化树状数组</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;a[i]);</span><br><span class="line">    <span class="built_in">modify</span>(i, a[i]); <span class="comment">// 等价于a[i] += a[i]，即初始赋值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-例题1：树状数组1（单点修改-前缀和查询）"><a href="#2-4-例题1：树状数组1（单点修改-前缀和查询）" class="headerlink" title="2.4 例题1：树状数组1（单点修改+前缀和查询）"></a>2.4 例题1：树状数组1（单点修改+前缀和查询）</h3><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定<code>n</code>个数，支持<code>q</code>个操作：</p>
+<ol>
+<li><code>1 x d</code>：将<code>a[x]</code>赋值为<code>d</code>；</li>
+<li><code>2 x</code>：查询<code>a[1~x]</code>的前缀和。</li>
+</ol>
+<h4 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h4><ul>
+<li>赋值操作：计算增量<code>s = d - a[x]</code>，调用<code>modify(x, s)</code>，再更新<code>a[x] = d</code>；</li>
+<li>前缀和查询：直接调用<code>query(x)</code>。</li>
+</ul>
+<h4 id="完整AC代码"><a href="#完整AC代码" class="headerlink" title="完整AC代码"></a>完整AC代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">201000</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, q;</span><br><span class="line"><span class="type">int</span> a[N];</span><br><span class="line">ll c[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, ll s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (; x &lt;= n; x += <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        c[x] += s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; x; x -= <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        res += c[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 快速读入，适配大数据范围</span></span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;q);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;a[i]);</span><br><span class="line">        <span class="built_in">modify</span>(i, a[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">        <span class="type">int</span> op;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;op);</span><br><span class="line">        <span class="keyword">if</span> (op == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="type">int</span> x, d;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;d);</span><br><span class="line">            <span class="built_in">modify</span>(x, (ll)d - a[x]);</span><br><span class="line">            a[x] = d;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">int</span> x;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;x);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%lld\n&quot;</span>, <span class="built_in">query</span>(x));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键注意</strong>：使用<code>long long</code>存储树组和结果，防止前缀和溢出；用<code>scanf/printf</code>代替<code>cin/cout</code>，提升输入输出效率。</p>
+<h2 id="三、树状数组经典应用"><a href="#三、树状数组经典应用" class="headerlink" title="三、树状数组经典应用"></a>三、树状数组经典应用</h2><h3 id="3-1-例题2：逆序对2（树状数组统计逆序对）"><a href="#3-1-例题2：逆序对2（树状数组统计逆序对）" class="headerlink" title="3.1 例题2：逆序对2（树状数组统计逆序对）"></a>3.1 例题2：逆序对2（树状数组统计逆序对）</h3><h4 id="题目描述-1"><a href="#题目描述-1" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定<code>n</code>个<strong>互不相同</strong>的数，求逆序对的数量（逆序对： $i&lt;j$ 且 $a[i]&gt;a[j]$ ）。</p>
+<h4 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h4><p>逆序对统计是树状数组的经典应用，核心思路是<strong>从后往前遍历</strong>，利用树状数组统计<strong>已遍历元素中比当前元素小的数的个数</strong>，累加即为逆序对总数；</p>
+<p>若数据范围不连续，需先做<strong>离散化</strong>（本题已保证 $1 \le a[i] \le n$ ，可直接使用）。</p>
+<p><strong>优化技巧</strong>：将<code>a[i]</code>映射为<code>n+1-a[i]</code>，将“找比当前小的数”转化为“找比当前大的数”，简化统计逻辑。</p>
+<h4 id="核心步骤"><a href="#核心步骤" class="headerlink" title="核心步骤"></a>核心步骤</h4><ol>
+<li><p>初始化空的树状数组；</p>
+</li>
+<li><p>从<code>i=n</code>到<code>i=1</code>遍历原数组：</p>
+<ul>
+<li>逆序对数量 +&#x3D; <code>query(a[i])</code>（查询已插入的、比当前<code>a[i]</code>小的数的个数）；</li>
+<li>调用<code>modify(a[i], 1)</code>（将当前数插入树状数组，计数+1）。</li>
+</ul>
+</li>
+</ol>
+<h4 id="完整AC代码-1"><a href="#完整AC代码-1" class="headerlink" title="完整AC代码"></a>完整AC代码</h4><p>非离散化代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">201000</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n;</span><br><span class="line"><span class="type">int</span> a[N];</span><br><span class="line">ll c[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, ll s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (; x &lt;= n; x += <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        c[x] += s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; x; x -= <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        res += c[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;a[i]);</span><br><span class="line">        a[i] = n + <span class="number">1</span> - a[i]; <span class="comment">// 映射转化，简化统计</span></span><br><span class="line">    &#125;</span><br><span class="line">    ll ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        ans += <span class="built_in">query</span>(a[i]);</span><br><span class="line">        <span class="built_in">modify</span>(a[i], <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%lld\n&quot;</span>, ans);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>离散化代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1e5</span> + <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n;</span><br><span class="line">ll a[N], c[N];</span><br><span class="line">vector&lt;ll&gt; alls; <span class="comment">// 用于存储所有待离散化的值</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123; <span class="keyword">return</span> x &amp; (-x); &#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; x; x -= <span class="built_in">lowbit</span>(x)) res += c[x];</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, ll s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (; x &lt;= n; x += <span class="built_in">lowbit</span>(x)) c[x] += s;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 离散化辅助函数：找到x对应的排名</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(ll x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">lower_bound</span>(alls.<span class="built_in">begin</span>(), alls.<span class="built_in">end</span>(), x) - alls.<span class="built_in">begin</span>() + <span class="number">1</span>; <span class="comment">// +1是为了让下标从1开始</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;n);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%lld&quot;</span>, &amp;a[i]);</span><br><span class="line">        alls.<span class="built_in">push_back</span>(a[i]); <span class="comment">// 1. 把所有值存入alls</span></span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 2. 离散化核心步骤</span></span><br><span class="line">    <span class="built_in">sort</span>(alls.<span class="built_in">begin</span>(), alls.<span class="built_in">end</span>()); <span class="comment">// 排序</span></span><br><span class="line">    alls.<span class="built_in">erase</span>(<span class="built_in">unique</span>(alls.<span class="built_in">begin</span>(), alls.<span class="built_in">end</span>()), alls.<span class="built_in">end</span>()); <span class="comment">// 去重</span></span><br><span class="line">  </span><br><span class="line">    ll ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = n; i &gt;= <span class="number">1</span>; i--) &#123;</span><br><span class="line">        <span class="type">int</span> x = <span class="built_in">find</span>(a[i]); <span class="comment">// 3. 将a[i]映射为离散化后的排名</span></span><br><span class="line">        ans += <span class="built_in">query</span>(x - <span class="number">1</span>);</span><br><span class="line">        <span class="built_in">modify</span>(x, <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%lld\n&quot;</span>, ans);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间复杂度</strong>： $O(n\log n)$ ，优于暴力的 $O(n^2)$ ，适配 $10^5$ 级别数据。</p>
+<h3 id="3-2-例题3：树状数组2（区间更新-区间查询）"><a href="#3-2-例题3：树状数组2（区间更新-区间查询）" class="headerlink" title="3.2 例题3：树状数组2（区间更新+区间查询）"></a>3.2 例题3：树状数组2（区间更新+区间查询）</h3><h4 id="题目描述-2"><a href="#题目描述-2" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定<code>n</code>个初始为0的数，支持<code>q</code>个操作：</p>
+<ol>
+<li><code>1 l r d</code>：将区间<code>a[l~r]</code>的每个数<strong>增加d</strong>；</li>
+<li><code>2 x</code>：查询<code>a[1~x]</code>的前缀和，结果对 $2^{64}$ 取模（即使用无符号64位整数）。</li>
+</ol>
+<h4 id="解题思路-2"><a href="#解题思路-2" class="headerlink" title="解题思路"></a>解题思路</h4><p>树状数组本身仅支持<strong>单点修改</strong>，需通过<strong>差分思想</strong>将<strong>区间更新</strong>转化为<strong>两次单点修改</strong>，再结合<strong>数学推导</strong>实现区间查询。</p>
+<h5 id="核心推导"><a href="#核心推导" class="headerlink" title="核心推导"></a>核心推导</h5><p>设原数组为<code>a[]</code>，差分数组为<code>d[]</code>（ $d[1]&#x3D;a[1], d[i]&#x3D;a[i]-a[i-1]$ ），则原数组的前缀和为：</p>
+<p>$\sum_{i&#x3D;1}^x a[i] &#x3D; \sum_{i&#x3D;1}^x \sum_{j&#x3D;1}^i d[j] &#x3D; \sum_{i&#x3D;1}^x d[i] \times (x+1 - i) &#x3D; (x+1)\sum_{i&#x3D;1}^x d[i] - \sum_{i&#x3D;1}^x d[i] \times i$</p>
+<p>因此，维护<strong>两个树状数组</strong>：</p>
+<ul>
+<li><code>c1[]</code>：存储差分数组<code>d[]</code>的前缀和；</li>
+<li><code>c2[]</code>：存储<code>d[i] * i</code>的前缀和。</li>
+</ul>
+<p>则前缀和查询公式为：</p>
+<p>$\boldsymbol{query_sum(x) &#x3D; (x+1) \times c1.query(x) - c2.query(x)}$</p>
+<h5 id="区间更新转化"><a href="#区间更新转化" class="headerlink" title="区间更新转化"></a>区间更新转化</h5><p>对<code>[l, r]</code>增加<code>d</code>，等价于对差分数组做：</p>
+<ul>
+<li><code>d[l] += d</code>；</li>
+<li><code>d[r+1] -= d</code>（若<code>r+1 &lt;=n</code>）。</li>
+</ul>
+<p>对应两个树状数组的修改：</p>
+<ul>
+<li><code>c1.modify(l, d)</code>、<code>c1.modify(r+1, -d)</code>；</li>
+<li><code>c2.modify(l, l*d)</code>、<code>c2.modify(r+1, -(r+1)*d)</code>。</li>
+</ul>
+<h4 id="完整AC代码（模板化实现）"><a href="#完整AC代码（模板化实现）" class="headerlink" title="完整AC代码（模板化实现）"></a>完整AC代码（模板化实现）</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> u64; <span class="comment">// 自动对2^64取模，无需手动取模</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">201000</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, q;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 树状数组模板类，适配通用类型</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">BIT</span> &#123;</span><br><span class="line">    T c[N];</span><br><span class="line">    <span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, T s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (; x &lt;= n; x += <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">            c[x] += s;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">T <span class="title">query</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">        T res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (; x; x -= <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">            res += c[x];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">BIT&lt;u64&gt; c1, c2; <span class="comment">// c1: d[i], c2: d[i]*i</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;q);</span><br><span class="line">    <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">        <span class="type">int</span> op;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;op);</span><br><span class="line">        <span class="keyword">if</span> (op == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="type">int</span> l, r;</span><br><span class="line">            u64 d;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%llu&quot;</span>, &amp;l, &amp;r, &amp;d);</span><br><span class="line">            <span class="comment">// 区间[l, r] += d</span></span><br><span class="line">            c<span class="number">1.</span><span class="built_in">modify</span>(l, d);</span><br><span class="line">            c<span class="number">1.</span><span class="built_in">modify</span>(r<span class="number">+1</span>, -d);</span><br><span class="line">            c<span class="number">2.</span><span class="built_in">modify</span>(l, (u64)l * d);</span><br><span class="line">            c<span class="number">2.</span><span class="built_in">modify</span>(r<span class="number">+1</span>, (u64)(r<span class="number">+1</span>) * (-d));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="type">int</span> x;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;x);</span><br><span class="line">            u64 ans = (u64)(x<span class="number">+1</span>) * c<span class="number">1.</span><span class="built_in">query</span>(x) - c<span class="number">2.</span><span class="built_in">query</span>(x);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%llu\n&quot;</span>, ans);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键注意</strong>：使用<code>unsigned long long</code>（u64）自动实现 $2^{64}$ 取模，避免手动处理溢出；用模板类封装树状数组，提升代码复用性。</p>
+<h2 id="四、树状数组进阶：树上二分查询"><a href="#四、树状数组进阶：树上二分查询" class="headerlink" title="四、树状数组进阶：树上二分查询"></a>四、树状数组进阶：树上二分查询</h2><h3 id="4-1-例题4：树状数组二分（前缀和二分找最大T）"><a href="#4-1-例题4：树状数组二分（前缀和二分找最大T）" class="headerlink" title="4.1 例题4：树状数组二分（前缀和二分找最大T）"></a>4.1 例题4：树状数组二分（前缀和二分找最大T）</h3><h4 id="题目描述-3"><a href="#题目描述-3" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定<code>n</code>个数，支持<code>q</code>个操作：</p>
+<ol>
+<li><code>1 x d</code>：将<code>a[x]</code>赋值为<code>d</code>；</li>
+<li><code>2 s</code>：查询最大的<code>T</code>（ $0 \le T \le n$ ），满足 $\sum_{i&#x3D;1}^T a[i] \le s$ 。</li>
+</ol>
+<h4 id="解题思路-3"><a href="#解题思路-3" class="headerlink" title="解题思路"></a>解题思路</h4><p>树状数组的前缀和满足<strong>单调性</strong>（原数组元素均为正），因此可在<strong>树状数组上直接二分</strong>，找到满足条件的最大<code>T</code>，时间复杂度 $O(\log^2 n)$ 。</p>
+<h5 id="二分原理"><a href="#二分原理" class="headerlink" title="二分原理"></a>二分原理</h5><p>从最高位（如18位，覆盖 $2^{18}&#x3D;262144 &gt; 2\times10^5$ ）向最低位遍历，尝试将当前位加入答案<code>pos</code>，若加入后前缀和仍 $\le s$ ，则保留该位，否则跳过。</p>
+<h4 id="完整AC代码-2"><a href="#完整AC代码-2" class="headerlink" title="完整AC代码"></a>完整AC代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">201000</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> BITS = <span class="number">18</span>; <span class="comment">// 2^18 &gt; 2e5，足够覆盖数据范围</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, q;</span><br><span class="line"><span class="type">int</span> a[N];</span><br><span class="line">ll c[N];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, ll s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (; x &lt;= n; x += <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        c[x] += s;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (; x; x -= <span class="built_in">lowbit</span>(x)) &#123;</span><br><span class="line">        res += c[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 树状数组上的二分，找最大T满足query(T) &lt;= s</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">find_max_T</span><span class="params">(ll s)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> pos = <span class="number">0</span>;</span><br><span class="line">    ll sum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> j = BITS; j &gt;= <span class="number">0</span>; j--) &#123;</span><br><span class="line">        <span class="comment">// 尝试加入2^j位，判断是否越界且前缀和不超过s</span></span><br><span class="line">        <span class="keyword">if</span> (pos + (<span class="number">1</span> &lt;&lt; j) &lt;= n &amp;&amp; sum + c[pos + (<span class="number">1</span> &lt;&lt; j)] &lt;= s) &#123;</span><br><span class="line">            pos += (<span class="number">1</span> &lt;&lt; j);</span><br><span class="line">            sum += c[pos];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> pos;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;q);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;a[i]);</span><br><span class="line">        <span class="built_in">modify</span>(i, a[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (q--) &#123;</span><br><span class="line">        <span class="type">int</span> op;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;op);</span><br><span class="line">        <span class="keyword">if</span> (op == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="type">int</span> x, d;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;d);</span><br><span class="line">            <span class="built_in">modify</span>(x, (ll)d - a[x]);</span><br><span class="line">            a[x] = d;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ll s;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%lld&quot;</span>, &amp;s);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, <span class="built_in">find_max_T</span>(s));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>拓展</strong>：该思路可推广到<strong>第K小数查询</strong>等问题，是树状数组与二分结合的典型用法。</p>
+<h2 id="五、树状数组拓展：高维树状数组"><a href="#五、树状数组拓展：高维树状数组" class="headerlink" title="五、树状数组拓展：高维树状数组"></a>五、树状数组拓展：高维树状数组</h2><h3 id="5-1-二维树状数组（例题5）"><a href="#5-1-二维树状数组（例题5）" class="headerlink" title="5.1 二维树状数组（例题5）"></a>5.1 二维树状数组（例题5）</h3><h4 id="题目描述-4"><a href="#题目描述-4" class="headerlink" title="题目描述"></a>题目描述</h4><p>给定 $n \times m$ 的二维数组，支持<code>q</code>个操作：</p>
+<ol>
+<li><code>1 x y d</code>：将<code>a[x][y]</code>赋值为<code>d</code>；</li>
+<li><code>2 x y</code>：查询左上角 $(1,1)$ 到右下角 $(x,y)$ 的<strong>二维前缀和</strong>。</li>
+</ol>
+<h4 id="解题思路-4"><a href="#解题思路-4" class="headerlink" title="解题思路"></a>解题思路</h4><p>二维树状数组是一维树状数组的直接拓展，核心是<strong>两层循环</strong>实现单点修改和二维前缀和查询，时间复杂度 $O(\log n \times \log m)$ 。</p>
+<h5 id="数组定义"><a href="#数组定义" class="headerlink" title="数组定义"></a>数组定义</h5><p>用二维数组<code>c[N][M]</code>存储二维树状数组，下标均从1开始。</p>
+<h5 id="核心操作"><a href="#核心操作" class="headerlink" title="核心操作"></a>核心操作</h5><ol>
+<li><strong>单点修改</strong>：对 $(x,y)$ 增加<code>s</code>，两层循环分别更新x和y的父节点；</li>
+<li><strong>二维前缀和查询</strong>：查询 $(1,1)$ 到 $(x,y)$ 的和，两层循环分别累加x和y的子节点。</li>
+</ol>
+<h4 id="二维树状数组核心代码"><a href="#二维树状数组核心代码" class="headerlink" title="二维树状数组核心代码"></a>二维树状数组核心代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">510</span>, M = <span class="number">510</span>; <span class="comment">// 适配n,m&lt;=500</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, m, q;</span><br><span class="line">ll a[N][M];</span><br><span class="line">ll c[N][M];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 单点修改：a[x][y] += s</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">modify</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y, ll s)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = x; i &lt;= n; i += <span class="built_in">lowbit</span>(i)) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = y; j &lt;= m; j += <span class="built_in">lowbit</span>(j)) &#123;</span><br><span class="line">            c[i][j] += s;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 二维前缀和查询：sum(1~x, 1~y)</span></span><br><span class="line"><span class="function">ll <span class="title">query</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = x; i; i -= <span class="built_in">lowbit</span>(i)) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = y; j; j -= <span class="built_in">lowbit</span>(j)) &#123;</span><br><span class="line">            res += c[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化二维树状数组</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= m; j++) &#123;</span><br><span class="line">            <span class="built_in">scanf</span>(<span class="string">&quot;%lld&quot;</span>, &amp;a[i][j]);</span><br><span class="line">            <span class="built_in">modify</span>(i, j, a[i][j]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="操作实现说明"><a href="#操作实现说明" class="headerlink" title="操作实现说明"></a>操作实现说明</h4><ul>
+<li>赋值操作：<code>modify(x, y, d - a[x][y])</code>，再更新<code>a[x][y] = d</code>；</li>
+<li>二维前缀和查询：直接调用<code>query(x, y)</code>。</li>
+</ul>
+<p><strong>注</strong>：高维树状数组的空间复杂度随维度指数增长，因此通常仅使用<strong>二维</strong>，更高维度（如三维）一般用线段树或其他方法替代。</p>
+<h2 id="六、树状数组总结"><a href="#六、树状数组总结" class="headerlink" title="六、树状数组总结"></a>六、树状数组总结</h2><h3 id="6-1-核心特性"><a href="#6-1-核心特性" class="headerlink" title="6.1 核心特性"></a>6.1 核心特性</h3><ol>
+<li><strong>时间复杂度</strong>：单点修改、前缀和查询均为 $O(\log n)$ ，二维为 $O(\log n \log m)$ ；</li>
+<li><strong>空间复杂度</strong>： $O(n)$ （一维）、 $O(nm)$ （二维），远优于线段树；</li>
+<li><strong>局限性</strong>：仅支持<strong>前缀和相关操作</strong>，无法直接处理任意区间的最值查询（最值需用线段树）。</li>
+</ol>
+<h3 id="6-2-适用场景"><a href="#6-2-适用场景" class="headerlink" title="6.2 适用场景"></a>6.2 适用场景</h3><ol>
+<li>单点修改 + 前缀和&#x2F;区间和查询；</li>
+<li>区间修改 + 前缀和&#x2F;区间和查询（差分+双树状数组）；</li>
+<li>逆序对、第K小数、数频统计等计数问题；</li>
+<li>二维单点修改 + 二维前缀和查询（n,m较小的场景）。</li>
+</ol>
+<h3 id="6-3-竞赛技巧"><a href="#6-3-竞赛技巧" class="headerlink" title="6.3 竞赛技巧"></a>6.3 竞赛技巧</h3><ol>
+<li>下标从0开始的死循环：树状数组必须从1开始，lowbit(0)&#x3D;0会导致循环无法终止；</li>
+<li>数据溢出：前缀和极易超过int范围，必须用long long存储，mod 2^64用unsigned long long；</li>
+<li>数组大小不足：区间修改时会访问到r+1，树状数组大小需开至n+10，避免越界；</li>
+<li>离散化错误：离散化时必须先排序、去重，再用lower_bound映射，保证相对大小不变；</li>
+<li>多组数据未清空：多组测试用例时，必须手动清空树状数组c[]和原数组a[]，否则会残留上一组数据；</li>
+<li>功能局限性：树状数组仅能维护满足结合律、可差分的信息（和、异或、前缀最值），无法处理复杂的区间修改（如区间乘、区间赋值），这类场景需用线段树。</li>
+</ol>
+<h3 id="6-4-与线段树的对比"><a href="#6-4-与线段树的对比" class="headerlink" title="6.4 与线段树的对比"></a>6.4 与线段树的对比</h3><table>
+<thead>
+<tr>
+<th>数据结构</th>
+<th>实现难度</th>
+<th>空间复杂度</th>
+<th>单点修改</th>
+<th>区间查询</th>
+<th>最值查询</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>树状数组</td>
+<td>简单</td>
+<td>$O(n)$</td>
+<td>$O(\log n)$</td>
+<td>$O(\log n)$</td>
+<td>不支持</td>
+</tr>
+<tr>
+<td>线段树</td>
+<td>复杂</td>
+<td>$O(4n)$</td>
+<td>$O(\log n)$</td>
+<td>$O(\log n)$</td>
+<td>支持</td>
+</tr>
+</tbody></table>
+<p><strong>结论</strong>：若问题仅涉及<strong>和相关的单点&#x2F;区间操作</strong>，优先使用树状数组；若涉及<strong>最值、区间覆盖</strong>等操作，使用线段树。</p>
+<h2 id="七、课后练习"><a href="#七、课后练习" class="headerlink" title="七、课后练习"></a>七、课后练习</h2><ol>
+<li>基础练习：实现树状数组的<strong>区间和查询</strong>（利用前缀和相减：<code>query(r) - query(l-1)</code>）；</li>
+<li>进阶练习：用树状数组解决<strong>带修逆序对</strong>问题（支持单点修改+查询当前逆序对数量）；</li>
+<li>拓展练习：实现二维树状数组的<strong>区间更新+区间查询</strong>（结合二维差分）。</li>
+</ol>
+<h2 id="八、梯度训练题库"><a href="#八、梯度训练题库" class="headerlink" title="八、梯度训练题库"></a>八、梯度训练题库</h2><p>按知识点难度分级，对应讲义内容，可循序渐进练习。</p>
+<h3 id="（一）洛谷题库"><a href="#（一）洛谷题库" class="headerlink" title="（一）洛谷题库"></a>（一）洛谷题库</h3><table>
+<thead>
+<tr>
+<th>难度</th>
+<th>题目编号</th>
+<th>题目名称</th>
+<th>对应知识点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>入门</td>
+<td>P3374</td>
+<td>【模板】树状数组1</td>
+<td>单点修改、区间查询</td>
+</tr>
+<tr>
+<td>入门</td>
+<td>P3368</td>
+<td>【模板】树状数组2</td>
+<td>区间修改、单点查询</td>
+</tr>
+<tr>
+<td>基础</td>
+<td>P1908</td>
+<td>逆序对</td>
+<td>经典逆序对统计</td>
+</tr>
+<tr>
+<td>基础</td>
+<td>P1966</td>
+<td>[NOIP2013 提高组] 火柴排队</td>
+<td>逆序对应用</td>
+</tr>
+<tr>
+<td>基础</td>
+<td>P2345</td>
+<td>[USACO04OPEN] MooFest G</td>
+<td>双前缀和维护</td>
+</tr>
+<tr>
+<td>进阶</td>
+<td>P3372</td>
+<td>【模板】线段树1</td>
+<td>区间修改+区间查询（双树状数组实现）</td>
+</tr>
+<tr>
+<td>进阶</td>
+<td>P4054</td>
+<td>[JSOI2009] 计数问题</td>
+<td>二维树状数组</td>
+</tr>
+<tr>
+<td>进阶</td>
+<td>ARC033 C</td>
+<td>データ構造</td>
+<td>树状数组二分找第k小</td>
+</tr>
+<tr>
+<td>提高</td>
+<td>P3810</td>
+<td>【模板】三维偏序（陌上花开）</td>
+<td>CDQ分治+树状数组</td>
+</tr>
+<tr>
+<td>提高</td>
+<td>P2163</td>
+<td>[SHOI2007] 园丁的烦恼</td>
+<td>离线二维数点+树状数组</td>
+</tr>
+<tr>
+<td>提高</td>
+<td>P2617</td>
+<td>Dynamic Rankings</td>
+<td>动态第k大（树状数组套主席树）</td>
+</tr>
+</tbody></table>
+<h3 id="（二）AtCoder题库"><a href="#（二）AtCoder题库" class="headerlink" title="（二）AtCoder题库"></a>（二）AtCoder题库</h3><table>
+<thead>
+<tr>
+<th>难度</th>
+<th>题目编号</th>
+<th>题目名称</th>
+<th>对应知识点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>入门</td>
+<td>ABC185 F</td>
+<td>Range Xor Query</td>
+<td>树状数组维护异或和</td>
+</tr>
+<tr>
+<td>基础</td>
+<td>ABC221 E</td>
+<td>LEQ</td>
+<td>逆序对变形、计数统计</td>
+</tr>
+<tr>
+<td>基础</td>
+<td>ABC127 F</td>
+<td>Absolute Minima</td>
+<td>树状数组二分找中位数</td>
+</tr>
+<tr>
+<td>进阶</td>
+<td>ARC068 E</td>
+<td>Snuke Line</td>
+<td>离线处理+树状数组</td>
+</tr>
+<tr>
+<td>进阶</td>
+<td>ARC101 D</td>
+<td>Median of Medians</td>
+<td>二分答案+树状数组逆序对</td>
+</tr>
+<tr>
+<td>提高</td>
+<td>AGC005 B</td>
+<td>Minimum Sum</td>
+<td>单调栈+树状数组</td>
+</tr>
+<tr>
+<td>提高</td>
+<td>ABC285 G</td>
+<td>Tatami</td>
+<td>二维树状数组进阶应用</td>
+</tr>
+<tr>
+<td>提高</td>
+<td>AGC023 A</td>
+<td>Zero-Sum Ranges</td>
+<td>前缀和+树状数组计数</td>
+</tr>
+</tbody></table>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/03/15/C-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">C++ Lambda表达式</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/03/15/%E5%BF%AB%E9%80%9F%E5%B9%82%E3%80%81%E9%80%86%E5%85%83%E4%B8%8E%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97/">快速幂、逆元与扩展欧几里得</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本站由 <a href="/">Yan peng bo</a> 使用 <a target="_blank" rel="noopener" href="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1">Stellar 1.33.1</a> 主题创建。<br>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%EF%BC%88Binary-Indexed-Tree%EF%BC%89"><span class="toc-text">树状数组（Binary Indexed Tree）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E8%AE%B2%E7%9F%A5%E8%AF%86%E7%82%B9%E6%A1%86%E6%9E%B6"><span class="toc-text">主讲知识点框架</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%A0%B8%E5%BF%83%E5%9F%BA%E7%A1%80%EF%BC%9Alowbit%E8%BF%90%E7%AE%97"><span class="toc-text">一、核心基础：lowbit运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">1.1 定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="toc-text">1.2 计算公式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">1.3 代码实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E7%BC%96%E7%A8%8B%E6%8A%80%E5%B7%A7%E6%8B%93%E5%B1%95"><span class="toc-text">1.4 编程技巧拓展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E5%9F%BA%E7%A1%80%E5%AE%9A%E4%B9%89%E4%B8%8E%E6%93%8D%E4%BD%9C"><span class="toc-text">二、树状数组基础定义与操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%95%B0%E7%BB%84%E5%AE%9A%E4%B9%89"><span class="toc-text">2.1 数组定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%B8%A4%E4%B8%AA%E6%A0%B8%E5%BF%83%E6%93%8D%E4%BD%9C"><span class="toc-text">2.2 两个核心操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C1%EF%BC%9A%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9-modify-x-s"><span class="toc-text">操作1：单点修改 modify(x, s)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C2%EF%BC%9A%E5%89%8D%E7%BC%80%E5%92%8C%E6%9F%A5%E8%AF%A2-query-x"><span class="toc-text">操作2：前缀和查询 query(x)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C3-%E5%8C%BA%E9%97%B4%E5%92%8C%E6%9F%A5%E8%AF%A2"><span class="toc-text">操作3:区间和查询</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-text">2.3 树状数组的初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E4%BE%8B%E9%A2%981%EF%BC%9A%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%841%EF%BC%88%E5%8D%95%E7%82%B9%E4%BF%AE%E6%94%B9-%E5%89%8D%E7%BC%80%E5%92%8C%E6%9F%A5%E8%AF%A2%EF%BC%89"><span class="toc-text">2.4 例题1：树状数组1（单点修改+前缀和查询）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4AC%E4%BB%A3%E7%A0%81"><span class="toc-text">完整AC代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E7%BB%8F%E5%85%B8%E5%BA%94%E7%94%A8"><span class="toc-text">三、树状数组经典应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BE%8B%E9%A2%982%EF%BC%9A%E9%80%86%E5%BA%8F%E5%AF%B92%EF%BC%88%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E7%BB%9F%E8%AE%A1%E9%80%86%E5%BA%8F%E5%AF%B9%EF%BC%89"><span class="toc-text">3.1 例题2：逆序对2（树状数组统计逆序对）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-1"><span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-1"><span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%AD%A5%E9%AA%A4"><span class="toc-text">核心步骤</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4AC%E4%BB%A3%E7%A0%81-1"><span class="toc-text">完整AC代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%BE%8B%E9%A2%983%EF%BC%9A%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%842%EF%BC%88%E5%8C%BA%E9%97%B4%E6%9B%B4%E6%96%B0-%E5%8C%BA%E9%97%B4%E6%9F%A5%E8%AF%A2%EF%BC%89"><span class="toc-text">3.2 例题3：树状数组2（区间更新+区间查询）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-2"><span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-2"><span class="toc-text">解题思路</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%8E%A8%E5%AF%BC"><span class="toc-text">核心推导</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8C%BA%E9%97%B4%E6%9B%B4%E6%96%B0%E8%BD%AC%E5%8C%96"><span class="toc-text">区间更新转化</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4AC%E4%BB%A3%E7%A0%81%EF%BC%88%E6%A8%A1%E6%9D%BF%E5%8C%96%E5%AE%9E%E7%8E%B0%EF%BC%89"><span class="toc-text">完整AC代码（模板化实现）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E8%BF%9B%E9%98%B6%EF%BC%9A%E6%A0%91%E4%B8%8A%E4%BA%8C%E5%88%86%E6%9F%A5%E8%AF%A2"><span class="toc-text">四、树状数组进阶：树上二分查询</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E4%BE%8B%E9%A2%984%EF%BC%9A%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E4%BA%8C%E5%88%86%EF%BC%88%E5%89%8D%E7%BC%80%E5%92%8C%E4%BA%8C%E5%88%86%E6%89%BE%E6%9C%80%E5%A4%A7T%EF%BC%89"><span class="toc-text">4.1 例题4：树状数组二分（前缀和二分找最大T）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-3"><span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-3"><span class="toc-text">解题思路</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BA%8C%E5%88%86%E5%8E%9F%E7%90%86"><span class="toc-text">二分原理</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4AC%E4%BB%A3%E7%A0%81-2"><span class="toc-text">完整AC代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E6%8B%93%E5%B1%95%EF%BC%9A%E9%AB%98%E7%BB%B4%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84"><span class="toc-text">五、树状数组拓展：高维树状数组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%BA%8C%E7%BB%B4%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%EF%BC%88%E4%BE%8B%E9%A2%985%EF%BC%89"><span class="toc-text">5.1 二维树状数组（例题5）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0-4"><span class="toc-text">题目描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-4"><span class="toc-text">解题思路</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%95%B0%E7%BB%84%E5%AE%9A%E4%B9%89"><span class="toc-text">数组定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%93%8D%E4%BD%9C"><span class="toc-text">核心操作</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BA%8C%E7%BB%B4%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E6%A0%B8%E5%BF%83%E4%BB%A3%E7%A0%81"><span class="toc-text">二维树状数组核心代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E5%AE%9E%E7%8E%B0%E8%AF%B4%E6%98%8E"><span class="toc-text">操作实现说明</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E6%80%BB%E7%BB%93"><span class="toc-text">六、树状数组总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7"><span class="toc-text">6.1 核心特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">6.2 适用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E7%AB%9E%E8%B5%9B%E6%8A%80%E5%B7%A7"><span class="toc-text">6.3 竞赛技巧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E4%B8%8E%E7%BA%BF%E6%AE%B5%E6%A0%91%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="toc-text">6.4 与线段树的对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E8%AF%BE%E5%90%8E%E7%BB%83%E4%B9%A0"><span class="toc-text">七、课后练习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E6%A2%AF%E5%BA%A6%E8%AE%AD%E7%BB%83%E9%A2%98%E5%BA%93"><span class="toc-text">八、梯度训练题库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%B8%80%EF%BC%89%E6%B4%9B%E8%B0%B7%E9%A2%98%E5%BA%93"><span class="toc-text">（一）洛谷题库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%EF%BC%88%E4%BA%8C%EF%BC%89AtCoder%E9%A2%98%E5%BA%93"><span class="toc-text">（二）AtCoder题库</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
