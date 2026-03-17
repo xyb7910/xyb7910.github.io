@@ -1,0 +1,1206 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>LCA 问题 - Yanpb's Blog</title>
+
+  
+    <meta name="description" content="LCA 问题一、前置知识学习本讲义前，你需要掌握以下内容：  树的基本概念：根节点、父&#x2F;子节点、深度、祖先、子树、路径等  树的存储方式：邻接表（vector 实现）  基础搜索算法：DFS（深度优先搜索）、BFS（广度优先搜索）  二进制倍增思想：用二进制拆分实现快速跳步  并查集（DSU）：路径压缩的基础实现  C++ 基础语法与算法竞赛常用优化（如输入加速）    二、LCA 基本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LCA 问题">
+<meta property="og:url" content="https://xyb7910.github.io/2026/03/17/LCA-%E9%97%AE%E9%A2%98/">
+<meta property="og:site_name" content="Yanpb&#39;s Blog">
+<meta property="og:description" content="LCA 问题一、前置知识学习本讲义前，你需要掌握以下内容：  树的基本概念：根节点、父&#x2F;子节点、深度、祖先、子树、路径等  树的存储方式：邻接表（vector 实现）  基础搜索算法：DFS（深度优先搜索）、BFS（广度优先搜索）  二进制倍增思想：用二进制拆分实现快速跳步  并查集（DSU）：路径压缩的基础实现  C++ 基础语法与算法竞赛常用优化（如输入加速）    二、LCA 基本">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+<meta property="article:published_time" content="2026-03-17T11:27:18.000Z">
+<meta property="article:modified_time" content="2026-03-17T11:27:45.262Z">
+<meta property="article:author" content="Yan peng bo">
+<meta property="article:tag" content="LCA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+  
+  
+  
+  <meta name="keywords" content="LCA">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"},"dateCreated":"2026-03-17T19:27:18+08:00","dateModified":"2026-03-17T19:27:45+08:00","datePublished":"2026-03-17T19:27:18+08:00","description":"","headline":"LCA 问题","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyb7910.github.io/2026/03/17/LCA-%E9%97%AE%E9%A2%98/"},"publisher":{"@type":"Organization","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg","logo":{"@type":"ImageObject","url":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"}},"url":"https://xyb7910.github.io/2026/03/17/LCA-%E9%97%AE%E9%A2%98/","keywords":"LCA","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Yanpb's Blog</div><div class="sub cap">硬核少年 寻找最优解</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="关于" href="/about/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="探索" href="/explore/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/03/17/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E4%B8%8E%E6%AC%A1%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"><span class="title">最小生成树与次小生成树</span></a><a class="item title" href="/2026/03/17/LCA-%E9%97%AE%E9%A2%98/"><span class="title">LCA 问题</span></a><a class="item title" href="/2026/03/17/%E5%80%8D%E5%A2%9E%E4%B8%8ERMQ%E9%97%AE%E9%A2%98/"><span class="title">倍增与RMQ问题</span></a><a class="item title" href="/2026/03/15/C-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="title">C++ Lambda表达式</span></a><a class="item title" href="/2026/03/15/%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/"><span class="title">树状数组</span></a><a class="item title" href="/2026/03/15/%E5%BF%AB%E9%80%9F%E5%B9%82%E3%80%81%E9%80%86%E5%85%83%E4%B8%8E%E6%89%A9%E5%B1%95%E6%AC%A7%E5%87%A0%E9%87%8C%E5%BE%97/"><span class="title">快速幂、逆元与扩展欧几里得</span></a><a class="item title" href="/2026/03/15/%E5%8D%95%E8%B0%83%E9%98%9F%E5%88%97%E4%B8%8E%E5%8D%95%E8%B0%83%E6%A0%88/"><span class="title">单调队列与单调栈</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E5%9B%BE%E8%AE%BA/">图论</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-03-17T11:27:18.000Z">2026-03-17</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-03-17T11:27:45.262Z">2026-03-17</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>LCA 问题</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="LCA-问题"><a href="#LCA-问题" class="headerlink" title="LCA 问题"></a>LCA 问题</h1><h2 id="一、前置知识"><a href="#一、前置知识" class="headerlink" title="一、前置知识"></a>一、前置知识</h2><p>学习本讲义前，你需要掌握以下内容：</p>
+<ol>
+<li><p>树的基本概念：根节点、父&#x2F;子节点、深度、祖先、子树、路径等</p>
+</li>
+<li><p>树的存储方式：邻接表（vector 实现）</p>
+</li>
+<li><p>基础搜索算法：DFS（深度优先搜索）、BFS（广度优先搜索）</p>
+</li>
+<li><p>二进制倍增思想：用二进制拆分实现快速跳步</p>
+</li>
+<li><p>并查集（DSU）：路径压缩的基础实现</p>
+</li>
+<li><p>C++ 基础语法与算法竞赛常用优化（如输入加速）</p>
+</li>
+</ol>
+<hr>
+<h2 id="二、LCA-基本概念与应用场景"><a href="#二、LCA-基本概念与应用场景" class="headerlink" title="二、LCA 基本概念与应用场景"></a>二、LCA 基本概念与应用场景</h2><h3 id="2-1-定义"><a href="#2-1-定义" class="headerlink" title="2.1 定义"></a>2.1 定义</h3><p><strong>LCA（Lowest Common Ancestor，最近公共祖先）</strong>：对于有根树中的两个节点  $u$  和  $v$ ，它们的最近公共祖先，是同时是  $u$  和  $v$  的祖先中，深度最大的那个节点，记为  $\text{LCA}(u,v)$ 。</p>
+<p>举个简单例子：</p>
+<p>根为1的树，1的子节点是2、3；2的子节点是4、5；5的子节点是6。</p>
+<ul>
+<li><p>$\text{LCA}(4,6) &#x3D; 2$ （2是4和6公共祖先中深度最大的）</p>
+</li>
+<li><p>$\text{LCA}(6,3) &#x3D; 1$ </p>
+</li>
+<li><p>$\text{LCA}(2,5) &#x3D; 2$ （若u是v的祖先，则 $\text{LCA}(u,v)&#x3D;u$ ）</p>
+</li>
+</ul>
+<h3 id="2-2-核心应用场景"><a href="#2-2-核心应用场景" class="headerlink" title="2.2 核心应用场景"></a>2.2 核心应用场景</h3><p>LCA 是树上问题的核心工具，常见应用包括：</p>
+<ol>
+<li><p>树上两点路径的长度、异或和、最大&#x2F;最小边权计算</p>
+</li>
+<li><p>树上差分（点差分、边差分），实现路径批量更新与查询</p>
+</li>
+<li><p>虚树构建，优化大规模树上关键点查询</p>
+</li>
+<li><p>树上路径的染色、修改、查询等数据结构结合问题</p>
+</li>
+<li><p>图论问题转化（如最小生成树、圆方树等）后的树上操作</p>
+</li>
+</ol>
+<hr>
+<h2 id="三、核心算法实现"><a href="#三、核心算法实现" class="headerlink" title="三、核心算法实现"></a>三、核心算法实现</h2><p>我们将讲解算法竞赛中最常用的两种 LCA 算法：<strong>倍增法（在线）</strong> 和 <strong>Tarjan 算法（离线）</strong>。</p>
+<h3 id="3-1-倍增法（在线算法）"><a href="#3-1-倍增法（在线算法）" class="headerlink" title="3.1 倍增法（在线算法）"></a>3.1 倍增法（在线算法）</h3><p>倍增法是算法竞赛中最通用的 LCA 算法，支持在线查询（无需提前知道所有查询），代码易写，稳定性高。</p>
+<h4 id="3-1-1-核心思想"><a href="#3-1-1-核心思想" class="headerlink" title="3.1.1 核心思想"></a>3.1.1 核心思想</h4><p>基于<strong>二进制拆分</strong>，预处理每个节点的  $2^k$  级祖先，将单次查询的时间复杂度从  $O(n)$  降至  $O(\log n)$ 。</p>
+<p>核心逻辑：任何整数都可以拆分为若干个2的幂次之和，例如  $5&#x3D;4+1$ ，要向上跳5步，只需先跳4步，再跳1步，快速逼近目标节点。</p>
+<p>我们定义两个核心数组：</p>
+<ul>
+<li><p><code>depth[u]</code>：节点  $u$  的深度</p>
+</li>
+<li><p><code>f[k][u]</code>：节点  $u$  的  $2^k$  级祖先（即向上跳  $2^k$  步到达的节点）</p>
+</li>
+</ul>
+<h4 id="3-1-2-算法步骤详解"><a href="#3-1-2-算法步骤详解" class="headerlink" title="3.1.2 算法步骤详解"></a>3.1.2 算法步骤详解</h4><h5 id="步骤1：预处理深度与直接父节点"><a href="#步骤1：预处理深度与直接父节点" class="headerlink" title="步骤1：预处理深度与直接父节点"></a>步骤1：预处理深度与直接父节点</h5><p>通过 DFS 或 BFS 遍历整棵树，记录每个节点的深度 <code>depth[u]</code>，以及  $2^0$  级祖先（直接父节点）<code>f[0][u]</code>。</p>
+<ul>
+<li>根节点的父节点设为0（无意义，避免越界），深度设为1（统一基准即可）。</li>
+</ul>
+<h5 id="步骤2：预处理倍增数组"><a href="#步骤2：预处理倍增数组" class="headerlink" title="步骤2：预处理倍增数组"></a>步骤2：预处理倍增数组</h5><p>递推公式：</p>
+<p> $f[k][u] &#x3D; f[k-1][f[k-1][u]]$ </p>
+<p>含义：节点  $u$  的  $2^k$  级祖先，等于  $u$  的  $2^{k-1}$  级祖先的  $2^{k-1}$  级祖先。</p>
+<ul>
+<li>预处理顺序： $k$  从1到最大层数（通常取20，因为  $2^{20} &gt; 10^6$ ，覆盖绝大多数竞赛数据范围），对每个节点更新 <code>f[k][u]</code>。</li>
+</ul>
+<h5 id="步骤3：查询-LCA"><a href="#步骤3：查询-LCA" class="headerlink" title="步骤3：查询 LCA"></a>步骤3：查询 LCA</h5><p>分为两个核心阶段：</p>
+<ol>
+<li><p><strong>统一深度</strong>：将深度更大的节点向上跳，直到两个节点深度相同。跳的时候从最大的  $k$  向下枚举，若跳完后深度仍不小于目标深度，则执行跳步。</p>
+</li>
+<li><p><strong>同步向上跳</strong>：若此时两个节点相等，直接返回该节点（即为LCA）。否则，从最大的  $k$  向下枚举，若 <code>f[k][u] != f[k][v]</code>，则同时跳步。最终，两个节点的父节点就是它们的LCA。</p>
+</li>
+</ol>
+<h4 id="3-1-3-完整代码模板"><a href="#3-1-3-完整代码模板" class="headerlink" title="3.1.3 完整代码模板"></a>3.1.3 完整代码模板</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">5e5</span> + <span class="number">10</span>; <span class="comment">// 按题目最大数据范围调整</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAX_LOG = <span class="number">20</span>;     <span class="comment">// 2^20 &gt; 1e6，足够覆盖</span></span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; adj[MAXN]; <span class="comment">// 邻接表存树</span></span><br><span class="line"><span class="type">int</span> f[MAX_LOG][MAXN];  <span class="comment">// 倍增祖先数组</span></span><br><span class="line"><span class="type">int</span> depth[MAXN];       <span class="comment">// 节点深度数组</span></span><br><span class="line"><span class="type">int</span> n, m, s;           <span class="comment">// n个节点，m次查询，s为根节点</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 版本1：DFS预处理（代码简洁，n&lt;=1e5推荐）</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> fa)</span> </span>&#123;</span><br><span class="line">    f[<span class="number">0</span>][u] = fa;       <span class="comment">// 2^0级祖先就是父节点</span></span><br><span class="line">    depth[u] = depth[fa] + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 预处理倍增数组</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt; MAX_LOG; k++) &#123;</span><br><span class="line">        f[k][u] = f[k<span class="number">-1</span>][f[k<span class="number">-1</span>][u]];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 遍历子节点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> v : adj[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (v != fa) &#123; <span class="comment">// 避免走回父节点</span></span><br><span class="line">            <span class="built_in">dfs</span>(v, u);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 版本2：BFS预处理（无栈溢出风险，n&gt;1e5必用）</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">bfs</span><span class="params">(<span class="type">int</span> root)</span> </span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    q.<span class="built_in">push</span>(root);</span><br><span class="line">    depth[root] = <span class="number">1</span>;</span><br><span class="line">    f[<span class="number">0</span>][root] = <span class="number">0</span>; <span class="comment">// 根节点的父节点为0</span></span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> v : adj[u]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (v != f[<span class="number">0</span>][u]) &#123;</span><br><span class="line">                depth[v] = depth[u] + <span class="number">1</span>;</span><br><span class="line">                f[<span class="number">0</span>][v] = u;</span><br><span class="line">                <span class="comment">// 预处理倍增数组</span></span><br><span class="line">                <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt; MAX_LOG; k++) &#123;</span><br><span class="line">                    f[k][v] = f[k<span class="number">-1</span>][f[k<span class="number">-1</span>][v]];</span><br><span class="line">                &#125;</span><br><span class="line">                q.<span class="built_in">push</span>(v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// LCA查询函数</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">lca</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 保证u的深度更大</span></span><br><span class="line">    <span class="keyword">if</span> (depth[u] &lt; depth[v]) <span class="built_in">swap</span>(u, v);</span><br><span class="line">    <span class="comment">// 阶段1：将u跳到和v同一深度</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = MAX_LOG - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (depth[f[k][u]] &gt;= depth[v]) &#123;</span><br><span class="line">            u = f[k][u];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (u == v) <span class="keyword">return</span> u; <span class="comment">// 已经找到LCA</span></span><br><span class="line">    <span class="comment">// 阶段2：同步向上跳，直到父节点相同</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = MAX_LOG - <span class="number">1</span>; k &gt;= <span class="number">0</span>; k--) &#123;</span><br><span class="line">        <span class="keyword">if</span> (f[k][u] != f[k][v]) &#123;</span><br><span class="line">            u = f[k][u];</span><br><span class="line">            v = f[k][v];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f[<span class="number">0</span>][u]; <span class="comment">// 最终父节点就是LCA</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>); <span class="comment">// 关闭同步，加速cin输入</span></span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m &gt;&gt; s;</span><br><span class="line">    <span class="comment">// 建树</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        adj[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        adj[v].<span class="built_in">push_back</span>(u);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 预处理（二选一即可）</span></span><br><span class="line">    <span class="built_in">dfs</span>(s, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// bfs(s);</span></span><br><span class="line">    <span class="comment">// 处理查询</span></span><br><span class="line">    <span class="keyword">while</span> (m--) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        cout &lt;&lt; <span class="built_in">lca</span>(u, v) &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-4-复杂度与适用场景"><a href="#3-1-4-复杂度与适用场景" class="headerlink" title="3.1.4 复杂度与适用场景"></a>3.1.4 复杂度与适用场景</h4><ul>
+<li><p>时间复杂度：预处理  $O(n\log n)$ ，单次查询  $O(\log n)$ </p>
+</li>
+<li><p>空间复杂度： $O(n\log n)$ </p>
+</li>
+<li><p>适用场景：绝大多数竞赛场景，尤其是<strong>强制在线</strong>的题目，数据范围广，代码稳定性高。</p>
+</li>
+</ul>
+<hr>
+<h3 id="3-2-Tarjan-算法（离线算法）"><a href="#3-2-Tarjan-算法（离线算法）" class="headerlink" title="3.2 Tarjan 算法（离线算法）"></a>3.2 Tarjan 算法（离线算法）</h3><p>Tarjan 算法是基于 DFS 和并查集的离线算法，需要提前读入所有查询，一次性处理完成，时间复杂度更优。</p>
+<h4 id="3-2-1-核心思想"><a href="#3-2-1-核心思想" class="headerlink" title="3.2.1 核心思想"></a>3.2.1 核心思想</h4><p>利用<strong>后序遍历</strong>的性质：当遍历完一个节点  $u$  的所有子树后， $u$  的所有子节点的查询，若另一个节点已经被遍历完成，则它们的 LCA 就是并查集中该节点的根。</p>
+<p>核心逻辑：</p>
+<ol>
+<li><p>遍历节点  $u$  时，先标记为正在访问</p>
+</li>
+<li><p>递归遍历  $u$  的所有子节点，遍历完成后，将子节点合并到  $u$  的并查集集合中</p>
+</li>
+<li><p>处理所有与  $u$  相关的查询：若另一个节点已经遍历完成，则该查询的答案就是另一个节点的并查集根（即 LCA）</p>
+</li>
+<li><p>标记  $u$  为遍历完成</p>
+</li>
+</ol>
+<h4 id="3-2-2-算法步骤详解"><a href="#3-2-2-算法步骤详解" class="headerlink" title="3.2.2 算法步骤详解"></a>3.2.2 算法步骤详解</h4><ol>
+<li><p><strong>存储树与查询</strong>：用邻接表存树，同时用另一个邻接表存储所有查询，每个查询  $(u,v)$  需双向存储（记录查询编号，方便最终输出）。</p>
+</li>
+<li><p><strong>初始化并查集</strong>：每个节点的父节点初始化为自身。</p>
+</li>
+<li><p><strong>执行 DFS 遍历</strong>：按上述核心逻辑完成遍历、合并与查询处理。</p>
+</li>
+<li><p><strong>按顺序输出答案</strong>。</p>
+</li>
+</ol>
+<h4 id="3-2-3-完整代码模板"><a href="#3-2-3-完整代码模板" class="headerlink" title="3.2.3 完整代码模板"></a>3.2.3 完整代码模板</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">5e5</span> + <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; adj[MAXN];               <span class="comment">// 邻接表存树</span></span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; query[MAXN];  <span class="comment">// 存储查询：query[u] = &#123;v, 查询编号&#125;</span></span><br><span class="line"><span class="type">int</span> fa[MAXN];                         <span class="comment">// 并查集父节点数组</span></span><br><span class="line"><span class="type">bool</span> vis[MAXN];                       <span class="comment">// 标记节点是否遍历完成</span></span><br><span class="line"><span class="type">int</span> ans[MAXN];                        <span class="comment">// 存储每个查询的答案</span></span><br><span class="line"><span class="type">int</span> n, m, s;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 并查集查找（路径压缩）</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">find</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fa[x] == x ? x : fa[x] = <span class="built_in">find</span>(fa[x]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Tarjan核心DFS</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> father)</span> </span>&#123;</span><br><span class="line">    fa[u] = u; <span class="comment">// 初始化当前节点的并查集父节点为自身</span></span><br><span class="line">    vis[u] = <span class="literal">true</span>; <span class="comment">// 标记为已访问</span></span><br><span class="line">    <span class="comment">// 遍历所有子节点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> v : adj[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (v != father) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(v, u);</span><br><span class="line">            fa[v] = u; <span class="comment">// 子树遍历完成，合并到当前节点</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 处理所有与u相关的查询</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;q : query[u]) &#123;</span><br><span class="line">        <span class="type">int</span> v = q.first, id = q.second;</span><br><span class="line">        <span class="keyword">if</span> (vis[v]) &#123; <span class="comment">// 若v已遍历完成，答案就是find(v)</span></span><br><span class="line">            ans[id] = <span class="built_in">find</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m &gt;&gt; s;</span><br><span class="line">    <span class="comment">// 建树</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt; n; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        adj[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        adj[v].<span class="built_in">push_back</span>(u);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 存储所有查询（双向存储）</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        query[u].<span class="built_in">emplace_back</span>(v, i);</span><br><span class="line">        query[v].<span class="built_in">emplace_back</span>(u, i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 执行Tarjan算法</span></span><br><span class="line">    <span class="built_in">tarjan</span>(s, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// 按查询顺序输出答案</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        cout &lt;&lt; ans[i] &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-4-复杂度与适用场景"><a href="#3-2-4-复杂度与适用场景" class="headerlink" title="3.2.4 复杂度与适用场景"></a>3.2.4 复杂度与适用场景</h4><ul>
+<li><p>时间复杂度： $O(n + m)$ （并查集路径压缩后，操作几乎为线性）</p>
+</li>
+<li><p>空间复杂度： $O(n + m)$ </p>
+</li>
+<li><p>适用场景：查询量极大的离线场景，<strong>强制在线的题目无法使用</strong>。</p>
+</li>
+</ul>
+<hr>
+<h2 id="四、常见坑点与注意事项"><a href="#四、常见坑点与注意事项" class="headerlink" title="四、常见坑点与注意事项"></a>四、常见坑点与注意事项</h2><ol>
+<li><p><strong>倍增数组大小</strong>：<code>MAX_LOG</code> 需根据数据范围调整， $n \le 10^5$  取20足够，不要开小导致越界RE。</p>
+</li>
+<li><p><strong>DFS爆栈</strong>： $n &gt; 10^5$  时，递归DFS可能栈溢出，必须使用BFS预处理。</p>
+</li>
+<li><p><strong>根节点处理</strong>：根节点的父节点必须设为0（或自身），深度基准统一，否则跳深度时会出错。</p>
+</li>
+<li><p><strong>Tarjan查询存储</strong>：必须双向存储查询，否则会出现部分查询无法处理的情况。</p>
+</li>
+<li><p><strong>Tarjan合并时机</strong>：必须在递归完子节点的所有子树后，再合并子节点到当前节点，否则会提前合并导致答案错误。</p>
+</li>
+<li><p><strong>强制在线场景</strong>：若题目查询的输入与上一次答案相关，必须使用倍增法，不能用Tarjan。</p>
+</li>
+</ol>
+<hr>
+<h2 id="五、经典习题讲解"><a href="#五、经典习题讲解" class="headerlink" title="五、经典习题讲解"></a>五、经典习题讲解</h2><h3 id="5-1-模板题：洛谷-P3379-【模板】最近公共祖先（LCA）"><a href="#5-1-模板题：洛谷-P3379-【模板】最近公共祖先（LCA）" class="headerlink" title="5.1 模板题：洛谷 P3379 【模板】最近公共祖先（LCA）"></a>5.1 模板题：洛谷 P3379 【模板】最近公共祖先（LCA）</h3><ul>
+<li><p><strong>题目链接</strong>：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3379">https://www.luogu.com.cn/problem/P3379</a></p>
+</li>
+<li><p><strong>题目大意</strong>：给定  $n$  个节点的有根树， $m$  次查询，每次求两个节点的LCA。</p>
+</li>
+<li><p><strong>数据范围</strong>： $n,m \le 5 \times 10^5$ </p>
+</li>
+<li><p><strong>解题思路</strong>：纯模板题，直接套用上述倍增或Tarjan代码即可。大数据下推荐用BFS预处理的倍增法，避免DFS爆栈。</p>
+</li>
+</ul>
+<h3 id="5-2-基础应用：AtCoder-ABC070D-Tree-Distance"><a href="#5-2-基础应用：AtCoder-ABC070D-Tree-Distance" class="headerlink" title="5.2 基础应用：AtCoder ABC070D - Tree Distance"></a>5.2 基础应用：AtCoder ABC070D - Tree Distance</h3><ul>
+<li><p><strong>题目链接</strong>：<a target="_blank" rel="noopener" href="https://atcoder.jp/contests/abc070/tasks/abc070_d">https://atcoder.jp/contests/abc070/tasks/abc070_d</a></p>
+</li>
+<li><p><strong>题目大意</strong>：给定  $n$  个节点的树，边权为正整数， $q$  次查询，每次求  $u$  到  $v$  的路径长度。</p>
+</li>
+<li><p><strong>解题思路</strong>：</p>
+</li>
+</ul>
+<p>树上两点路径长度公式：</p>
+<p> $\text{dis}(u,v) &#x3D; \text{dis}(root,u) + \text{dis}(root,v) - 2 \times \text{dis}(root,\text{LCA}(u,v))$ </p>
+<p>预处理每个节点到根的距离 <code>dis[u]</code>，用倍增法求LCA，代入公式即可得到答案。</p>
+<ul>
+<li><p><strong>核心代码片段</strong>：</p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="type">long</span> <span class="type">long</span> dis[MAXN]; <span class="comment">// 到根的距离</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> fa)</span> </span>&#123;</span><br><span class="line">    f[<span class="number">0</span>][u] = fa;</span><br><span class="line">    depth[u] = depth[fa] + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> k = <span class="number">1</span>; k &lt; MAX_LOG; k++) f[k][u] = f[k<span class="number">-1</span>][f[k<span class="number">-1</span>][u]];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;e : adj[u]) &#123; <span class="comment">// adj存pair&lt;邻接节点, 边权&gt;</span></span><br><span class="line">        <span class="type">int</span> v = e.first, w = e.second;</span><br><span class="line">        <span class="keyword">if</span> (v != fa) &#123;</span><br><span class="line">            dis[v] = dis[u] + w;</span><br><span class="line">            <span class="built_in">dfs</span>(v, u);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 查询时</span></span><br><span class="line"><span class="function"><span class="type">long</span> <span class="type">long</span> <span class="title">get_dis</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> v)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> ancestor = <span class="built_in">lca</span>(u, v);</span><br><span class="line">    <span class="keyword">return</span> dis[u] + dis[v] - <span class="number">2</span> * dis[ancestor];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="5-3-进阶应用1：洛谷-P1967-NOIP2013-提高组-货车运输"><a href="#5-3-进阶应用1：洛谷-P1967-NOIP2013-提高组-货车运输" class="headerlink" title="5.3 进阶应用1：洛谷 P1967 [NOIP2013 提高组] 货车运输"></a>5.3 进阶应用1：洛谷 P1967 [NOIP2013 提高组] 货车运输</h3><ul>
+<li><p><strong>题目链接</strong>：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P1967">https://www.luogu.com.cn/problem/P1967</a></p>
+</li>
+<li><p><strong>题目大意</strong>：给定  $n$  个城市、 $m$  条道路，每条道路有限重， $q$  次查询，求从  $u$  到  $v$  的最大限重（即路径上最小边权的最大值）。</p>
+</li>
+<li><p><strong>解题思路</strong>：</p>
+<ol>
+<li><p>最大限重的路径一定在<strong>最大生成树</strong>上（Kruskal算法构建），因为最大生成树保证了任意两点间路径的最小边权最大。</p>
+</li>
+<li><p>问题转化为：在最大生成树上，查询  $u$  到  $v$  路径上的最小边权。</p>
+</li>
+<li><p>扩展倍增数组：额外维护 <code>g[k][u]</code>，表示  $u$  到其  $2^k$  级祖先的路径上的最小边权。</p>
+<ul>
+<li><p>预处理：<code>g[0][u]</code> 是  $u$  到父节点的边权，<code>g[k][u] = min(g[k-1][u], g[k-1][f[k-1][u]])</code></p>
+</li>
+<li><p>查询：跳步时同步维护路径上的最小边权。</p>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-4-进阶应用2：洛谷-P3128-USACO15DEC-Max-Flow-P"><a href="#5-4-进阶应用2：洛谷-P3128-USACO15DEC-Max-Flow-P" class="headerlink" title="5.4 进阶应用2：洛谷 P3128 [USACO15DEC] Max Flow P"></a>5.4 进阶应用2：洛谷 P3128 [USACO15DEC] Max Flow P</h3><ul>
+<li><p><strong>题目链接</strong>：<a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3128">https://www.luogu.com.cn/problem/P3128</a></p>
+</li>
+<li><p><strong>题目大意</strong>：给定  $n$  个节点的树， $m$  次操作，每次给  $u$  到  $v$  路径上的所有点权值+1，最终求所有点的最大权值。</p>
+</li>
+<li><p><strong>解题思路</strong>：</p>
+</li>
+</ul>
+<p>经典<strong>树上点差分</strong>问题，核心公式：</p>
+<p>对路径  $u \to v$ ，差分标记为：</p>
+<p> $\text{diff}[u] +&#x3D; 1,\ \text{diff}[v] +&#x3D; 1,\ \text{diff}[\text{LCA}(u,v)] -&#x3D; 1,\ \text{diff}[f[0][\text{LCA}(u,v)]] -&#x3D; 1$ </p>
+<p>对整棵树做一次后序遍历，求每个节点的子树和，即为该节点的最终权值，遍历过程中记录最大值即可。</p>
+<hr>
+<h2 id="六、课后分级训练题库"><a href="#六、课后分级训练题库" class="headerlink" title="六、课后分级训练题库"></a>六、课后分级训练题库</h2><p>按难度分为三个等级，题目均来自洛谷、Codeforces、AtCoder，覆盖从入门到省选的全阶段需求。</p>
+<h3 id="6-1-入门级（模板与基础应用，适合新手）"><a href="#6-1-入门级（模板与基础应用，适合新手）" class="headerlink" title="6.1 入门级（模板与基础应用，适合新手）"></a>6.1 入门级（模板与基础应用，适合新手）</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号&#x2F;名称</th>
+<th>难度</th>
+<th>核心考点</th>
+<th>简要思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P3379 【模板】最近公共祖先（LCA）</td>
+<td>普及+&#x2F;提高-</td>
+<td>LCA模板</td>
+<td>纯模板练手，熟悉倍增&#x2F;Tarjan代码</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P2420 让我们异或吧</td>
+<td>普及+&#x2F;提高</td>
+<td>LCA+路径异或和</td>
+<td>预处理根到节点的异或和，路径异或和为 <code>xor[u]^xor[v]</code></td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC070D Tree Distance</td>
+<td>ABC D级</td>
+<td>LCA+路径长度计算</td>
+<td>基础距离公式应用，练手LCA基础使用</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF628 Div2 D Ehab’s Last Corollary</td>
+<td>Div2 D</td>
+<td>LCA+路径查找</td>
+<td>用LCA找到两点间路径，基础应用</td>
+</tr>
+</tbody></table>
+<h3 id="6-2-提高级（进阶应用，适合NOIP-提高组选手）"><a href="#6-2-提高级（进阶应用，适合NOIP-提高组选手）" class="headerlink" title="6.2 提高级（进阶应用，适合NOIP&#x2F;提高组选手）"></a>6.2 提高级（进阶应用，适合NOIP&#x2F;提高组选手）</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号&#x2F;名称</th>
+<th>难度</th>
+<th>核心考点</th>
+<th>简要思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P3128 [USACO15DEC] Max Flow P</td>
+<td>提高+&#x2F;省选-</td>
+<td>LCA+树上点差分</td>
+<td>经典差分模板题，用LCA完成标记，后序遍历求答案</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1967 [NOIP2013 提高组] 货车运输</td>
+<td>提高+&#x2F;省选-</td>
+<td>最大生成树+倍增LCA维护边权</td>
+<td>先建最大生成树，倍增维护路径最小边权</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P4281 [AHOI2008] 紧急集合</td>
+<td>提高+&#x2F;省选-</td>
+<td>LCA性质应用</td>
+<td>三点最优集合点是两两LCA中深度最大的那个</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC133F Colorful Tree</td>
+<td>ABC F级</td>
+<td>LCA+树上差分+离线</td>
+<td>用LCA拆分路径，差分统计颜色信息</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF274 Div1 B Tree</td>
+<td>Div1 B</td>
+<td>LCA+路径操作</td>
+<td>用LCA拆分路径，处理树上更新与查询</td>
+</tr>
+</tbody></table>
+<h3 id="6-3-省选-NOI级（高阶综合应用，适合省选及以上选手）"><a href="#6-3-省选-NOI级（高阶综合应用，适合省选及以上选手）" class="headerlink" title="6.3 省选&#x2F;NOI级（高阶综合应用，适合省选及以上选手）"></a>6.3 省选&#x2F;NOI级（高阶综合应用，适合省选及以上选手）</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号&#x2F;名称</th>
+<th>难度</th>
+<th>核心考点</th>
+<th>简要思路</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P2486 [SDOI2011] 染色</td>
+<td>省选&#x2F;NOI</td>
+<td>LCA+树链剖分+线段树</td>
+<td>用LCA拆分路径，线段树维护区间颜色段数</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P4103 [HEOI2014] 大工程</td>
+<td>省选&#x2F;NOI</td>
+<td>LCA+虚树+树上DP</td>
+<td>用LCA构建虚树，在虚树上做DP处理大规模查询</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>AGC002D Stamp Rally</td>
+<td>AGC D级</td>
+<td>整体二分+并查集+LCA</td>
+<td>整体二分答案，用并查集维护连通性，LCA计算路径点数</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF191 Div1 D Tree and Queries</td>
+<td>Div1 D</td>
+<td>LCA+树上莫队</td>
+<td>用LCA将树上路径转化为序列，莫队处理查询</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P3320 [SDOI2015] 寻宝游戏</td>
+<td>省选&#x2F;NOI</td>
+<td>LCA+虚树思想+路径和</td>
+<td>用LCA计算关键点路径长度，维护动态集合的总路径和</td>
+</tr>
+</tbody></table>
+<hr>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/03/17/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E4%B8%8E%E6%AC%A1%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/">最小生成树与次小生成树</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/03/17/%E5%80%8D%E5%A2%9E%E4%B8%8ERMQ%E9%97%AE%E9%A2%98/">倍增与RMQ问题</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#LCA-%E9%97%AE%E9%A2%98"><span class="toc-text">LCA 问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%89%8D%E7%BD%AE%E7%9F%A5%E8%AF%86"><span class="toc-text">一、前置知识</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81LCA-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">二、LCA 基本概念与应用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%AE%9A%E4%B9%89"><span class="toc-text">2.1 定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%A0%B8%E5%BF%83%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">2.2 核心应用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%A0%B8%E5%BF%83%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0"><span class="toc-text">三、核心算法实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%80%8D%E5%A2%9E%E6%B3%95%EF%BC%88%E5%9C%A8%E7%BA%BF%E7%AE%97%E6%B3%95%EF%BC%89"><span class="toc-text">3.1 倍增法（在线算法）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-text">3.1.1 核心思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-2-%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4%E8%AF%A6%E8%A7%A3"><span class="toc-text">3.1.2 算法步骤详解</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A41%EF%BC%9A%E9%A2%84%E5%A4%84%E7%90%86%E6%B7%B1%E5%BA%A6%E4%B8%8E%E7%9B%B4%E6%8E%A5%E7%88%B6%E8%8A%82%E7%82%B9"><span class="toc-text">步骤1：预处理深度与直接父节点</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A42%EF%BC%9A%E9%A2%84%E5%A4%84%E7%90%86%E5%80%8D%E5%A2%9E%E6%95%B0%E7%BB%84"><span class="toc-text">步骤2：预处理倍增数组</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A43%EF%BC%9A%E6%9F%A5%E8%AF%A2-LCA"><span class="toc-text">步骤3：查询 LCA</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-3-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%E6%A8%A1%E6%9D%BF"><span class="toc-text">3.1.3 完整代码模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-4-%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%8E%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">3.1.4 复杂度与适用场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Tarjan-%E7%AE%97%E6%B3%95%EF%BC%88%E7%A6%BB%E7%BA%BF%E7%AE%97%E6%B3%95%EF%BC%89"><span class="toc-text">3.2 Tarjan 算法（离线算法）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3"><span class="toc-text">3.2.1 核心思想</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E7%AE%97%E6%B3%95%E6%AD%A5%E9%AA%A4%E8%AF%A6%E8%A7%A3"><span class="toc-text">3.2.2 算法步骤详解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81%E6%A8%A1%E6%9D%BF"><span class="toc-text">3.2.3 完整代码模板</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-4-%E5%A4%8D%E6%9D%82%E5%BA%A6%E4%B8%8E%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">3.2.4 复杂度与适用场景</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">四、常见坑点与注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%BB%8F%E5%85%B8%E4%B9%A0%E9%A2%98%E8%AE%B2%E8%A7%A3"><span class="toc-text">五、经典习题讲解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E6%A8%A1%E6%9D%BF%E9%A2%98%EF%BC%9A%E6%B4%9B%E8%B0%B7-P3379-%E3%80%90%E6%A8%A1%E6%9D%BF%E3%80%91%E6%9C%80%E8%BF%91%E5%85%AC%E5%85%B1%E7%A5%96%E5%85%88%EF%BC%88LCA%EF%BC%89"><span class="toc-text">5.1 模板题：洛谷 P3379 【模板】最近公共祖先（LCA）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8%EF%BC%9AAtCoder-ABC070D-Tree-Distance"><span class="toc-text">5.2 基础应用：AtCoder ABC070D - Tree Distance</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E8%BF%9B%E9%98%B6%E5%BA%94%E7%94%A81%EF%BC%9A%E6%B4%9B%E8%B0%B7-P1967-NOIP2013-%E6%8F%90%E9%AB%98%E7%BB%84-%E8%B4%A7%E8%BD%A6%E8%BF%90%E8%BE%93"><span class="toc-text">5.3 进阶应用1：洛谷 P1967 [NOIP2013 提高组] 货车运输</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E8%BF%9B%E9%98%B6%E5%BA%94%E7%94%A82%EF%BC%9A%E6%B4%9B%E8%B0%B7-P3128-USACO15DEC-Max-Flow-P"><span class="toc-text">5.4 进阶应用2：洛谷 P3128 [USACO15DEC] Max Flow P</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%AF%BE%E5%90%8E%E5%88%86%E7%BA%A7%E8%AE%AD%E7%BB%83%E9%A2%98%E5%BA%93"><span class="toc-text">六、课后分级训练题库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E5%85%A5%E9%97%A8%E7%BA%A7%EF%BC%88%E6%A8%A1%E6%9D%BF%E4%B8%8E%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8%EF%BC%8C%E9%80%82%E5%90%88%E6%96%B0%E6%89%8B%EF%BC%89"><span class="toc-text">6.1 入门级（模板与基础应用，适合新手）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E6%8F%90%E9%AB%98%E7%BA%A7%EF%BC%88%E8%BF%9B%E9%98%B6%E5%BA%94%E7%94%A8%EF%BC%8C%E9%80%82%E5%90%88NOIP-%E6%8F%90%E9%AB%98%E7%BB%84%E9%80%89%E6%89%8B%EF%BC%89"><span class="toc-text">6.2 提高级（进阶应用，适合NOIP&#x2F;提高组选手）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E7%9C%81%E9%80%89-NOI%E7%BA%A7%EF%BC%88%E9%AB%98%E9%98%B6%E7%BB%BC%E5%90%88%E5%BA%94%E7%94%A8%EF%BC%8C%E9%80%82%E5%90%88%E7%9C%81%E9%80%89%E5%8F%8A%E4%BB%A5%E4%B8%8A%E9%80%89%E6%89%8B%EF%BC%89"><span class="toc-text">6.3 省选&#x2F;NOI级（高阶综合应用，适合省选及以上选手）</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script defer type="text/javascript" src="https://gcore.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "auto" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
