@@ -1,0 +1,1260 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>二进制 - Yanpb's Blog</title>
+
+  
+    <meta name="description" content="算法竞赛二进制位运算 学习讲义 一、二进制与位运算的核心价值二进制是计算机的底层数据表示形式，位运算是直接对二进制位（0&#x2F;1）执行的底层操作。在算法竞赛中，位运算有不可替代的核心优势：  极致性能：位运算直接由CPU硬件支持，单条指令即可完成，比加减乘除运算快数倍，是卡常优化的核心手段。  空间压缩：1个32位整数可以存储32个布尔状态，空间效率是普通bool数组的32倍，是状态压缩DP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二进制">
+<meta property="og:url" content="https://xyb7910.github.io/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/">
+<meta property="og:site_name" content="Yanpb&#39;s Blog">
+<meta property="og:description" content="算法竞赛二进制位运算 学习讲义 一、二进制与位运算的核心价值二进制是计算机的底层数据表示形式，位运算是直接对二进制位（0&#x2F;1）执行的底层操作。在算法竞赛中，位运算有不可替代的核心优势：  极致性能：位运算直接由CPU硬件支持，单条指令即可完成，比加减乘除运算快数倍，是卡常优化的核心手段。  空间压缩：1个32位整数可以存储32个布尔状态，空间效率是普通bool数组的32倍，是状态压缩DP">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+<meta property="article:published_time" content="2026-04-01T11:42:23.000Z">
+<meta property="article:modified_time" content="2026-04-01T11:42:31.570Z">
+<meta property="article:author" content="Yan peng bo">
+<meta property="article:tag" content="二进制">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+  
+  
+  
+  <meta name="keywords" content="二进制">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"},"dateCreated":"2026-04-01T19:42:23+08:00","dateModified":"2026-04-01T19:42:31+08:00","datePublished":"2026-04-01T19:42:23+08:00","description":"","headline":"二进制","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyb7910.github.io/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/"},"publisher":{"@type":"Organization","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg","logo":{"@type":"ImageObject","url":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"}},"url":"https://xyb7910.github.io/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/","keywords":"二进制","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Yanpb's Blog</div><div class="sub cap">硬核少年 寻找最优解</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="关于" href="/about/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="OI路线" href="/oi/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="acm路线图" href="/acm/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/"><span class="title">二进制</span></a><a class="item title" href="/2026/04/01/bitset/"><span class="title">bitset</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/"><span class="title">拓扑排序深入应用</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/"><span class="title">拓扑排序</span></a><a class="item title" href="/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/"><span class="title">图的基本概念与遍历</span></a><a class="item title" href="/2026/03/20/%E7%BA%BF%E6%AE%B5%E6%A0%91/"><span class="title">线段树</span></a><a class="item title" href="/2026/03/17/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E4%B8%8E%E6%AC%A1%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"><span class="title">最小生成树与次小生成树</span></a><a class="item title" href="/2026/03/17/LCA-%E9%97%AE%E9%A2%98/"><span class="title">LCA 问题</span></a><a class="item title" href="/2026/03/17/%E5%80%8D%E5%A2%9E%E4%B8%8ERMQ%E9%97%AE%E9%A2%98/"><span class="title">倍增与RMQ问题</span></a><a class="item title" href="/2026/03/15/C-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="title">C++ Lambda表达式</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E8%BF%9B%E5%88%B6%E7%9B%B8%E5%85%B3/">进制相关</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-04-01T11:42:23.000Z">2026-04-01</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-04-01T11:42:31.570Z">2026-04-01</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>二进制</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="算法竞赛二进制位运算-学习讲义"><a href="#算法竞赛二进制位运算-学习讲义" class="headerlink" title="算法竞赛二进制位运算 学习讲义"></a>算法竞赛二进制位运算 学习讲义</h1><hr>
+<h2 id="一、二进制与位运算的核心价值"><a href="#一、二进制与位运算的核心价值" class="headerlink" title="一、二进制与位运算的核心价值"></a>一、二进制与位运算的核心价值</h2><p>二进制是计算机的底层数据表示形式，<strong>位运算</strong>是直接对二进制位（0&#x2F;1）执行的底层操作。在算法竞赛中，位运算有不可替代的核心优势：</p>
+<ol>
+<li><p><strong>极致性能</strong>：位运算直接由CPU硬件支持，单条指令即可完成，比加减乘除运算快数倍，是卡常优化的核心手段。</p>
+</li>
+<li><p><strong>空间压缩</strong>：1个32位整数可以存储32个布尔状态，空间效率是普通<code>bool</code>数组的32倍，是状态压缩DP的基础。</p>
+</li>
+<li><p><strong>数学性质强大</strong>：位运算的特殊性质可以巧妙解决很多数学、博弈论、图论问题，很多常规方法无法解决的问题，用位运算可以几行代码搞定。</p>
+</li>
+</ol>
+<hr>
+<h2 id="二、基础位运算"><a href="#二、基础位运算" class="headerlink" title="二、基础位运算"></a>二、基础位运算</h2><p>所有位运算的操作对象都是整数的二进制位，以下为6种基础运算符，是所有进阶操作的基石。</p>
+<h3 id="2-1-基础运算符详解"><a href="#2-1-基础运算符详解" class="headerlink" title="2.1 基础运算符详解"></a>2.1 基础运算符详解</h3><table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>名称</th>
+<th>运算规则</th>
+<th>竞赛核心用途</th>
+<th>示例（8位二进制）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&amp;</code></td>
+<td>按位与</td>
+<td>对应位<strong>都为1</strong>时，结果为1，否则为0</td>
+<td>1. 提取二进制的某一位；2. 清除指定位；3. 判断奇偶；4. 取lowbit</td>
+<td><code>10101010 &amp; 11001100 = 10001000</code></td>
+</tr>
+<tr>
+<td>&#96;</td>
+<td>&#96;</td>
+<td>按位或</td>
+<td>对应位<strong>有一个为1</strong>时，结果为1，否则为0</td>
+<td>1. 设置二进制的某一位为1；2. 合并状态集合</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>按位异或</td>
+<td>对应位<strong>不同</strong>时结果为1，<strong>相同</strong>时结果为0</td>
+<td>1. 翻转指定位；2. 交换两个数；3. 找唯一出现奇数次的数；4. 前缀异或求区间异或和；5. 哈希与加密</td>
+<td><code>10101010 ^ 11001100 = 01100110</code></td>
+</tr>
+<tr>
+<td><code>~</code></td>
+<td>按位取反</td>
+<td>所有位0变1，1变0</td>
+<td>1. 配合与运算清除指定位；2. 求补码</td>
+<td><code>~10101010 = 01010101</code>（无符号）</td>
+</tr>
+<tr>
+<td><code>&lt;&lt;</code></td>
+<td>左移</td>
+<td>所有位向左移动指定位数，高位溢出丢弃，低位补0</td>
+<td>1. 等价于 正数 × 2的n次方；2. 构造二进制掩码</td>
+<td><code>10101010 &lt;&lt; 2 = 10101000</code>（等价于170×4&#x3D;680）</td>
+</tr>
+<tr>
+<td><code>&gt;&gt;</code></td>
+<td>右移</td>
+<td>所有位向右移动指定位数，低位溢出丢弃</td>
+<td>1. 等价于 正数 ÷ 2的n次方（向下取整）；2. 提取二进制的高位</td>
+<td><code>10101010 &gt;&gt; 2 = 00101010</code>（等价于170÷4&#x3D;42）</td>
+</tr>
+</tbody></table>
+<h3 id="2-2-核心性质"><a href="#2-2-核心性质" class="headerlink" title="2.2 核心性质"></a>2.2 核心性质</h3><h4 id="1-异或的核心性质"><a href="#1-异或的核心性质" class="headerlink" title="1. 异或的核心性质"></a>1. 异或的核心性质</h4><p>异或是位运算中最灵活、考点最多的运算符，必须牢记以下性质：</p>
+<ul>
+<li><p><strong>自反性</strong>：<code>a ^ a = 0</code>，一个数异或自身结果为0；</p>
+</li>
+<li><p><strong>恒等性</strong>：<code>a ^ 0 = a</code>，一个数异或0结果不变；</p>
+</li>
+<li><p><strong>交换律</strong>：<code>a ^ b = b ^ a</code>；</p>
+</li>
+<li><p><strong>结合律</strong>：<code>(a ^ b) ^ c = a ^ (b ^ c)</code>；</p>
+</li>
+<li><p><strong>推论</strong>：若 <code>a ^ b = c</code>，则 <code>b = a ^ c</code>、<code>a = b ^ c</code>（可用于加密、还原数据）。</p>
+</li>
+</ul>
+<h4 id="2-与、或的核心性质"><a href="#2-与、或的核心性质" class="headerlink" title="2. 与、或的核心性质"></a>2. 与、或的核心性质</h4><ul>
+<li><p><code>a &amp; a = a</code>，<code>a | a = a</code>；</p>
+</li>
+<li><p><code>a &amp; 0 = 0</code>，<code>a | 0 = a</code>；</p>
+</li>
+<li><p><code>a &amp; (~a) = 0</code>，<code>a | (~a) = 全1</code>；</p>
+</li>
+<li><p>包含关系：若 <code>a &amp; b == a</code>，则 <code>a</code> 是 <code>b</code> 的子集（<code>a</code> 的所有1的位，<code>b</code> 都有）。</p>
+</li>
+</ul>
+<h4 id="3-移位运算的注意事项"><a href="#3-移位运算的注意事项" class="headerlink" title="3. 移位运算的注意事项"></a>3. 移位运算的注意事项</h4><ul>
+<li><p><strong>左移溢出</strong>：<code>1 &lt;&lt; 31</code> 会超出32位有符号<code>int</code>的范围（最大值为<code>2^31-1</code>），导致未定义行为，必须用 <code>1LL &lt;&lt; 31</code> 转为64位<code>long long</code>。</p>
+</li>
+<li><p><strong>负数右移</strong>：有符号负数的右移是<strong>算术右移</strong>，高位补符号位1（而非0）。例如 <code>(-1) &gt;&gt; 1</code> 结果还是 <code>-1</code>，而非0，这是初学者最容易踩的坑。</p>
+</li>
+<li><p>无符号数的右移是<strong>逻辑右移</strong>，高位固定补0，不会出现符号问题。</p>
+</li>
+</ul>
+<hr>
+<h2 id="三、进阶位运算技巧"><a href="#三、进阶位运算技巧" class="headerlink" title="三、进阶位运算技巧"></a>三、进阶位运算技巧</h2><h3 id="3-1-基础常用技巧"><a href="#3-1-基础常用技巧" class="headerlink" title="3.1 基础常用技巧"></a>3.1 基础常用技巧</h3><h4 id="1-判断一个数的奇偶性"><a href="#1-判断一个数的奇偶性" class="headerlink" title="1. 判断一个数的奇偶性"></a>1. 判断一个数的奇偶性</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原理：二进制最后一位为1是奇数，为0是偶数</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">is_odd</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; <span class="number">1</span>; <span class="comment">// 等价于 x%2==1，速度快2倍以上</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优势：比取模运算快，且不会出现负数取模的符号问题。</li>
+</ul>
+<h4 id="2-不用临时变量交换两个数"><a href="#2-不用临时变量交换两个数" class="headerlink" title="2. 不用临时变量交换两个数"></a>2. 不用临时变量交换两个数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">swap</span><span class="params">(<span class="type">int</span> &amp;a, <span class="type">int</span> &amp;b)</span> </span>&#123;</span><br><span class="line">    a = a ^ b;</span><br><span class="line">    b = a ^ b; <span class="comment">// 等价于 b = (a^b) ^ b = a ^ (b^b) = a^0 = a</span></span><br><span class="line">    a = a ^ b; <span class="comment">// 等价于 a = (a^b) ^ a = b ^ (a^a) = b^0 = b</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意：仅适用于整数，且不能用于交换同一个变量（会导致变量变为0）。</li>
+</ul>
+<h4 id="3-求一个数的绝对值"><a href="#3-求一个数的绝对值" class="headerlink" title="3. 求一个数的绝对值"></a>3. 求一个数的绝对值</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">abs</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> s = x &gt;&gt; <span class="number">31</span>; <span class="comment">// 正数s=0，负数s=-1（全1）</span></span><br><span class="line">    <span class="keyword">return</span> (x ^ s) - s;</span><br><span class="line">    <span class="comment">// 负数：x^(-1) 等价于 ~x，减-1等价于加1，即 ~x+1 = -x</span></span><br><span class="line">    <span class="comment">// 正数：x^0 -0 = x</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>优势：无if分支，避免CPU分支预测失败，是卡常优化的常用手段。</li>
+</ul>
+<h4 id="4-判断一个数是否是2的整数次幂"><a href="#4-判断一个数是否是2的整数次幂" class="headerlink" title="4. 判断一个数是否是2的整数次幂"></a>4. 判断一个数是否是2的整数次幂</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">power_two</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &gt; <span class="number">0</span> &amp;&amp; (x &amp; (x - <span class="number">1</span>)) == <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 原理：2的幂的二进制只有1个1，x-1会把这个1变为0，后面全变为1，与运算结果为0</span></span><br><span class="line">    <span class="comment">// 例：8(1000) &amp; 7(0111) = 0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-核心进阶技巧"><a href="#3-2-核心进阶技巧" class="headerlink" title="3.2 核心进阶技巧"></a>3.2 核心进阶技巧</h3><h4 id="1-lowbit-运算（树状数组核心）"><a href="#1-lowbit-运算（树状数组核心）" class="headerlink" title="1. lowbit 运算（树状数组核心）"></a>1. lowbit 运算（树状数组核心）</h4><p><strong>lowbit(x)</strong>：提取<code>x</code>的二进制中<strong>最右侧的1</strong>，返回仅保留该位的数值。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">lowbit</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &amp; -x;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>原理</strong>：负数在计算机中以补码存储，<code>-x = ~x + 1</code>。<code>~x</code>会翻转所有位，加1后会把末尾的连续0变为1，直到遇到第一个1，把这个1变为0。最终<code>x &amp; -x</code>只会保留最右侧的1。</p>
+</li>
+<li><p><strong>示例</strong>：<code>x=10(1010)</code>，<code>-x=~10+1=0101+1=0110</code>，<code>1010 &amp; 0110 = 0010</code>，即lowbit(10)&#x3D;2。</p>
+</li>
+<li><p><strong>核心用途</strong>：树状数组的核心操作、枚举二进制中所有的1、求二进制末尾连续0的个数。</p>
+</li>
+</ul>
+<h4 id="2-枚举二进制中所有的1"><a href="#2-枚举二进制中所有的1" class="headerlink" title="2. 枚举二进制中所有的1"></a>2. 枚举二进制中所有的1</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 遍历x的所有为1的二进制位</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">enum_bits</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">while</span> (x) &#123;</span><br><span class="line">        <span class="type">int</span> cur = <span class="built_in">lowbit</span>(x); <span class="comment">// 取出当前最右侧的1</span></span><br><span class="line">        <span class="type">int</span> pos = __builtin_ctz(x); <span class="comment">// 得到当前1的位置（从0开始）</span></span><br><span class="line">        <span class="comment">// 处理当前位</span></span><br><span class="line">        x ^= cur; <span class="comment">// 清除当前位，等价于 x -= cur</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(k)，k是x中1的个数，比遍历所有32位快得多，是状压DP的常用操作。</li>
+</ul>
+<h4 id="3-枚举一个状态的所有子集（状压DP必用）"><a href="#3-枚举一个状态的所有子集（状压DP必用）" class="headerlink" title="3. 枚举一个状态的所有子集（状压DP必用）"></a>3. 枚举一个状态的所有子集（状压DP必用）</h4><p>给定一个二进制状态<code>t</code>，枚举它的所有非空子集（子集的1的位都是<code>t</code>中已有的1），是状压DP的核心操作。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 枚举t的所有非空子集</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> s = t; s; s = (s - <span class="number">1</span>) &amp; t) &#123;</span><br><span class="line">    <span class="comment">// 处理子集s</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><strong>原理</strong>：<code>s-1</code>会把<code>s</code>最右侧的1变为0，后面的所有0变为1，再和<code>t</code>做与运算，保证<code>s</code>始终是<code>t</code>的子集。</p>
+</li>
+<li><p><strong>时间复杂度</strong>：O(2^k)，k是<code>t</code>中1的个数，是枚举子集的最优写法。</p>
+</li>
+<li><p><strong>扩展</strong>：枚举所有非空真子集，只需在循环中加判断 <code>if(s != t)</code>。</p>
+</li>
+</ul>
+<h4 id="4-翻转二进制的指定位"><a href="#4-翻转二进制的指定位" class="headerlink" title="4. 翻转二进制的指定位"></a>4. 翻转二进制的指定位</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 翻转x的第k位（从0开始）</span></span><br><span class="line">x ^= (<span class="number">1</span> &lt;&lt; k);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 翻转x的低k位</span></span><br><span class="line">x ^= ((<span class="number">1</span> &lt;&lt; k) - <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>示例：<code>x=1010</code>，翻转第0位：<code>1010 ^ 0001 = 1011</code>。</li>
+</ul>
+<h4 id="5-清除二进制的指定位"><a href="#5-清除二进制的指定位" class="headerlink" title="5. 清除二进制的指定位"></a>5. 清除二进制的指定位</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把x的第k位清0</span></span><br><span class="line">x &amp;= ~(<span class="number">1</span> &lt;&lt; k);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清除x最右侧的1</span></span><br><span class="line">x &amp;= x - <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 清除x末尾的连续1</span></span><br><span class="line">x &amp;= x + <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>示例：<code>x=1011</code>，清除最右侧的1：<code>1011 &amp; 1010 = 1010</code>。</li>
+</ul>
+<h4 id="6-快速幂（二进制分解优化）"><a href="#6-快速幂（二进制分解优化）" class="headerlink" title="6. 快速幂（二进制分解优化）"></a>6. 快速幂（二进制分解优化）</h4><p>快速幂的核心是<strong>二进制分解指数</strong>，把O(n)的乘方运算优化到O(logn)，是竞赛数学的基础算法，本质是二进制的经典应用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 求 (a^b) % mod</span></span><br><span class="line"><span class="keyword">using</span> ll = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(ll a, ll b, ll mod)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">1</span>;</span><br><span class="line">    a %= mod;</span><br><span class="line">    <span class="keyword">while</span> (b) &#123;</span><br><span class="line">        <span class="keyword">if</span> (b &amp; <span class="number">1</span>) &#123;res = res * a % mod; <span class="comment">// 二进制当前位为1，乘入结果</span></span><br><span class="line">        a = a * a % mod; <span class="comment">// 底数平方</span></span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>; <span class="comment">// 指数右移一位，处理下一位</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、竞赛常用二进制内置函数"><a href="#四、竞赛常用二进制内置函数" class="headerlink" title="四、竞赛常用二进制内置函数"></a>四、竞赛常用二进制内置函数</h2><p>算法竞赛中使用的GCC编译器，提供了一系列针对二进制的内置函数，比手动实现的代码更快、更简洁，且不易出错，是竞赛必备技能。</p>
+<p>注意：所有函数的参数为<code>unsigned int</code>时，带<code>ll</code>后缀的函数参数为<code>unsigned long long</code>，传入负数会导致未定义行为。</p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>功能</th>
+<th>示例</th>
+<th>注意事项</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>__builtin_popcount(x)</code></td>
+<td>统计x的二进制中<strong>1的个数</strong></td>
+<td><code>__builtin_popcount(10) = 2</code>（1010有2个1）</td>
+<td>32位int，超过范围用<code>__builtin_popcountll(x)</code></td>
+</tr>
+<tr>
+<td><code>__builtin_ctz(x)</code></td>
+<td>统计x的二进制<strong>末尾连续0的个数</strong>（count trailing zeros）</td>
+<td><code>__builtin_ctz(8) = 3</code>（1000末尾3个0）</td>
+<td>x不能为0，否则是未定义行为</td>
+</tr>
+<tr>
+<td><code>__builtin_clz(x)</code></td>
+<td>统计x的二进制<strong>开头连续0的个数</strong>（count leading zeros）</td>
+<td><code>__builtin_clz(8) = 28</code>（32位int，1000前面28个0）</td>
+<td>x不能为0，仅适用于32位int，64位用<code>__builtin_clzll(x)</code></td>
+</tr>
+<tr>
+<td><code>__builtin_ffs(x)</code></td>
+<td>返回x的二进制中<strong>最右侧的1的位置</strong>（从1开始）</td>
+<td><code>__builtin_ffs(10) = 2</code>（1010最右侧的1在第2位）</td>
+<td>x为0时返回0，无需担心x&#x3D;0的问题</td>
+</tr>
+<tr>
+<td><code>__builtin_parity(x)</code></td>
+<td>判断x的二进制中1的个数的奇偶性，奇数返回1，偶数返回0</td>
+<td><code>__builtin_parity(10) = 0</code>（2个1，偶数）</td>
+<td>32位int，64位用<code>__builtin_parityll(x)</code></td>
+</tr>
+</tbody></table>
+<h3 id="常用组合技巧"><a href="#常用组合技巧" class="headerlink" title="常用组合技巧"></a>常用组合技巧</h3><ol>
+<li><p>求二进制中1的位置：<code>pos = __builtin_ctz(x)</code>，配合lowbit使用。</p>
+</li>
+<li><p>求二进制最高位的位置：<code>31 - __builtin_clz(x)</code>（32位int）。</p>
+</li>
+<li><p>求一个数的二进制位数：<code>32 - __builtin_clz(x)</code>。</p>
+</li>
+</ol>
+<hr>
+<h2 id="五、分难度训练题"><a href="#五、分难度训练题" class="headerlink" title="五、分难度训练题"></a>五、分难度训练题</h2><h3 id="5-1-入门级"><a href="#5-1-入门级" class="headerlink" title="5.1 入门级"></a>5.1 入门级</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号</th>
+<th>题目名</th>
+<th>难度</th>
+<th>核心考点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P1469</td>
+<td>找筷子</td>
+<td>入门</td>
+<td>异或的自反性，找出现奇数次的数</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P2392</td>
+<td>kkksc03考前临时抱佛脚</td>
+<td>普及-</td>
+<td>二进制枚举子集</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P8846</td>
+<td>『JROI-7』PMK 配匹串符字</td>
+<td>普及-</td>
+<td>lowbit运算</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF231A</td>
+<td>Team</td>
+<td>Div.2 A</td>
+<td>二进制统计1的个数</td>
+</tr>
+</tbody></table>
+<h3 id="5-2-进阶级"><a href="#5-2-进阶级" class="headerlink" title="5.2 进阶级"></a>5.2 进阶级</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号</th>
+<th>题目名</th>
+<th>难度</th>
+<th>核心考点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P1226</td>
+<td>【模板】快速幂</td>
+<td>普及-</td>
+<td>二进制分解指数，快速幂</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P5657</td>
+<td>【模板】格雷码</td>
+<td>普及+&#x2F;提高</td>
+<td>二进制格雷码构造，异或运算</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P10448</td>
+<td>【模板】状压DP</td>
+<td>普及+&#x2F;提高</td>
+<td>二进制状态压缩，子集枚举</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1879</td>
+<td>[USACO06NOV] Corn Fields G</td>
+<td>提高+&#x2F;省选-</td>
+<td>状压DP，位运算判断状态冲突</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF1097B</td>
+<td>Petr and a Combination Lock</td>
+<td>Div.2 B</td>
+<td>二进制枚举子集</td>
+</tr>
+</tbody></table>
+<h3 id="5-3-高级"><a href="#5-3-高级" class="headerlink" title="5.3 高级"></a>5.3 高级</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号</th>
+<th>题目名</th>
+<th>难度</th>
+<th>核心考点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P3374</td>
+<td>【模板】树状数组 1</td>
+<td>普及+&#x2F;提高</td>
+<td>lowbit运算，树状数组核心</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P2114</td>
+<td>[NOI2014] 起床困难综合症</td>
+<td>提高+&#x2F;省选-</td>
+<td>位运算贪心，按位处理</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P4301</td>
+<td>[CQOI2013] 新Nim游戏</td>
+<td>省选&#x2F;NOI-</td>
+<td>线性基，异或性质</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF242E</td>
+<td>XOR on Segment</td>
+<td>Div.2 E</td>
+<td>线段树维护区间异或，位运算拆分</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC213 D</td>
+<td>Takahashi Tour</td>
+<td>ABC-D</td>
+<td>位运算与DFS，状态表示</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、常见坑点与避坑指南"><a href="#六、常见坑点与避坑指南" class="headerlink" title="六、常见坑点与避坑指南"></a>六、常见坑点与避坑指南</h2><ol>
+<li><strong>运算符优先级问题</strong></li>
+</ol>
+<p>位运算的优先级<strong>低于加减乘除</strong>，很多初学者会因为不加括号导致结果错误。</p>
+<ul>
+<li><p>错误示例：<code>a + b &amp; c</code> 会先算<code>a+b</code>，再算<code>&amp;</code>，正确写法是 <code>a + (b &amp; c)</code>。</p>
+</li>
+<li><p>避坑：所有位运算都加上括号，明确运算顺序，永远不会错。</p>
+</li>
+</ul>
+<ol>
+<li><p><strong>移位溢出问题</strong></p>
+<ul>
+<li><p>32位<code>int</code>的移位不能超过31位，<code>1 &lt;&lt; 31</code>会溢出，必须用<code>1LL &lt;&lt; 31</code>转为64位<code>long long</code>。</p>
+</li>
+<li><p>避坑：涉及超过16位的移位，统一用<code>long long</code>类型。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>负数的位运算问题</strong></p>
+<ul>
+<li><p>负数的右移是算术右移，高位补1，<code>(-1) &gt;&gt; 1</code>结果还是<code>-1</code>，而非0。</p>
+</li>
+<li><p>负数的取反、与运算会涉及符号位，结果往往不符合预期。</p>
+</li>
+<li><p>避坑：位运算尽量使用无符号数<code>unsigned int</code>&#x2F;<code>unsigned long long</code>，避免符号问题。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>内置函数的未定义行为</strong></p>
+<ul>
+<li><p><code>__builtin_clz(0)</code>、<code>__builtin_ctz(0)</code>是未定义行为，不同编译器结果不同，必须保证传入的参数不为0。</p>
+</li>
+<li><p>避坑：调用前先判断x是否为0，或用<code>__builtin_ffs</code>替代（x&#x3D;0时返回0，安全）。</p>
+</li>
+</ul>
+</li>
+</ol>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/04/01/bitset/">bitset</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AE%97%E6%B3%95%E7%AB%9E%E8%B5%9B%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D%E8%BF%90%E7%AE%97-%E5%AD%A6%E4%B9%A0%E8%AE%B2%E4%B9%89"><span class="toc-text">算法竞赛二进制位运算 学习讲义</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%B8%8E%E4%BD%8D%E8%BF%90%E7%AE%97%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BB%B7%E5%80%BC"><span class="toc-text">一、二进制与位运算的核心价值</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%9F%BA%E7%A1%80%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="toc-text">二、基础位运算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E5%9F%BA%E7%A1%80%E8%BF%90%E7%AE%97%E7%AC%A6%E8%AF%A6%E8%A7%A3"><span class="toc-text">2.1 基础运算符详解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%A0%B8%E5%BF%83%E6%80%A7%E8%B4%A8"><span class="toc-text">2.2 核心性质</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%BC%82%E6%88%96%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%A7%E8%B4%A8"><span class="toc-text">1. 异或的核心性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%B8%8E%E3%80%81%E6%88%96%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%A7%E8%B4%A8"><span class="toc-text">2. 与、或的核心性质</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%A7%BB%E4%BD%8D%E8%BF%90%E7%AE%97%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">3. 移位运算的注意事项</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E8%BF%9B%E9%98%B6%E4%BD%8D%E8%BF%90%E7%AE%97%E6%8A%80%E5%B7%A7"><span class="toc-text">三、进阶位运算技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%9F%BA%E7%A1%80%E5%B8%B8%E7%94%A8%E6%8A%80%E5%B7%A7"><span class="toc-text">3.1 基础常用技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E6%95%B0%E7%9A%84%E5%A5%87%E5%81%B6%E6%80%A7"><span class="toc-text">1. 判断一个数的奇偶性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E4%B8%8D%E7%94%A8%E4%B8%B4%E6%97%B6%E5%8F%98%E9%87%8F%E4%BA%A4%E6%8D%A2%E4%B8%A4%E4%B8%AA%E6%95%B0"><span class="toc-text">2. 不用临时变量交换两个数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%B1%82%E4%B8%80%E4%B8%AA%E6%95%B0%E7%9A%84%E7%BB%9D%E5%AF%B9%E5%80%BC"><span class="toc-text">3. 求一个数的绝对值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E6%95%B0%E6%98%AF%E5%90%A6%E6%98%AF2%E7%9A%84%E6%95%B4%E6%95%B0%E6%AC%A1%E5%B9%82"><span class="toc-text">4. 判断一个数是否是2的整数次幂</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%A0%B8%E5%BF%83%E8%BF%9B%E9%98%B6%E6%8A%80%E5%B7%A7"><span class="toc-text">3.2 核心进阶技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-lowbit-%E8%BF%90%E7%AE%97%EF%BC%88%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84%E6%A0%B8%E5%BF%83%EF%BC%89"><span class="toc-text">1. lowbit 运算（树状数组核心）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E6%9E%9A%E4%B8%BE%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%B8%AD%E6%89%80%E6%9C%89%E7%9A%841"><span class="toc-text">2. 枚举二进制中所有的1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E6%9E%9A%E4%B8%BE%E4%B8%80%E4%B8%AA%E7%8A%B6%E6%80%81%E7%9A%84%E6%89%80%E6%9C%89%E5%AD%90%E9%9B%86%EF%BC%88%E7%8A%B6%E5%8E%8BDP%E5%BF%85%E7%94%A8%EF%BC%89"><span class="toc-text">3. 枚举一个状态的所有子集（状压DP必用）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E7%BF%BB%E8%BD%AC%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E6%8C%87%E5%AE%9A%E4%BD%8D"><span class="toc-text">4. 翻转二进制的指定位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E6%B8%85%E9%99%A4%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9A%84%E6%8C%87%E5%AE%9A%E4%BD%8D"><span class="toc-text">5. 清除二进制的指定位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-%E5%BF%AB%E9%80%9F%E5%B9%82%EF%BC%88%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%88%86%E8%A7%A3%E4%BC%98%E5%8C%96%EF%BC%89"><span class="toc-text">6. 快速幂（二进制分解优化）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%AB%9E%E8%B5%9B%E5%B8%B8%E7%94%A8%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0"><span class="toc-text">四、竞赛常用二进制内置函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%BB%84%E5%90%88%E6%8A%80%E5%B7%A7"><span class="toc-text">常用组合技巧</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%88%86%E9%9A%BE%E5%BA%A6%E8%AE%AD%E7%BB%83%E9%A2%98"><span class="toc-text">五、分难度训练题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%85%A5%E9%97%A8%E7%BA%A7"><span class="toc-text">5.1 入门级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E8%BF%9B%E9%98%B6%E7%BA%A7"><span class="toc-text">5.2 进阶级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E9%AB%98%E7%BA%A7"><span class="toc-text">5.3 高级</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E4%B8%8E%E9%81%BF%E5%9D%91%E6%8C%87%E5%8D%97"><span class="toc-text">六、常见坑点与避坑指南</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script defer type="text/javascript" src="https://gcore.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "auto" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

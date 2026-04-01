@@ -1,0 +1,1364 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>图的基本概念与遍历 - Yanpb's Blog</title>
+
+  
+    <meta name="description" content="图论入门第一章 图的基本概念图是一种描述元素之间关联关系的抽象数据结构，也是算法竞赛中最常见的模型之一（导航、社交网络、路径规划等问题均可抽象为图模型）。 1.1 图的定义一个图由顶点集V和边集E两部分组成，记作  $G&#x3D;&lt;V,E&gt;$ 。  顶点（节点）：图中的基本元素，用编号唯一标识（竞赛中通常从1开始编号）；  边：连接两个顶点的线，描述顶点之间的关联关系，分为无向边（无">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图的基本概念与遍历">
+<meta property="og:url" content="https://xyb7910.github.io/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/">
+<meta property="og:site_name" content="Yanpb&#39;s Blog">
+<meta property="og:description" content="图论入门第一章 图的基本概念图是一种描述元素之间关联关系的抽象数据结构，也是算法竞赛中最常见的模型之一（导航、社交网络、路径规划等问题均可抽象为图模型）。 1.1 图的定义一个图由顶点集V和边集E两部分组成，记作  $G&#x3D;&lt;V,E&gt;$ 。  顶点（节点）：图中的基本元素，用编号唯一标识（竞赛中通常从1开始编号）；  边：连接两个顶点的线，描述顶点之间的关联关系，分为无向边（无">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+<meta property="article:published_time" content="2026-04-01T11:32:58.000Z">
+<meta property="article:modified_time" content="2026-04-01T11:33:38.132Z">
+<meta property="article:author" content="Yan peng bo">
+<meta property="article:tag" content="BFS">
+<meta property="article:tag" content="DFS">
+<meta property="article:tag" content="建图">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+  
+  
+  
+  <meta name="keywords" content="BFS,DFS,建图">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"},"dateCreated":"2026-04-01T19:32:58+08:00","dateModified":"2026-04-01T19:33:38+08:00","datePublished":"2026-04-01T19:32:58+08:00","description":"","headline":"图的基本概念与遍历","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyb7910.github.io/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/"},"publisher":{"@type":"Organization","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg","logo":{"@type":"ImageObject","url":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"}},"url":"https://xyb7910.github.io/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/","keywords":"BFS, DFS, 建图","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Yanpb's Blog</div><div class="sub cap">硬核少年 寻找最优解</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="关于" href="/about/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="OI路线" href="/oi/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="acm路线图" href="/acm/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/"><span class="title">二进制</span></a><a class="item title" href="/2026/04/01/bitset/"><span class="title">bitset</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/"><span class="title">拓扑排序深入应用</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/"><span class="title">拓扑排序</span></a><a class="item title" href="/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/"><span class="title">图的基本概念与遍历</span></a><a class="item title" href="/2026/03/20/%E7%BA%BF%E6%AE%B5%E6%A0%91/"><span class="title">线段树</span></a><a class="item title" href="/2026/03/17/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E4%B8%8E%E6%AC%A1%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"><span class="title">最小生成树与次小生成树</span></a><a class="item title" href="/2026/03/17/LCA-%E9%97%AE%E9%A2%98/"><span class="title">LCA 问题</span></a><a class="item title" href="/2026/03/17/%E5%80%8D%E5%A2%9E%E4%B8%8ERMQ%E9%97%AE%E9%A2%98/"><span class="title">倍增与RMQ问题</span></a><a class="item title" href="/2026/03/15/C-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="title">C++ Lambda表达式</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E5%9B%BE%E8%AE%BA/">图论</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E5%9B%BE%E8%AE%BA/%E6%90%9C%E7%B4%A2/">搜索</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-04-01T11:32:58.000Z">2026-04-01</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-04-01T11:33:38.132Z">2026-04-01</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>图的基本概念与遍历</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="图论入门"><a href="#图论入门" class="headerlink" title="图论入门"></a>图论入门</h1><h2 id="第一章-图的基本概念"><a href="#第一章-图的基本概念" class="headerlink" title="第一章 图的基本概念"></a>第一章 图的基本概念</h2><p>图是一种描述<strong>元素之间关联关系</strong>的抽象数据结构，也是算法竞赛中最常见的模型之一（导航、社交网络、路径规划等问题均可抽象为图模型）。</p>
+<h3 id="1-1-图的定义"><a href="#1-1-图的定义" class="headerlink" title="1.1 图的定义"></a>1.1 图的定义</h3><p>一个图由<strong>顶点集V</strong>和<strong>边集E</strong>两部分组成，记作  $G&#x3D;&lt;V,E&gt;$ 。</p>
+<ul>
+<li><p>顶点（节点）：图中的基本元素，用编号唯一标识（竞赛中通常从1开始编号）；</p>
+</li>
+<li><p>边：连接两个顶点的线，描述顶点之间的关联关系，分为<strong>无向边</strong>（无方向）和<strong>有向边</strong>（有单向方向）；</p>
+</li>
+<li><p>无向图：所有边均为无向边的图；有向图：所有边均为有向边的图。</p>
+</li>
+</ul>
+<h3 id="1-2-核心基础术语"><a href="#1-2-核心基础术语" class="headerlink" title="1.2 核心基础术语"></a>1.2 核心基础术语</h3><ol>
+<li><p><strong>自环</strong>：一条边连接的两个顶点是同一个顶点，竞赛中简单图问题通常禁止自环；</p>
+</li>
+<li><p><strong>重边</strong>：两个顶点之间存在多条相同方向的边（无向图中即两点间有多条边）；</p>
+</li>
+<li><p><strong>简单图</strong>：不存在自环和重边的图，是竞赛中最常见的图模型；</p>
+</li>
+<li><p><strong>度数</strong>：</p>
+<ul>
+<li><p>无向图中，顶点 $v$ 的度数指与该顶点相连的边的数量，记作 $deg(v)$ ；</p>
+</li>
+<li><p>有向图中，顶点 $v$ 分为<strong>入度</strong>（指向该点的边数）和<strong>出度</strong>（从该点出发的边数），总度数&#x3D;入度+出度；</p>
+</li>
+<li><p>核心性质：无向图中，所有顶点的度数之和等于边数的2倍（握手定理），因此度数之和必为偶数。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="1-3-特殊图"><a href="#1-3-特殊图" class="headerlink" title="1.3 特殊图"></a>1.3 特殊图</h3><ol>
+<li><p><strong>完全图</strong></p>
+<ul>
+<li><p>无向完全图 $K_n$ ： $n$ 个顶点的无向简单图中，每个顶点都与其余 $n-1$ 个顶点有边相连，总边数为 $\frac{n(n-1)}{2}$ ；</p>
+</li>
+<li><p>有向完全图： $n$ 个顶点的有向简单图中，每个顶点都有指向其余 $n-1$ 个顶点的边，也有其余顶点指向它的边，总边数为 $n(n-1)$ 。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>竞赛图</strong>：基于 $n$ 阶无向完全图，给每条边任意确定一个方向形成的有向图，是竞赛中常见的特殊图模型。</p>
+</li>
+</ol>
+<h3 id="1-4-子图与补图"><a href="#1-4-子图与补图" class="headerlink" title="1.4 子图与补图"></a>1.4 子图与补图</h3><ul>
+<li><p><strong>子图</strong>：若图 $G’$ 的顶点集和边集均为图 $G$ 的子集，则称 $G’$ 是 $G$ 的子图；</p>
+</li>
+<li><p><strong>生成子图</strong>：顶点集与原图完全相同，边集为原图子集的子图；</p>
+</li>
+<li><p><strong>补图</strong>：与原图顶点集完全相同，边集为”原图中不存在的所有边”的图（简单图范围内）。</p>
+</li>
+</ul>
+<h3 id="1-5-图的同构"><a href="#1-5-图的同构" class="headerlink" title="1.5 图的同构"></a>1.5 图的同构</h3><p>设 $G$ 和 $G’$ 是两个图，若存在一个双射 $h:V→V’$ ，满足<strong>当且仅当</strong> $(v_i,v_j)$  <strong>是</strong> $G$  <strong>的边时，</strong> $(h(v_i),h(v_j))$  <strong>是</strong> $G’$  <strong>的边</strong>，则称图 $G$ 和 $G’$ 同构。</p>
+<p>通俗来说，两个图同构意味着它们的”拓扑结构完全一致”，仅顶点编号不同。</p>
+<h3 id="1-6-通路、回路、路径与距离"><a href="#1-6-通路、回路、路径与距离" class="headerlink" title="1.6 通路、回路、路径与距离"></a>1.6 通路、回路、路径与距离</h3><ol>
+<li><p><strong>通路</strong>：图中顶点与边的交替序列 $v_0e_1v_1e_2v_2…e_kv_k$ ，称为 $v_0$ 到 $v_k$ 的通路，通路中边的条数称为通路的<strong>长度</strong>（有向图中需保持边的方向一致）；</p>
+</li>
+<li><p><strong>回路</strong>：起点和终点为同一个顶点的通路；</p>
+</li>
+<li><p><strong>路径</strong>：顶点不重复的通路（是特殊的通路，无重复顶点）；</p>
+</li>
+<li><p><strong>距离</strong>：两个顶点之间最短通路的长度，若两点无通路则距离为无穷大。</p>
+</li>
+</ol>
+<h3 id="1-7-连通性与连通分量"><a href="#1-7-连通性与连通分量" class="headerlink" title="1.7 连通性与连通分量"></a>1.7 连通性与连通分量</h3><h4 id="无向图的连通性"><a href="#无向图的连通性" class="headerlink" title="无向图的连通性"></a>无向图的连通性</h4><ul>
+<li><p>连通：若无向图中 $u,v$ 两个顶点之间存在通路，则称 $u,v$ 连通；任意顶点与自身连通；</p>
+</li>
+<li><p>连通图：图中任意两个顶点都连通的无向图；</p>
+</li>
+<li><p>连通块（连通分量）：图的<strong>极大连通子图</strong>，即该子图是连通的，且无法再加入原图的任何顶点&#x2F;边后仍保持连通。</p>
+</li>
+</ul>
+<h4 id="有向图的连通性"><a href="#有向图的连通性" class="headerlink" title="有向图的连通性"></a>有向图的连通性</h4><ul>
+<li><p>可达：若有向图中存在 $u$ 到 $v$ 的通路，则称 $u$ 可达 $v$ ；</p>
+</li>
+<li><p>连通： $u$ 和 $v$ 相互可达；</p>
+</li>
+<li><p>强连通图：有向图中任意两个顶点都相互可达；</p>
+</li>
+<li><p>强连通块（强连通分量）：有向图的极大强连通子图。</p>
+</li>
+</ul>
+<h2 id="第二章-图的存储方式"><a href="#第二章-图的存储方式" class="headerlink" title="第二章 图的存储方式"></a>第二章 图的存储方式</h2><p>竞赛中处理图问题的第一步，是将图的顶点和边用代码存储下来。最核心的两种存储方式为<strong>邻接矩阵</strong>和<strong>邻接表</strong>，需根据图的规模和场景选型。</p>
+<h3 id="2-1-邻接矩阵"><a href="#2-1-邻接矩阵" class="headerlink" title="2.1 邻接矩阵"></a>2.1 邻接矩阵</h3><h4 id="存储原理"><a href="#存储原理" class="headerlink" title="存储原理"></a>存储原理</h4><p>用一个二维数组 $A[n+1][n+1]$ （顶点编号1~n）存储图的边信息：</p>
+<ul>
+<li><p>无向简单图：若顶点 $u$ 和 $v$ 之间有边，则 $A[u][v]&#x3D;A[v][u]&#x3D;1$ ；无边则为0；</p>
+</li>
+<li><p>无向带重边图： $A[u][v]$ 的值为 $u$ 和 $v$ 之间的边数；</p>
+</li>
+<li><p>有向图：若存在 $u$ 到 $v$ 的边，则 $A[u][v] +&#x3D;1$ ，反向边不赋值；</p>
+</li>
+<li><p>带权图：可将数组值改为边的权值，无边则设为无穷大。</p>
+</li>
+</ul>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1005</span>; <span class="comment">// 顶点数上限，邻接矩阵仅适合n≤1e3的场景</span></span><br><span class="line"><span class="type">int</span> a[N][N];        <span class="comment">// 邻接矩阵</span></span><br><span class="line"><span class="type">int</span> n, m;           <span class="comment">// n个顶点，m条边</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="built_in">memset</span>(a, <span class="number">0</span>, <span class="built_in">sizeof</span>(a)); <span class="comment">// 初始化无边</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        <span class="comment">// 无向简单图赋值</span></span><br><span class="line">        a[x][y] = <span class="number">1</span>;</span><br><span class="line">        a[y][x] = <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 有向图仅需 a[x][y] = 1;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="优缺点与适用场景"><a href="#优缺点与适用场景" class="headerlink" title="优缺点与适用场景"></a>优缺点与适用场景</h4><ul>
+<li><p>优点：实现简单，查询两点间是否有边的时间复杂度为 $O(1)$ ；</p>
+</li>
+<li><p>缺点：空间复杂度为 $O(n^2)$ ，当顶点数 $n&gt;10^3$ 时会超出内存限制，无法存储稀疏图（边数远小于 $n^2$ 的图）；</p>
+</li>
+<li><p>适用场景：顶点数 $n≤1000$ 的稠密图，或需要频繁查询两点边关系的场景。</p>
+</li>
+</ul>
+<h3 id="2-2-邻接表"><a href="#2-2-邻接表" class="headerlink" title="2.2 邻接表"></a>2.2 邻接表</h3><h4 id="存储原理-1"><a href="#存储原理-1" class="headerlink" title="存储原理"></a>存储原理</h4><p>为每个顶点维护一个列表，列表中存储<strong>从该顶点出发能直接到达的所有顶点</strong>（及边权）。竞赛中最常用<code>vector</code>数组实现，是处理大规模稀疏图的首选方式。</p>
+<h4 id="代码实现-1"><a href="#代码实现-1" class="headerlink" title="代码实现"></a>代码实现</h4><h5 id="1-无权图邻接表"><a href="#1-无权图邻接表" class="headerlink" title="1. 无权图邻接表"></a>1. 无权图邻接表</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">20005</span>; <span class="comment">// 顶点数上限可到2e4甚至1e5</span></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; edge[N]; <span class="comment">// 邻接表，edge[u]存储u能到达的所有顶点</span></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        <span class="comment">// 无向图：双向加边</span></span><br><span class="line">        edge[x].<span class="built_in">push_back</span>(y);</span><br><span class="line">        edge[y].<span class="built_in">push_back</span>(x);</span><br><span class="line">        <span class="comment">// 有向图：仅需 edge[x].push_back(y);</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 遍历顶点u的所有邻点：for (auto v : edge[u])</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-带权图邻接表"><a href="#2-带权图邻接表" class="headerlink" title="2. 带权图邻接表"></a>2. 带权图邻接表</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">20005</span>;</span><br><span class="line"><span class="comment">// first存储邻点编号，second存储边权</span></span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; edge[N];</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y, z;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d%d&quot;</span>, &amp;x, &amp;y, &amp;z);</span><br><span class="line">        edge[x].<span class="built_in">push_back</span>(&#123;y, z&#125;);</span><br><span class="line">        edge[y].<span class="built_in">push_back</span>(&#123;x, z&#125;); <span class="comment">// 无向带权图</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="优缺点与适用场景-1"><a href="#优缺点与适用场景-1" class="headerlink" title="优缺点与适用场景"></a>优缺点与适用场景</h4><ul>
+<li><p>优点：空间复杂度为 $O(n+m)$ ，仅存储实际存在的边，能处理 $n≤1e5$ 、 $m≤1e5$ 的大规模稀疏图；遍历一个顶点的所有邻点效率极高；</p>
+</li>
+<li><p>缺点：查询两点间是否有边的时间复杂度为 $O(deg(u))$ （即顶点u的度数），不如邻接矩阵高效；</p>
+</li>
+<li><p>适用场景：竞赛中绝大多数图论问题均为稀疏图，邻接表是通用首选存储方式。</p>
+</li>
+</ul>
+<h3 id="2-3-两种存储方式的选型总结"><a href="#2-3-两种存储方式的选型总结" class="headerlink" title="2.3 两种存储方式的选型总结"></a>2.3 两种存储方式的选型总结</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>邻接矩阵</th>
+<th>邻接表</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>空间复杂度</td>
+<td>$O(n^2)$</td>
+<td>$O(n+m)$</td>
+</tr>
+<tr>
+<td>查两点是否有边</td>
+<td>$O(1)$</td>
+<td>$O(deg(u))$</td>
+</tr>
+<tr>
+<td>遍历u的所有邻点</td>
+<td>$O(n)$</td>
+<td>$O(deg(u))$</td>
+</tr>
+<tr>
+<td>适用顶点规模</td>
+<td>$n≤1000$</td>
+<td>$n≤1e5$ 甚至更高</td>
+</tr>
+<tr>
+<td>最佳适配场景</td>
+<td>稠密图、小规模图</td>
+<td>稀疏图、大规模图</td>
+</tr>
+</tbody></table>
+<h2 id="第三章-图的广度优先搜索（BFS）"><a href="#第三章-图的广度优先搜索（BFS）" class="headerlink" title="第三章 图的广度优先搜索（BFS）"></a>第三章 图的广度优先搜索（BFS）</h2><p>广度优先搜索（Breadth-First Search, BFS）是图遍历的核心算法之一，核心是<strong>按层遍历、逐层扩散</strong>，是解决无权图最短路问题的最优方法。</p>
+<h3 id="3-1-算法核心思想与设计思路"><a href="#3-1-算法核心思想与设计思路" class="headerlink" title="3.1 算法核心思想与设计思路"></a>3.1 算法核心思想与设计思路</h3><p>BFS的核心逻辑可类比”洪水蔓延”：从起点出发，先访问起点所有一步可达的邻点（第一层），再从第一层的每个点出发，访问它们未被访问过的邻点（第二层），以此类推，直到遍历完所有可达的顶点。</p>
+<p>核心设计要点：</p>
+<ol>
+<li><p>用<strong>队列</strong>存储待访问的顶点，遵循”先进先出（FIFO）”原则，保证按层遍历；</p>
+</li>
+<li><p>用一个距离&#x2F;访问标记数组，记录顶点是否被访问过，同时记录起点到该顶点的最短距离；</p>
+</li>
+<li><p>对于边权全为1的无权图，BFS首次访问到某个顶点时，走过的路径就是起点到该点的<strong>最短路径</strong>，这是BFS最核心的性质。</p>
+</li>
+</ol>
+<h3 id="3-2-算法执行流程"><a href="#3-2-算法执行流程" class="headerlink" title="3.2 算法执行流程"></a>3.2 算法执行流程</h3><p>以无权无向图中，从起点 $s$ 出发的BFS为例：</p>
+<ol>
+<li><p>初始化：距离数组<code>dist[]</code>全部设为-1（表示未访问），队列清空；</p>
+</li>
+<li><p>起点入队：将起点 $s$ 加入队列，设置<code>dist[s] = 0</code>；</p>
+</li>
+<li><p>循环处理队列：</p>
+<ul>
+<li><p>取出队首顶点 $u$ ，弹出队首；</p>
+</li>
+<li><p>遍历 $u$ 的所有邻点 $v$ ：若<code>dist[v] == -1</code>（未访问），则设置<code>dist[v] = dist[u] + 1</code>，并将 $v$ 加入队尾；</p>
+</li>
+</ul>
+</li>
+<li><p>队列为空时，遍历结束，<code>dist[]</code>数组中存储了起点到所有顶点的最短距离（-1表示不可达）。</p>
+</li>
+</ol>
+<h3 id="3-3-核心性质与应用场景"><a href="#3-3-核心性质与应用场景" class="headerlink" title="3.3 核心性质与应用场景"></a>3.3 核心性质与应用场景</h3><ol>
+<li><p>核心性质：无权图（边权均为1）中，BFS得到的是起点到所有顶点的最短路径；</p>
+</li>
+<li><p>时间复杂度：邻接表存储时为 $O(n+m)$ ，邻接矩阵存储时为 $O(n^2)$ ，每个顶点和边仅被处理一次；</p>
+</li>
+<li><p>典型应用场景：</p>
+<ul>
+<li><p>无权图两点间最短距离、最短路径计数；</p>
+</li>
+<li><p>网格图中的迷宫最短路、多源最短路径；</p>
+</li>
+<li><p>图的连通性判定、分层图问题；</p>
+</li>
+<li><p>边权仅为0&#x2F;1的最短路径（0-1 BFS）。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="3-4-算法模板"><a href="#3-4-算法模板" class="headerlink" title="3.4 算法模板"></a>3.4 算法模板</h3><h4 id="模板1：普通无权图BFS（求单源最短距离）"><a href="#模板1：普通无权图BFS（求单源最短距离）" class="headerlink" title="模板1：普通无权图BFS（求单源最短距离）"></a>模板1：普通无权图BFS（求单源最短距离）</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">20005</span>;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; edge[N];</span><br><span class="line"><span class="type">int</span> dist[N]; <span class="comment">// 距离数组，-1表示未访问</span></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从s出发的BFS</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">bfs</span><span class="params">(<span class="type">int</span> s)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(dist, <span class="number">-1</span>, <span class="built_in">sizeof</span>(dist)); <span class="comment">// 初始化</span></span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;                    <span class="comment">// STL队列，也可用数组模拟队列</span></span><br><span class="line">    dist[s] = <span class="number">0</span>;</span><br><span class="line">    q.<span class="built_in">push</span>(s);</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>(); <span class="comment">// 取队首</span></span><br><span class="line">        q.<span class="built_in">pop</span>();           <span class="comment">// 弹出队首</span></span><br><span class="line">        <span class="comment">// 遍历所有邻点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> v : edge[u]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (dist[v] == <span class="number">-1</span>) &#123; <span class="comment">// 未访问过</span></span><br><span class="line">                dist[v] = dist[u] + <span class="number">1</span>;</span><br><span class="line">                q.<span class="built_in">push</span>(v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        edge[x].<span class="built_in">push_back</span>(y);</span><br><span class="line">        edge[y].<span class="built_in">push_back</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">bfs</span>(<span class="number">1</span>); <span class="comment">// 从1号点出发BFS</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="模板2：网格图BFS（四方向迷宫最短路）"><a href="#模板2：网格图BFS（四方向迷宫最短路）" class="headerlink" title="模板2：网格图BFS（四方向迷宫最短路）"></a>模板2：网格图BFS（四方向迷宫最短路）</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1005</span>;</span><br><span class="line"><span class="comment">// 四方向偏移量：上下左右</span></span><br><span class="line"><span class="type">int</span> dx[<span class="number">4</span>] = &#123;<span class="number">-1</span>, <span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line"><span class="type">int</span> dy[<span class="number">4</span>] = &#123;<span class="number">0</span>, <span class="number">0</span>, <span class="number">-1</span>, <span class="number">1</span>&#125;;</span><br><span class="line"><span class="type">char</span> mp[N][N];   <span class="comment">// 迷宫地图，S起点，E终点，X障碍，.空地</span></span><br><span class="line"><span class="type">int</span> dist[N][N];  <span class="comment">// 距离数组</span></span><br><span class="line"><span class="type">int</span> n, m;        <span class="comment">// 迷宫行数、列数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 从(sx,sy)出发的网格BFS</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">bfs</span><span class="params">(<span class="type">int</span> sx, <span class="type">int</span> sy)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(dist, <span class="number">-1</span>, <span class="built_in">sizeof</span>(dist));</span><br><span class="line">    queue&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; q; <span class="comment">// 队列存储坐标</span></span><br><span class="line">    dist[sx][sy] = <span class="number">0</span>;</span><br><span class="line">    q.<span class="built_in">push</span>(&#123;sx, sy&#125;);</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="keyword">auto</span> [x, y] = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="comment">// 遍历四个方向</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            <span class="type">int</span> nx = x + dx[i];</span><br><span class="line">            <span class="type">int</span> ny = y + dy[i];</span><br><span class="line">            <span class="comment">// 边界判断、障碍判断、未访问判断</span></span><br><span class="line">            <span class="keyword">if</span> (nx &lt; <span class="number">1</span> || nx &gt; n || ny &lt; <span class="number">1</span> || ny &gt; m) <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">if</span> (mp[nx][ny] == <span class="string">&#x27;X&#x27;</span> || dist[nx][ny] != <span class="number">-1</span>) <span class="keyword">continue</span>;</span><br><span class="line">            dist[nx][ny] = dist[x][y] + <span class="number">1</span>;</span><br><span class="line">            q.<span class="built_in">push</span>(&#123;nx, ny&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="type">int</span> sx, sy, ex, ey;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>, mp[i] + <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">1</span>; j &lt;= m; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mp[i][j] == <span class="string">&#x27;S&#x27;</span>) sx = i, sy = j;</span><br><span class="line">            <span class="keyword">if</span> (mp[i][j] == <span class="string">&#x27;E&#x27;</span>) ex = i, ey = j;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">bfs</span>(sx, sy);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, dist[ex][ey]); <span class="comment">// 输出最短距离，-1表示不可达</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="模板3：多源BFS（多个起点同时扩散）"><a href="#模板3：多源BFS（多个起点同时扩散）" class="headerlink" title="模板3：多源BFS（多个起点同时扩散）"></a>模板3：多源BFS（多个起点同时扩散）</h4><p>适用于”多个起点，求每个点到最近起点的最短距离”场景，只需初始化时将所有起点同时入队，距离设为0即可，其余逻辑与普通BFS完全一致。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多源BFS核心初始化代码</span></span><br><span class="line"><span class="built_in">memset</span>(dist, <span class="number">-1</span>, <span class="built_in">sizeof</span>(dist));</span><br><span class="line">queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line"><span class="comment">// 所有起点入队</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span> s : start_points) &#123;</span><br><span class="line">    dist[s] = <span class="number">0</span>;</span><br><span class="line">    q.<span class="built_in">push</span>(s);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 后续循环与普通BFS完全相同</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="模板4：0-1-BFS（边权仅为0或1的最短路径）"><a href="#模板4：0-1-BFS（边权仅为0或1的最短路径）" class="headerlink" title="模板4：0-1 BFS（边权仅为0或1的最短路径）"></a>模板4：0-1 BFS（边权仅为0或1的最短路径）</h4><p>适用于边权只有0和1的图，用<strong>双端队列（deque）</strong> 优化，时间复杂度仍为 $O(n+m)$ ，优于Dijkstra算法。核心逻辑：边权为0时，将顶点加入队首；边权为1时，加入队尾。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">20005</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">vector&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; edge[N]; <span class="comment">// first=邻点，second=边权(0/1)</span></span><br><span class="line"><span class="type">int</span> dist[N];</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">bfs_01</span><span class="params">(<span class="type">int</span> s)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(dist, <span class="number">0x3f</span>, <span class="built_in">sizeof</span>(dist));</span><br><span class="line">    deque&lt;<span class="type">int</span>&gt; dq; <span class="comment">// 双端队列</span></span><br><span class="line">    dist[s] = <span class="number">0</span>;</span><br><span class="line">    dq.<span class="built_in">push_front</span>(s);</span><br><span class="line">    <span class="keyword">while</span> (!dq.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = dq.<span class="built_in">front</span>();</span><br><span class="line">        dq.<span class="built_in">pop_front</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> [v, w] : edge[u]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (dist[v] &gt; dist[u] + w) &#123;</span><br><span class="line">                dist[v] = dist[u] + w;</span><br><span class="line">                <span class="keyword">if</span> (w == <span class="number">0</span>) dq.<span class="built_in">push_front</span>(v); <span class="comment">// 0边权加入队首</span></span><br><span class="line">                <span class="keyword">else</span> dq.<span class="built_in">push_back</span>(v);         <span class="comment">// 1边权加入队尾</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第四章-图的深度优先搜索（DFS）"><a href="#第四章-图的深度优先搜索（DFS）" class="headerlink" title="第四章 图的深度优先搜索（DFS）"></a>第四章 图的深度优先搜索（DFS）</h2><p>深度优先搜索（Depth-First Search, DFS）是图遍历的另一核心算法，核心是<strong>一路走到底、走不通再回溯</strong>，基于递归实现，是图论中大量复杂问题的基础。</p>
+<h3 id="4-1-算法核心思想与设计思路"><a href="#4-1-算法核心思想与设计思路" class="headerlink" title="4.1 算法核心思想与设计思路"></a>4.1 算法核心思想与设计思路</h3><p>DFS的核心逻辑可类比”走迷宫”：从起点出发，选择一条未走过的路一直往前走，直到走到尽头或遇到已访问过的点，再退回上一步，选择另一条未走过的路继续探索，直到遍历完所有可达的顶点。</p>
+<p>核心设计要点：</p>
+<ol>
+<li><p>用<strong>递归</strong>实现深度优先的探索，利用系统栈保存递归路径；</p>
+</li>
+<li><p>用访问标记数组记录顶点是否被访问过，避免重复访问和死循环；</p>
+</li>
+<li><p>递归的核心是”先处理当前顶点，再递归处理所有未访问的邻点”，回溯时可恢复状态（如汉密尔顿回路问题）。</p>
+</li>
+</ol>
+<h3 id="4-2-算法执行流程"><a href="#4-2-算法执行流程" class="headerlink" title="4.2 算法执行流程"></a>4.2 算法执行流程</h3><p>以从起点 $s$ 出发的DFS遍历为例：</p>
+<ol>
+<li><p>初始化：访问标记数组<code>vis[]</code>全部设为false，标记未访问；</p>
+</li>
+<li><p>递归函数入口：处理起点 $s$ ，标记<code>vis[s] = true</code>；</p>
+</li>
+<li><p>递归处理：遍历 $s$ 的所有邻点 $v$ ，若<code>vis[v] == false</code>，则递归调用DFS函数处理 $v$ ；</p>
+</li>
+<li><p>回溯：当一个顶点的所有邻点都处理完毕后，递归函数返回，完成回溯；</p>
+</li>
+<li><p>所有递归返回后，遍历结束。</p>
+</li>
+</ol>
+<h3 id="4-3-核心性质与应用场景"><a href="#4-3-核心性质与应用场景" class="headerlink" title="4.3 核心性质与应用场景"></a>4.3 核心性质与应用场景</h3><ol>
+<li><p>时间复杂度：邻接表存储时为 $O(n+m)$ ，每个顶点和边仅被访问一次；</p>
+</li>
+<li><p>空间复杂度：主要为递归栈的开销，最坏情况下为 $O(n)$ （如链式图）；</p>
+</li>
+<li><p>典型应用场景：</p>
+<ul>
+<li><p>图的连通性判定、连通块计数；</p>
+</li>
+<li><p>二分图判定、拓扑排序；</p>
+</li>
+<li><p>汉密尔顿通路&#x2F;回路、旅行商问题（TSP）；</p>
+</li>
+<li><p>强连通分量、环检测等图论经典问题。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="4-4-算法模板"><a href="#4-4-算法模板" class="headerlink" title="4.4 算法模板"></a>4.4 算法模板</h3><h4 id="模板1：图的DFS遍历与连通块计数"><a href="#模板1：图的DFS遍历与连通块计数" class="headerlink" title="模板1：图的DFS遍历与连通块计数"></a>模板1：图的DFS遍历与连通块计数</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">20005</span>;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; edge[N];</span><br><span class="line"><span class="type">bool</span> vis[N]; <span class="comment">// 访问标记数组</span></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DFS递归函数，处理顶点u</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> u)</span> </span>&#123;</span><br><span class="line">    vis[u] = <span class="literal">true</span>; <span class="comment">// 标记已访问</span></span><br><span class="line">    <span class="comment">// 遍历所有邻点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v : edge[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!vis[v]) &#123; <span class="comment">// 未访问则递归</span></span><br><span class="line">            <span class="built_in">dfs</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        edge[x].<span class="built_in">push_back</span>(y);</span><br><span class="line">        edge[y].<span class="built_in">push_back</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 统计连通块数量</span></span><br><span class="line">    <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="literal">false</span>, <span class="built_in">sizeof</span>(vis));</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!vis[i]) &#123; <span class="comment">// 未访问的点，是新的连通块</span></span><br><span class="line">            <span class="built_in">dfs</span>(i);</span><br><span class="line">            cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, cnt); <span class="comment">// 输出连通块数量</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="模板2：汉密尔顿回路判定（回溯DFS）"><a href="#模板2：汉密尔顿回路判定（回溯DFS）" class="headerlink" title="模板2：汉密尔顿回路判定（回溯DFS）"></a>模板2：汉密尔顿回路判定（回溯DFS）</h4><p>汉密尔顿回路：从起点出发，恰好经过所有顶点一次，最终回到起点的回路。该问题为NP完全问题，小规模数据（ $n≤12$ ）可用DFS回溯解决。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">15</span>; <span class="comment">// n≤8，小规模数据</span></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; edge[N];</span><br><span class="line"><span class="type">bool</span> vis[N];</span><br><span class="line"><span class="type">int</span> n, m, start; <span class="comment">// start为起点</span></span><br><span class="line"><span class="type">bool</span> found = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// u：当前顶点，cnt：已访问的顶点数量</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> u, <span class="type">int</span> cnt)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (found) <span class="keyword">return</span>; <span class="comment">// 已找到，剪枝</span></span><br><span class="line">    <span class="comment">// 递归终点：已访问所有顶点，且当前点能回到起点</span></span><br><span class="line">    <span class="keyword">if</span> (cnt == n) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> v : edge[u]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (v == start) &#123;</span><br><span class="line">                found = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 遍历邻点</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> v : edge[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!vis[v]) &#123;</span><br><span class="line">            vis[v] = <span class="literal">true</span>;</span><br><span class="line">            <span class="built_in">dfs</span>(v, cnt + <span class="number">1</span>);</span><br><span class="line">            vis[v] = <span class="literal">false</span>; <span class="comment">// 回溯，恢复状态</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        edge[x].<span class="built_in">push_back</span>(y);</span><br><span class="line">        edge[y].<span class="built_in">push_back</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;start);</span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="literal">false</span>, <span class="built_in">sizeof</span>(vis));</span><br><span class="line">    vis[start] = <span class="literal">true</span>;</span><br><span class="line">    <span class="built_in">dfs</span>(start, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> (found) <span class="built_in">printf</span>(<span class="string">&quot;Yes\n&quot;</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">&quot;No\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-5-DFS与BFS的核心区别"><a href="#4-5-DFS与BFS的核心区别" class="headerlink" title="4.5 DFS与BFS的核心区别"></a>4.5 DFS与BFS的核心区别</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>DFS（深度优先搜索）</th>
+<th>BFS（广度优先搜索）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>遍历顺序</td>
+<td>深度优先，一路走到底再回溯</td>
+<td>广度优先，逐层扩散</td>
+</tr>
+<tr>
+<td>实现方式</td>
+<td>递归（系统栈）&#x2F;手动栈</td>
+<td>队列</td>
+</tr>
+<tr>
+<td>最短路特性</td>
+<td>无法保证无权图最短路</td>
+<td>可求无权图单源最短路</td>
+</tr>
+<tr>
+<td>空间开销</td>
+<td>最坏O(n)（递归栈）</td>
+<td>O(n)（队列）</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>连通性、回溯类问题、状态搜索</td>
+<td>最短路径、分层类问题、多源扩散</td>
+</tr>
+</tbody></table>
+<h2 id="第五章-经典例题精讲"><a href="#第五章-经典例题精讲" class="headerlink" title="第五章 经典例题精讲"></a>第五章 经典例题精讲</h2><h3 id="例题1-简单图判定"><a href="#例题1-简单图判定" class="headerlink" title="例题1 简单图判定"></a>例题1 简单图判定</h3><h4 id="题意描述"><a href="#题意描述" class="headerlink" title="题意描述"></a>题意描述</h4><p>给定一张无向图，顶点数 $n$ 、边数 $m$ ，接下来 $m$ 行每行给出一条边的两个端点 $x,y$ 。判断该图是否为<strong>简单图</strong>（无自环、无重边），是则输出Yes，否则输出No。</p>
+<p>数据范围： $1≤n≤1000，0≤m≤100000$ 。</p>
+<h4 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h4><p>简单图的判定核心是两点：</p>
+<ol>
+<li><p>不存在自环：即边的两个端点 $x≠y$ ；</p>
+</li>
+<li><p>不存在重边：即任意两点之间最多只有一条边。</p>
+</li>
+</ol>
+<p>由于 $n≤1000$ ，可使用邻接矩阵存储边的存在性，遍历每条边时，先检查是否为自环，再检查是否已存在该边，若满足任一条件则直接输出No；否则标记该边存在。若所有边都合法，输出Yes。</p>
+<h4 id="参考代码"><a href="#参考代码" class="headerlink" title="参考代码"></a>参考代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1005</span>;</span><br><span class="line"><span class="type">bool</span> a[N][N];</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="built_in">memset</span>(a, <span class="number">0</span>, <span class="built_in">sizeof</span>(a));</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        <span class="comment">// 检查自环或重边</span></span><br><span class="line">        <span class="keyword">if</span> (x == y || a[x][y]) &#123;</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;No\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 标记边存在</span></span><br><span class="line">        a[x][y] = a[y][x] = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Yes\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="代码解析"><a href="#代码解析" class="headerlink" title="代码解析"></a>代码解析</h4><ul>
+<li><p>邻接矩阵<code>a[x][y]</code>标记 $x$ 和 $y$ 之间是否已有边；</p>
+</li>
+<li><p>每条边读入时，先做合法性校验，一旦发现不合法直接终止程序输出No，保证效率；</p>
+</li>
+<li><p>时间复杂度 $O(m)$ ，空间复杂度 $O(n^2)$ ，完全适配题目数据范围。</p>
+</li>
+</ul>
+<h3 id="例题2-顶点度数统计"><a href="#例题2-顶点度数统计" class="headerlink" title="例题2 顶点度数统计"></a>例题2 顶点度数统计</h3><h4 id="题意描述-1"><a href="#题意描述-1" class="headerlink" title="题意描述"></a>题意描述</h4><p>给定一张无向图，顶点数 $n$ 、边数 $m$ ，求每个顶点的度数，按顶点编号1~n的顺序输出。</p>
+<p>数据范围： $1≤n≤1000，0≤m≤100000$ 。</p>
+<h4 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h4><p>根据度数的定义，无向图中每条边会给两个端点的度数各+1。因此只需维护一个度数数组，遍历每条边时，给两个端点的度数分别+1即可，无需存储整张图。</p>
+<h4 id="参考代码-1"><a href="#参考代码-1" class="headerlink" title="参考代码"></a>参考代码</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1005</span>;</span><br><span class="line"><span class="type">int</span> deg[N];</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="built_in">memset</span>(deg, <span class="number">0</span>, <span class="built_in">sizeof</span>(deg));</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        deg[x]++;</span><br><span class="line">        deg[y]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 按编号输出度数</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;%d &quot;</span>, deg[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;\n&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例题3-迷宫最短路径"><a href="#例题3-迷宫最短路径" class="headerlink" title="例题3 迷宫最短路径"></a>例题3 迷宫最短路径</h3><h4 id="题意描述-2"><a href="#题意描述-2" class="headerlink" title="题意描述"></a>题意描述</h4><p>给定一个 $n×m$ 的迷宫，包含起点S、终点E、障碍X和空地.。每次可向上下左右四个方向走一格，求从起点到终点的最短路径长度，若无法到达则输出-1。</p>
+<p>数据范围： $1≤n,m≤1000$ 。</p>
+<h4 id="解题思路-2"><a href="#解题思路-2" class="headerlink" title="解题思路"></a>解题思路</h4><p>迷宫是典型的网格图无权最短路径问题，BFS是最优解法。核心是用BFS逐层扩散，首次到达终点时的距离就是最短距离，用二维距离数组记录每个格子的最短距离，同时实现访问标记的功能。</p>
+<h4 id="参考代码-2"><a href="#参考代码-2" class="headerlink" title="参考代码"></a>参考代码</h4><p>见第三章3.4节的模板2，核心逻辑为四方向网格BFS，最终输出终点的距离值即可。</p>
+<h3 id="例题4-无向图连通块计数"><a href="#例题4-无向图连通块计数" class="headerlink" title="例题4 无向图连通块计数"></a>例题4 无向图连通块计数</h3><h4 id="题意描述-3"><a href="#题意描述-3" class="headerlink" title="题意描述"></a>题意描述</h4><p>给定一张无向图，顶点数 $n$ 、边数 $m$ ，求图中连通块的数量。</p>
+<p>数据范围： $2≤n≤20000，0≤m≤100000$ 。</p>
+<h4 id="解题思路-3"><a href="#解题思路-3" class="headerlink" title="解题思路"></a>解题思路</h4><p>连通块计数的核心是：遍历所有顶点，若顶点未被访问过，则说明这是一个新的连通块，从该顶点出发用DFS或BFS遍历整个连通块并标记访问，最终统计连通块的总数。由于数据规模较大，需使用邻接表存储，DFS和BFS均可实现，BFS可避免递归深度过大导致的栈溢出。</p>
+<h4 id="参考代码-3"><a href="#参考代码-3" class="headerlink" title="参考代码"></a>参考代码</h4><p>DFS实现见第四章4.4节模板1，BFS实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">20005</span>;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; edge[N];</span><br><span class="line"><span class="type">bool</span> vis[N];</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">bfs</span><span class="params">(<span class="type">int</span> s)</span> </span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    vis[s] = <span class="literal">true</span>;</span><br><span class="line">    q.<span class="built_in">push</span>(s);</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> v : edge[u]) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!vis[v]) &#123;</span><br><span class="line">                vis[v] = <span class="literal">true</span>;</span><br><span class="line">                q.<span class="built_in">push</span>(v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;n, &amp;m);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> x, y;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">&quot;%d%d&quot;</span>, &amp;x, &amp;y);</span><br><span class="line">        edge[x].<span class="built_in">push_back</span>(y);</span><br><span class="line">        edge[y].<span class="built_in">push_back</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="type">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">memset</span>(vis, <span class="literal">false</span>, <span class="built_in">sizeof</span>(vis));</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!vis[i]) &#123;</span><br><span class="line">            <span class="built_in">bfs</span>(i);</span><br><span class="line">            cnt++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%d\n&quot;</span>, cnt);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="第六章-课后分级训练题"><a href="#第六章-课后分级训练题" class="headerlink" title="第六章 课后分级训练题"></a>第六章 课后分级训练题</h2><h3 id="一、入门级"><a href="#一、入门级" class="headerlink" title="一、入门级"></a>一、入门级</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号</th>
+<th>题目名称</th>
+<th>核心考点</th>
+<th>简要题意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P1113</td>
+<td>杂务</td>
+<td>DFS&#x2F;拓扑排序基础</td>
+<td>有向无环图的任务完成时间计算</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1443</td>
+<td>马的遍历</td>
+<td>网格图BFS、无权最短路</td>
+<td>求马在棋盘上到每个点的最短步数</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1596</td>
+<td>Lake Counting S</td>
+<td>连通块计数、DFS&#x2F;BFS</td>
+<td>统计网格图中水坑的连通块数量</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1706</td>
+<td>全排列问题</td>
+<td>DFS回溯基础</td>
+<td>输出1~n的全排列，理解DFS回溯逻辑</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC087B</td>
+<td>Coins</td>
+<td>基础DFS&#x2F;枚举</td>
+<td>硬币组合问题，入门级DFS回溯</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC138D</td>
+<td>Ki</td>
+<td>树的DFS遍历</td>
+<td>树的节点权值累加，基础DFS遍历</td>
+</tr>
+</tbody></table>
+<h3 id="二、进阶级"><a href="#二、进阶级" class="headerlink" title="二、进阶级"></a>二、进阶级</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号</th>
+<th>题目名称</th>
+<th>核心考点</th>
+<th>简要题意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P3916</td>
+<td>图的遍历</td>
+<td>反向图DFS、强连通入门</td>
+<td>求每个点能到达的最大顶点编号</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1162</td>
+<td>填涂颜色</td>
+<td>多源BFS&#x2F;连通块</td>
+<td>网格图中闭合区域的填充，多源BFS应用</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P2895</td>
+<td>Meteor Shower S</td>
+<td>网格BFS、时间限制最短路</td>
+<td>躲避流星雨的最短逃生路径，带时间限制的BFS</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF723C</td>
+<td>Polycarp at the Radio</td>
+<td>DFS环检测、连通块</td>
+<td>数组中的环检测与修改，DFS基础应用</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF598D</td>
+<td>Igor in the Museum</td>
+<td>多源BFS、连通块预处理</td>
+<td>统计网格图中每个点能看到的画的数量，多源BFS</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC213D</td>
+<td>Takahashi Tour</td>
+<td>树的DFS序、遍历</td>
+<td>树的深度优先遍历，输出DFS路径</td>
+</tr>
+</tbody></table>
+<h3 id="三、提高级"><a href="#三、提高级" class="headerlink" title="三、提高级"></a>三、提高级</h3><table>
+<thead>
+<tr>
+<th>平台</th>
+<th>题号</th>
+<th>题目名称</th>
+<th>核心考点</th>
+<th>简要题意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>洛谷</td>
+<td>P4644</td>
+<td>[USACO05DEC] Cleaning Shifts S</td>
+<td>0-1 BFS&#x2F;最短路</td>
+<td>区间覆盖的最小代价，0-1 BFS建模应用</td>
+</tr>
+<tr>
+<td>洛谷</td>
+<td>P1346</td>
+<td>电车</td>
+<td>0-1 BFS&#x2F;最短路</td>
+<td>电车线路的最小切换次数，0-1 BFS经典题</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF1037D</td>
+<td>Valid BFS?</td>
+<td>BFS序校验、图遍历</td>
+<td>判断一个序列是否为图的合法BFS序</td>
+</tr>
+<tr>
+<td>Codeforces</td>
+<td>CF1182E</td>
+<td>Product Oriented Recurrence</td>
+<td>DFS&#x2F;矩阵快速幂</td>
+<td>递推式求解，DFS与数学结合</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC192E</td>
+<td>Train</td>
+<td>0-1 BFS&#x2F;最短路变形</td>
+<td>列车发车时间限制的最短路径，BFS变种</td>
+</tr>
+<tr>
+<td>AtCoder</td>
+<td>ABC277E</td>
+<td>Switching Travel</td>
+<td>BFS&#x2F;二分图判定</td>
+<td>带开关的网格图最短路，BFS与状态结合</td>
+</tr>
+</tbody></table>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/">拓扑排序</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/03/20/%E7%BA%BF%E6%AE%B5%E6%A0%91/">线段树</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9B%BE%E8%AE%BA%E5%85%A5%E9%97%A8"><span class="toc-text">图论入门</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-text">第一章 图的基本概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-text">1.1 图的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%A0%B8%E5%BF%83%E5%9F%BA%E7%A1%80%E6%9C%AF%E8%AF%AD"><span class="toc-text">1.2 核心基础术语</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E7%89%B9%E6%AE%8A%E5%9B%BE"><span class="toc-text">1.3 特殊图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E5%AD%90%E5%9B%BE%E4%B8%8E%E8%A1%A5%E5%9B%BE"><span class="toc-text">1.4 子图与补图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E5%9B%BE%E7%9A%84%E5%90%8C%E6%9E%84"><span class="toc-text">1.5 图的同构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-%E9%80%9A%E8%B7%AF%E3%80%81%E5%9B%9E%E8%B7%AF%E3%80%81%E8%B7%AF%E5%BE%84%E4%B8%8E%E8%B7%9D%E7%A6%BB"><span class="toc-text">1.6 通路、回路、路径与距离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-7-%E8%BF%9E%E9%80%9A%E6%80%A7%E4%B8%8E%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F"><span class="toc-text">1.7 连通性与连通分量</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E5%90%91%E5%9B%BE%E7%9A%84%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="toc-text">无向图的连通性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E8%BF%9E%E9%80%9A%E6%80%A7"><span class="toc-text">有向图的连通性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%9B%BE%E7%9A%84%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="toc-text">第二章 图的存储方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5"><span class="toc-text">2.1 邻接矩阵</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86"><span class="toc-text">存储原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">代码实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E4%B8%8E%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">优缺点与适用场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="toc-text">2.2 邻接表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%8E%9F%E7%90%86-1"><span class="toc-text">存储原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0-1"><span class="toc-text">代码实现</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1-%E6%97%A0%E6%9D%83%E5%9B%BE%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="toc-text">1. 无权图邻接表</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-%E5%B8%A6%E6%9D%83%E5%9B%BE%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="toc-text">2. 带权图邻接表</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E7%BC%BA%E7%82%B9%E4%B8%8E%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF-1"><span class="toc-text">优缺点与适用场景</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%B8%A4%E7%A7%8D%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F%E7%9A%84%E9%80%89%E5%9E%8B%E6%80%BB%E7%BB%93"><span class="toc-text">2.3 两种存储方式的选型总结</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E5%9B%BE%E7%9A%84%E5%B9%BF%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%EF%BC%88BFS%EF%BC%89"><span class="toc-text">第三章 图的广度优先搜索（BFS）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%AE%97%E6%B3%95%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="toc-text">3.1 算法核心思想与设计思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%AE%97%E6%B3%95%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-text">3.2 算法执行流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%A0%B8%E5%BF%83%E6%80%A7%E8%B4%A8%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">3.3 核心性质与应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E7%AE%97%E6%B3%95%E6%A8%A1%E6%9D%BF"><span class="toc-text">3.4 算法模板</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF1%EF%BC%9A%E6%99%AE%E9%80%9A%E6%97%A0%E6%9D%83%E5%9B%BEBFS%EF%BC%88%E6%B1%82%E5%8D%95%E6%BA%90%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB%EF%BC%89"><span class="toc-text">模板1：普通无权图BFS（求单源最短距离）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF2%EF%BC%9A%E7%BD%91%E6%A0%BC%E5%9B%BEBFS%EF%BC%88%E5%9B%9B%E6%96%B9%E5%90%91%E8%BF%B7%E5%AE%AB%E6%9C%80%E7%9F%AD%E8%B7%AF%EF%BC%89"><span class="toc-text">模板2：网格图BFS（四方向迷宫最短路）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF3%EF%BC%9A%E5%A4%9A%E6%BA%90BFS%EF%BC%88%E5%A4%9A%E4%B8%AA%E8%B5%B7%E7%82%B9%E5%90%8C%E6%97%B6%E6%89%A9%E6%95%A3%EF%BC%89"><span class="toc-text">模板3：多源BFS（多个起点同时扩散）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF4%EF%BC%9A0-1-BFS%EF%BC%88%E8%BE%B9%E6%9D%83%E4%BB%85%E4%B8%BA0%E6%88%961%E7%9A%84%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%EF%BC%89"><span class="toc-text">模板4：0-1 BFS（边权仅为0或1的最短路径）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E7%AB%A0-%E5%9B%BE%E7%9A%84%E6%B7%B1%E5%BA%A6%E4%BC%98%E5%85%88%E6%90%9C%E7%B4%A2%EF%BC%88DFS%EF%BC%89"><span class="toc-text">第四章 图的深度优先搜索（DFS）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E7%AE%97%E6%B3%95%E6%A0%B8%E5%BF%83%E6%80%9D%E6%83%B3%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="toc-text">4.1 算法核心思想与设计思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E7%AE%97%E6%B3%95%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-text">4.2 算法执行流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%A0%B8%E5%BF%83%E6%80%A7%E8%B4%A8%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">4.3 核心性质与应用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E7%AE%97%E6%B3%95%E6%A8%A1%E6%9D%BF"><span class="toc-text">4.4 算法模板</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF1%EF%BC%9A%E5%9B%BE%E7%9A%84DFS%E9%81%8D%E5%8E%86%E4%B8%8E%E8%BF%9E%E9%80%9A%E5%9D%97%E8%AE%A1%E6%95%B0"><span class="toc-text">模板1：图的DFS遍历与连通块计数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A8%A1%E6%9D%BF2%EF%BC%9A%E6%B1%89%E5%AF%86%E5%B0%94%E9%A1%BF%E5%9B%9E%E8%B7%AF%E5%88%A4%E5%AE%9A%EF%BC%88%E5%9B%9E%E6%BA%AFDFS%EF%BC%89"><span class="toc-text">模板2：汉密尔顿回路判定（回溯DFS）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-DFS%E4%B8%8EBFS%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8C%BA%E5%88%AB"><span class="toc-text">4.5 DFS与BFS的核心区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E7%AB%A0-%E7%BB%8F%E5%85%B8%E4%BE%8B%E9%A2%98%E7%B2%BE%E8%AE%B2"><span class="toc-text">第五章 经典例题精讲</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%981-%E7%AE%80%E5%8D%95%E5%9B%BE%E5%88%A4%E5%AE%9A"><span class="toc-text">例题1 简单图判定</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E6%84%8F%E6%8F%8F%E8%BF%B0"><span class="toc-text">题意描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF"><span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E4%BB%A3%E7%A0%81"><span class="toc-text">参考代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-text">代码解析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%982-%E9%A1%B6%E7%82%B9%E5%BA%A6%E6%95%B0%E7%BB%9F%E8%AE%A1"><span class="toc-text">例题2 顶点度数统计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E6%84%8F%E6%8F%8F%E8%BF%B0-1"><span class="toc-text">题意描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-1"><span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E4%BB%A3%E7%A0%81-1"><span class="toc-text">参考代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%983-%E8%BF%B7%E5%AE%AB%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84"><span class="toc-text">例题3 迷宫最短路径</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E6%84%8F%E6%8F%8F%E8%BF%B0-2"><span class="toc-text">题意描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-2"><span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E4%BB%A3%E7%A0%81-2"><span class="toc-text">参考代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%984-%E6%97%A0%E5%90%91%E5%9B%BE%E8%BF%9E%E9%80%9A%E5%9D%97%E8%AE%A1%E6%95%B0"><span class="toc-text">例题4 无向图连通块计数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%A2%98%E6%84%8F%E6%8F%8F%E8%BF%B0-3"><span class="toc-text">题意描述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%A3%E9%A2%98%E6%80%9D%E8%B7%AF-3"><span class="toc-text">解题思路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E4%BB%A3%E7%A0%81-3"><span class="toc-text">参考代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E7%AB%A0-%E8%AF%BE%E5%90%8E%E5%88%86%E7%BA%A7%E8%AE%AD%E7%BB%83%E9%A2%98"><span class="toc-text">第六章 课后分级训练题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%85%A5%E9%97%A8%E7%BA%A7"><span class="toc-text">一、入门级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%BF%9B%E9%98%B6%E7%BA%A7"><span class="toc-text">二、进阶级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%8F%90%E9%AB%98%E7%BA%A7"><span class="toc-text">三、提高级</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script defer type="text/javascript" src="https://gcore.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "auto" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>

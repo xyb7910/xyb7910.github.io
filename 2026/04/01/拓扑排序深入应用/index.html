@@ -1,0 +1,1345 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>拓扑排序深入应用 - Yanpb's Blog</title>
+
+  
+    <meta name="description" content="拓扑图的深入应用一、有向图判环与环定位这是拓扑排序最基础的进阶用法，也是所有有向图问题的前置校验——绝大多数有向图算法的前提是图无环，而拓扑排序是最直观、最不易写错的判环方案。 1.1 核心原理拓扑排序的本质是“不断消除无前置依赖的节点（入度为0）”，而有向环的核心特征是：环上的所有节点互相依赖，永远不存在入度为0的起点。  环上的每个节点，入度至少有1来自环内的另一个节点，无论怎么消除环外的依赖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拓扑排序深入应用">
+<meta property="og:url" content="https://xyb7910.github.io/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/">
+<meta property="og:site_name" content="Yanpb&#39;s Blog">
+<meta property="og:description" content="拓扑图的深入应用一、有向图判环与环定位这是拓扑排序最基础的进阶用法，也是所有有向图问题的前置校验——绝大多数有向图算法的前提是图无环，而拓扑排序是最直观、最不易写错的判环方案。 1.1 核心原理拓扑排序的本质是“不断消除无前置依赖的节点（入度为0）”，而有向环的核心特征是：环上的所有节点互相依赖，永远不存在入度为0的起点。  环上的每个节点，入度至少有1来自环内的另一个节点，无论怎么消除环外的依赖">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+<meta property="article:published_time" content="2026-04-01T11:39:11.000Z">
+<meta property="article:modified_time" content="2026-04-01T11:39:22.379Z">
+<meta property="article:author" content="Yan peng bo">
+<meta property="article:tag" content="拓扑排序">
+<meta property="article:tag" content="最短路">
+<meta property="article:tag" content="环">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+  
+  
+  
+  <meta name="keywords" content="拓扑排序,最短路,环">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"},"dateCreated":"2026-04-01T19:39:11+08:00","dateModified":"2026-04-01T19:39:22+08:00","datePublished":"2026-04-01T19:39:11+08:00","description":"","headline":"拓扑排序深入应用","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyb7910.github.io/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/"},"publisher":{"@type":"Organization","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg","logo":{"@type":"ImageObject","url":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"}},"url":"https://xyb7910.github.io/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/","keywords":"拓扑排序, 最短路, 环","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Yanpb's Blog</div><div class="sub cap">硬核少年 寻找最优解</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="关于" href="/about/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="OI路线" href="/oi/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="acm路线图" href="/acm/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/"><span class="title">二进制</span></a><a class="item title" href="/2026/04/01/bitset/"><span class="title">bitset</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/"><span class="title">拓扑排序深入应用</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/"><span class="title">拓扑排序</span></a><a class="item title" href="/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/"><span class="title">图的基本概念与遍历</span></a><a class="item title" href="/2026/03/20/%E7%BA%BF%E6%AE%B5%E6%A0%91/"><span class="title">线段树</span></a><a class="item title" href="/2026/03/17/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E4%B8%8E%E6%AC%A1%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"><span class="title">最小生成树与次小生成树</span></a><a class="item title" href="/2026/03/17/LCA-%E9%97%AE%E9%A2%98/"><span class="title">LCA 问题</span></a><a class="item title" href="/2026/03/17/%E5%80%8D%E5%A2%9E%E4%B8%8ERMQ%E9%97%AE%E9%A2%98/"><span class="title">倍增与RMQ问题</span></a><a class="item title" href="/2026/03/15/C-Lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"><span class="title">C++ Lambda表达式</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E5%9B%BE%E8%AE%BA/">图论</a> <span class="sep"></span> <a class="cap breadcrumb-link" href="/categories/%E5%9B%BE%E8%AE%BA/%E6%8B%93%E6%89%91%E5%BA%8F/">拓扑序</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-04-01T11:39:11.000Z">2026-04-01</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-04-01T11:39:22.379Z">2026-04-01</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>拓扑排序深入应用</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="拓扑图的深入应用"><a href="#拓扑图的深入应用" class="headerlink" title="拓扑图的深入应用"></a>拓扑图的深入应用</h1><h2 id="一、有向图判环与环定位"><a href="#一、有向图判环与环定位" class="headerlink" title="一、有向图判环与环定位"></a>一、有向图判环与环定位</h2><p>这是拓扑排序最基础的进阶用法，也是所有有向图问题的前置校验——绝大多数有向图算法的前提是图无环，而拓扑排序是最直观、最不易写错的判环方案。</p>
+<h3 id="1-1-核心原理"><a href="#1-1-核心原理" class="headerlink" title="1.1 核心原理"></a>1.1 核心原理</h3><p>拓扑排序的本质是“不断消除无前置依赖的节点（入度为0）”，而<strong>有向环的核心特征是：环上的所有节点互相依赖，永远不存在入度为0的起点</strong>。</p>
+<ul>
+<li><p>环上的每个节点，入度至少有1来自环内的另一个节点，无论怎么消除环外的依赖，环上节点的入度永远无法降到0，永远无法进入拓扑序列。</p>
+</li>
+<li><p>因此：拓扑排序结束后，若拓扑序列的长度<strong>小于总顶点数</strong>，则图中一定存在有向环。</p>
+</li>
+</ul>
+<h3 id="1-2-两种实现方案详解"><a href="#1-2-两种实现方案详解" class="headerlink" title="1.2 两种实现方案详解"></a>1.2 两种实现方案详解</h3><h4 id="方案1：Kahn算法判环"><a href="#方案1：Kahn算法判环" class="headerlink" title="方案1：Kahn算法判环"></a>方案1：Kahn算法判环</h4><h5 id="完整实现步骤"><a href="#完整实现步骤" class="headerlink" title="完整实现步骤"></a>完整实现步骤</h5><ol>
+<li><p><strong>建图与初始化</strong>：邻接表存图，维护<code>in_degree[]</code>数组记录每个节点的入度；</p>
+</li>
+<li><p><strong>初始化队列</strong>：遍历所有节点，将入度为0的节点加入队列；</p>
+</li>
+<li><p><strong>拓扑遍历</strong>：取出队首节点，加入拓扑序列，遍历其所有出边，将对应邻接节点的入度减1，若入度降至0则加入队列；</p>
+</li>
+<li><p><strong>判环逻辑</strong>：遍历结束后，若拓扑序列的长度<code>tot &lt; n</code>（总顶点数），则图存在有向环；否则为无环DAG。</p>
+</li>
+</ol>
+<h5 id="环定位"><a href="#环定位" class="headerlink" title="环定位"></a>环定位</h5><p>很多初学者只会判环，不会精准找到环上的节点，这里拆解两种定位需求的实现：</p>
+<ol>
+<li><p><strong>定位所有受环影响的节点</strong>：Kahn算法结束后，所有<code>in_degree[v] &gt; 0</code>的节点，要么在环上，要么在环的下游（能被环到达的节点）。这些节点永远无法进入拓扑序列，因为环的存在导致它们的入度无法清零。</p>
+</li>
+<li><p><strong>精准定位环上的节点</strong>：</p>
+<ul>
+<li><p>第一步：执行Kahn算法，标记所有进入拓扑序列的节点（<code>vis[u] = 1</code>），未被标记的节点是“环+环的下游节点”；</p>
+</li>
+<li><p>第二步：对未被标记的节点，求强连通分量（SCC）。大小≥2的SCC就是有向环，大小为1的SCC若存在自环（u→u）也是环。</p>
+</li>
+<li><p>补充：若只需快速输出环的路径，用DFS方案更直接。</p>
+</li>
+</ul>
+</li>
+</ol>
+<h5 id="带环定位的代码实现"><a href="#带环定位的代码实现" class="headerlink" title="带环定位的代码实现"></a>带环定位的代码实现</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">1e5</span> + <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; g[MAXN];</span><br><span class="line"><span class="type">int</span> in_degree[MAXN];</span><br><span class="line"><span class="type">bool</span> vis[MAXN]; <span class="comment">// 标记是否进入拓扑序列</span></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; topo;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回true表示无环，false表示有环</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">kahn_cycle_check</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (in_degree[i] == <span class="number">0</span>) q.<span class="built_in">push</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        topo.<span class="built_in">push_back</span>(u);</span><br><span class="line">        vis[u] = <span class="number">1</span>; <span class="comment">// 标记为已处理（非环相关节点）</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> v : g[u]) &#123;</span><br><span class="line">            in_degree[v]--;</span><br><span class="line">            <span class="keyword">if</span> (in_degree[v] == <span class="number">0</span>) q.<span class="built_in">push</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> topo.<span class="built_in">size</span>() == n;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        g[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        in_degree[v]++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">kahn_cycle_check</span>()) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;图为无环DAG，拓扑序列：&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> x : topo) cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;图中存在有向环，受环影响的节点：&quot;</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!vis[i]) cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="方案2：DFS逆序法判环（优势：直接输出环的路径）"><a href="#方案2：DFS逆序法判环（优势：直接输出环的路径）" class="headerlink" title="方案2：DFS逆序法判环（优势：直接输出环的路径）"></a>方案2：DFS逆序法判环（优势：直接输出环的路径）</h4><p>DFS判环的核心是通过<strong>节点访问状态标记</strong>，识别递归过程中的环，优势是可以直接输出环的完整路径，适合需要定位环具体内容的场景。</p>
+<h5 id="核心状态定义"><a href="#核心状态定义" class="headerlink" title="核心状态定义"></a>核心状态定义</h5><p>用<code>vis[]</code>数组标记节点的3种访问状态，是DFS判环的核心，绝对不能写错：</p>
+<ul>
+<li><p><code>vis[u] = 0</code>：节点未被访问；</p>
+</li>
+<li><p><code>vis[u] = 1</code>：节点正在访问（处于当前递归栈中）；</p>
+</li>
+<li><p><code>vis[u] = 2</code>：节点已访问完毕（所有子节点都处理完成，已退出递归栈）。</p>
+</li>
+</ul>
+<h5 id="判环与环路径输出逻辑"><a href="#判环与环路径输出逻辑" class="headerlink" title="判环与环路径输出逻辑"></a>判环与环路径输出逻辑</h5><ul>
+<li><p>遍历节点u的出边<code>u→v</code>时，若<code>vis[v] == 1</code>，说明我们从v出发，递归后又回到了v，<strong>存在有向环</strong>；</p>
+</li>
+<li><p>环的路径：当前递归栈中，从v到当前节点u的所有节点，就是环的完整路径。</p>
+</li>
+</ul>
+<h5 id="带环路径输出的代码实现"><a href="#带环路径输出的代码实现" class="headerlink" title="带环路径输出的代码实现"></a>带环路径输出的代码实现</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">1e5</span> + <span class="number">5</span>;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; g[MAXN];</span><br><span class="line"><span class="type">int</span> vis[MAXN];</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; stk; <span class="comment">// 递归栈，存储当前DFS路径</span></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"><span class="type">bool</span> has_cycle = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">dfs</span><span class="params">(<span class="type">int</span> u)</span> </span>&#123;</span><br><span class="line">    vis[u] = <span class="number">1</span>;</span><br><span class="line">    stk.<span class="built_in">push</span>(u); <span class="comment">// 进入递归时压入栈</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> v : g[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (has_cycle) <span class="keyword">return</span>; <span class="comment">// 找到环直接退出</span></span><br><span class="line">        <span class="keyword">if</span> (vis[v] == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// 找到环，输出环路径</span></span><br><span class="line">            has_cycle = <span class="literal">true</span>;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;找到有向环：&quot;</span>;</span><br><span class="line">            vector&lt;<span class="type">int</span>&gt; cycle;</span><br><span class="line">            <span class="keyword">while</span> (stk.<span class="built_in">top</span>() != v) &#123;</span><br><span class="line">                cycle.<span class="built_in">push_back</span>(stk.<span class="built_in">top</span>());</span><br><span class="line">                stk.<span class="built_in">pop</span>();</span><br><span class="line">            &#125;</span><br><span class="line">            cycle.<span class="built_in">push_back</span>(v);</span><br><span class="line">            <span class="built_in">reverse</span>(cycle.<span class="built_in">begin</span>(), cycle.<span class="built_in">end</span>());</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> x : cycle) cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">            cout &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (vis[v] == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">dfs</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    vis[u] = <span class="number">2</span>; <span class="comment">// 访问完毕</span></span><br><span class="line">    <span class="keyword">if</span> (!stk.<span class="built_in">empty</span>()) stk.<span class="built_in">pop</span>(); <span class="comment">// 退出递归时弹出栈</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> u, v;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        g[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (vis[i] == <span class="number">0</span> &amp;&amp; !has_cycle) &#123;</span><br><span class="line">            <span class="built_in">dfs</span>(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!has_cycle) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;图为无环DAG&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-两种方案的竞赛场景选择"><a href="#1-3-两种方案的竞赛场景选择" class="headerlink" title="1.3 两种方案的竞赛场景选择"></a>1.3 两种方案的竞赛场景选择</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>首选方案</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>仅需判环，无需找环路径</td>
+<td>Kahn算法</td>
+<td>代码简洁，不易写错，可同步得到拓扑序</td>
+</tr>
+<tr>
+<td>需要输出环的具体路径</td>
+<td>DFS方案</td>
+<td>可直接通过递归栈定位环，无需额外求SCC</td>
+</tr>
+<tr>
+<td>大数据量（n≥1e5）</td>
+<td>Kahn算法</td>
+<td>递归DFS有栈溢出风险，需改非递归，Kahn更稳定</td>
+</tr>
+<tr>
+<td>多环场景</td>
+<td>Kahn+SCC</td>
+<td>可批量定位所有环，DFS需多次处理</td>
+</tr>
+</tbody></table>
+<h3 id="1-4-常见坑点避坑"><a href="#1-4-常见坑点避坑" class="headerlink" title="1.4 常见坑点避坑"></a>1.4 常见坑点避坑</h3><ol>
+<li><p><strong>自环处理</strong>：节点u存在自环<code>u→u</code>时，<code>in_degree[u] ≥ 1</code>，Kahn会正确判环，DFS也会识别，注意题目是否允许自环；</p>
+</li>
+<li><p><strong>环的下游节点误区</strong>：Kahn中<code>in_degree&gt;0</code>的节点不都是环上的点，仅能说明它们受环影响，不能直接当作环节点；</p>
+</li>
+<li><p><strong>DFS状态标记错误</strong>：必须用3种状态，仅用“访问&#x2F;未访问”两种状态会误判环；</p>
+</li>
+<li><p><strong>非连通图处理</strong>：必须遍历所有节点，不能只从一个起点DFS&#x2F;初始化队列，否则会漏判不连通的环。</p>
+</li>
+</ol>
+<hr>
+<h2 id="二、DAG上的动态规划"><a href="#二、DAG上的动态规划" class="headerlink" title="二、DAG上的动态规划"></a>二、DAG上的动态规划</h2><p>这是拓扑排序<strong>最核心、最高频的竞赛应用</strong>，没有之一。DAG上的所有动态规划问题，都必须依赖拓扑排序保证转移的合法性，是省选及以下难度的必考考点。</p>
+<h3 id="2-1-核心原理：拓扑排序解决DP的无后效性问题"><a href="#2-1-核心原理：拓扑排序解决DP的无后效性问题" class="headerlink" title="2.1 核心原理：拓扑排序解决DP的无后效性问题"></a>2.1 核心原理：拓扑排序解决DP的无后效性问题</h3><p>动态规划的核心要求是<strong>无后效性</strong>：计算当前状态时，所有能转移到它的前驱状态必须已经计算完毕，不能出现“当前状态依赖未来未计算的状态”。</p>
+<p>而DAG的拓扑序，完美满足这个要求：</p>
+<p>对于DAG中任意一条有向边<code>u→v</code>（表示v的状态可由u的状态转移而来），在拓扑序列中，u一定出现在v的前面。</p>
+<p>也就是说，当我们按拓扑序的顺序计算v的状态时，u的状态已经100%计算完成，绝对不会出现后效性。反之，若不按拓扑序随机转移，大概率会得到错误结果。</p>
+<h3 id="2-2-DAG上DP的通用万能步骤"><a href="#2-2-DAG上DP的通用万能步骤" class="headerlink" title="2.2 DAG上DP的通用万能步骤"></a>2.2 DAG上DP的通用万能步骤</h3><p>竞赛中所有DAG上的DP问题，都可以按这个固定流程解决，不会出现逻辑错误：</p>
+<ol>
+<li><p><strong>问题建模</strong>：把题目中的“状态”转化为DAG的顶点，“状态转移关系”转化为DAG的有向边；</p>
+</li>
+<li><p><strong>拓扑排序</strong>：对DAG执行Kahn算法，得到合法的拓扑序列；</p>
+</li>
+<li><p><strong>DP初始化</strong>：根据题意，给初始状态（通常是入度为0的顶点，拓扑序最前端的点）赋正确的初始值；</p>
+</li>
+<li><p><strong>按拓扑序转移</strong>：遍历拓扑序列中的每个顶点u，遍历u的所有出边<code>u→v</code>，用u的DP值更新v的DP值；</p>
+</li>
+<li><p><strong>统计答案</strong>：根据题意，从所有顶点的DP值中统计最终结果（最大值、总和、终点值等）。</p>
+</li>
+</ol>
+<h3 id="2-3-竞赛高频DP类型详解"><a href="#2-3-竞赛高频DP类型详解" class="headerlink" title="2.3 竞赛高频DP类型详解"></a>2.3 竞赛高频DP类型详解</h3><p>下面拆解竞赛中最常考的3类DAG上的DP，每个都包含原理、例题、核心代码和避坑指南。</p>
+<h4 id="类型1：DAG上的最长路-最短路"><a href="#类型1：DAG上的最长路-最短路" class="headerlink" title="类型1：DAG上的最长路&#x2F;最短路"></a>类型1：DAG上的最长路&#x2F;最短路</h4><p>这是最基础、最高频的考点，也是所有DAG DP的基础。</p>
+<h4 id="为什么不用Dijkstra-SPFA，而用拓扑排序？"><a href="#为什么不用Dijkstra-SPFA，而用拓扑排序？" class="headerlink" title="为什么不用Dijkstra&#x2F;SPFA，而用拓扑排序？"></a>为什么不用Dijkstra&#x2F;SPFA，而用拓扑排序？</h4><ol>
+<li><p><strong>时间复杂度更优</strong>：拓扑排序是O(n+m)线性时间，比Dijkstra的O(m log n)更快，且不会被卡；</p>
+</li>
+<li><p><strong>无负权限制</strong>：普通Dijkstra无法处理正权最长路，SPFA处理最长路容易被卡，而拓扑排序无论边权正负，只要是DAG就能完美处理；</p>
+</li>
+<li><p><strong>逻辑更统一</strong>：最长路和最短路的代码几乎完全一致，仅需修改<code>max/min</code>和初始值，不易写错。</p>
+</li>
+</ol>
+<h4 id="最长路实现详解"><a href="#最长路实现详解" class="headerlink" title="最长路实现详解"></a>最长路实现详解</h4><ul>
+<li><p><strong>问题模型</strong>：给定DAG，边权为<code>w[u][v]</code>，求图中的最长路径（DAG直径），或从起点s到终点t的最长路径长度。</p>
+</li>
+<li><p><strong>状态定义</strong>：<code>dp[u]</code>表示从起点到u的最长路径长度；若求全图最长路，<code>dp[u]</code>表示以u为终点的最长路径长度。</p>
+</li>
+<li><p><strong>转移方程</strong>：对于边<code>u→v</code>，<code>dp[v] = max(dp[v], dp[u] + w[u][v])</code>。</p>
+</li>
+<li><p><strong>初始化</strong>：单源最长路则<code>dp[s] = 0</code>，其余为<code>-INF</code>；全图最长路则所有入度为0的点<code>dp[u] = 0</code>，其余为<code>-INF</code>。</p>
+</li>
+<li><p><strong>转移顺序</strong>：严格按拓扑序正序遍历。</p>
+</li>
+</ul>
+<h4 id="最短路实现详解"><a href="#最短路实现详解" class="headerlink" title="最短路实现详解"></a>最短路实现详解</h4><ul>
+<li><p><strong>状态定义</strong>：<code>dp[u]</code>表示从起点到u的最短路径长度。</p>
+</li>
+<li><p><strong>转移方程</strong>：对于边<code>u→v</code>，<code>dp[v] = min(dp[v], dp[u] + w[u][v])</code>。</p>
+</li>
+<li><p><strong>初始化</strong>：单源最短路则<code>dp[s] = 0</code>，其余为<code>INF</code>。</p>
+</li>
+<li><p><strong>转移顺序</strong>：同样按拓扑序正序遍历。</p>
+</li>
+</ul>
+<h4 id="经典例题：洛谷-P1113-杂物"><a href="#经典例题：洛谷-P1113-杂物" class="headerlink" title="经典例题：洛谷 P1113 杂物"></a>经典例题：洛谷 P1113 杂物</h4><ul>
+<li><p><strong>题意</strong>：n个杂物，每个杂物有完成时长，且必须完成所有前置杂物才能开始，求完成所有杂物的最短时间。</p>
+</li>
+<li><p><strong>建模</strong>：杂物为顶点，前置关系<code>u是v的前置</code>转化为边<code>u→v</code>，边权为v的完成时长；<code>dp[u]</code>表示完成u的最早结束时间。</p>
+</li>
+<li><p><strong>转移方程</strong>：<code>dp[v] = max(dp[v], dp[u] + time[v])</code>（v的最早开始时间是所有前置的最晚结束时间，加自身时长就是结束时间）。</p>
+</li>
+<li><p><strong>核心代码片段</strong>：</p>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 拓扑序已通过Kahn算法得到，存在topo数组中</span></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; topo;</span><br><span class="line"><span class="type">int</span> time[MAXN], dp[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 初始化：入度为0的杂物，完成时间就是自身时长</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (in_degree[i] == <span class="number">0</span>) dp[i] = time[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 按拓扑序转移</span></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> u : topo) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> v : g[u]) &#123;</span><br><span class="line">        dp[v] = <span class="built_in">max</span>(dp[v], dp[u] + time[v]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 答案是所有杂物的最晚完成时间</span></span><br><span class="line"><span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) ans = <span class="built_in">max</span>(ans, dp[i]);</span><br><span class="line">cout &lt;&lt; ans &lt;&lt; endl;</span><br></pre></td></tr></table></figure>
+
+<h4 id="类型2：DAG上的计数DP"><a href="#类型2：DAG上的计数DP" class="headerlink" title="类型2：DAG上的计数DP"></a>类型2：DAG上的计数DP</h4><p>高频考点，常考路径计数、方案计数、可达性计数等，比如洛谷P4017 最大食物链计数。</p>
+<h5 id="核心实现逻辑"><a href="#核心实现逻辑" class="headerlink" title="核心实现逻辑"></a>核心实现逻辑</h5><ul>
+<li><p><strong>问题模型</strong>：求DAG中从起点到终点的路径总数，或满足条件的方案数。</p>
+</li>
+<li><p><strong>状态定义</strong>：<code>dp[u]</code>表示从起点到u的路径数量。</p>
+</li>
+<li><p><strong>转移方程</strong>：对于边<code>u→v</code>，<code>dp[v] = (dp[v] + dp[u]) % MOD</code>（所有到u的路径，都可以延伸到v）。</p>
+</li>
+<li><p><strong>初始化</strong>：起点s的<code>dp[s] = 1</code>；若所有入度为0的点都是起点，全部设为1。</p>
+</li>
+<li><p><strong>转移顺序</strong>：拓扑序正序遍历。</p>
+</li>
+</ul>
+<h5 id="经典例题：洛谷-P4017-最大食物链计数"><a href="#经典例题：洛谷-P4017-最大食物链计数" class="headerlink" title="经典例题：洛谷 P4017 最大食物链计数"></a>经典例题：洛谷 P4017 最大食物链计数</h5><ul>
+<li><p><strong>题意</strong>：给定食物网（DAG），边<code>u→v</code>表示u被v吃，求完整的食物链数量（从最底层生产者到最高级捕食者的路径数）。</p>
+</li>
+<li><p><strong>建模</strong>：生产者是入度为0的点，捕食者是出度为0的点；<code>dp[u]</code>表示以u为终点的食物链数量。</p>
+</li>
+<li><p><strong>转移方程</strong>：<code>dp[v] = (dp[v] + dp[u]) % MOD</code>。</p>
+</li>
+<li><p><strong>答案</strong>：所有出度为0的点的<code>dp</code>值之和。</p>
+</li>
+</ul>
+<h4 id="类型3：DAG上的概率-期望DP"><a href="#类型3：DAG上的概率-期望DP" class="headerlink" title="类型3：DAG上的概率&#x2F;期望DP"></a>类型3：DAG上的概率&#x2F;期望DP</h4><p>竞赛中进阶考点，拓扑排序是解决这类问题的最优方案，避免了DFS递归的栈溢出和重复计算问题。</p>
+<h5 id="核心逻辑"><a href="#核心逻辑" class="headerlink" title="核心逻辑"></a>核心逻辑</h5><p>概率&#x2F;期望DP的核心是“当前状态的期望，由所有前驱状态的期望加权求和得到”，拓扑序保证了计算当前状态时，所有前驱的期望已经计算完成。</p>
+<ul>
+<li><p>状态定义：<code>dp[u]</code>表示到达u的概率&#x2F;期望；</p>
+</li>
+<li><p>转移方程：对于边<code>u→v</code>，<code>dp[v] += dp[u] * p(u→v)</code>（p是转移概率）；</p>
+</li>
+<li><p>初始化：起点的<code>dp[s] = 1</code>（概率）或对应初始期望；</p>
+</li>
+<li><p>转移顺序：拓扑序正序遍历。</p>
+</li>
+</ul>
+<h3 id="2-4-常见坑点避坑"><a href="#2-4-常见坑点避坑" class="headerlink" title="2.4 常见坑点避坑"></a>2.4 常见坑点避坑</h3><ol>
+<li><p><strong>转移顺序搞反</strong>：必须按拓扑序正序转移，不能逆序，否则前驱状态未计算完成，结果全错；</p>
+</li>
+<li><p><strong>初始化错误</strong>：入度为0的点的初始值必须正确，比如最长路初始化为0，而非-INF，否则会导致所有转移失效；</p>
+</li>
+<li><p><strong>有环图直接DP</strong>：必须先确保图是DAG，有环的话要先缩点，否则拓扑排序失败，DP有后效性；</p>
+</li>
+<li><p><strong>用DFS代替拓扑序</strong>：DAG深度大时，递归DFS会栈溢出，且重复计算会超时，竞赛中优先用拓扑序的迭代写法；</p>
+</li>
+<li><p><strong>边权处理错误</strong>：最长路要注意负权边的初始值，最短路要注意正权边的初始值，避免溢出。</p>
+</li>
+</ol>
+<hr>
+<h2 id="三、强连通分量缩点后的DAG处理"><a href="#三、强连通分量缩点后的DAG处理" class="headerlink" title="三、强连通分量缩点后的DAG处理"></a>三、强连通分量缩点后的DAG处理</h2><p>这是<strong>竞赛有向图难题的万能套路</strong>，90%的有环有向图问题，都可以通过“缩点+拓扑排序”转化为简单的DAG问题解决，是省选难度的核心考点。</p>
+<h3 id="3-1-核心原理"><a href="#3-1-核心原理" class="headerlink" title="3.1 核心原理"></a>3.1 核心原理</h3><p>有向图中的<strong>强连通分量（SCC）</strong> 有一个关键特性：<strong>同一个SCC内的任意两个节点，都可以互相到达</strong>。</p>
+<ul>
+<li><p>对于很多问题，同一个SCC内的节点可以合并处理（比如点权求和、路径计数时，SCC内的点可以互相到达，贡献一致）；</p>
+</li>
+<li><p>把每个SCC缩成一个“超级点”，缩点后的图<strong>一定是DAG</strong>（如果缩点后还有环，环上的超级点可以合并成一个更大的SCC，与SCC的极大性矛盾）。</p>
+</li>
+</ul>
+<p>这个操作，就把复杂的有环有向图，转化为了我们熟悉的DAG，之后就可以用拓扑排序+DP解决所有问题。</p>
+<h3 id="3-2-竞赛通用标准流程"><a href="#3-2-竞赛通用标准流程" class="headerlink" title="3.2 竞赛通用标准流程"></a>3.2 竞赛通用标准流程</h3><p>这个流程是固定的，必须熟练掌握，所有缩点类题目都按这个步骤来：</p>
+<ol>
+<li><p><strong>求SCC</strong>：对原图用Tarjan算法或Kosaraju算法，求出所有强连通分量，给每个节点u标记所属的SCC编号<code>bel[u]</code>；</p>
+</li>
+<li><p><strong>缩点建图</strong>：</p>
+<ul>
+<li><p>统计每个SCC的信息：比如SCC的大小、SCC内所有点的权值和、SCC内的节点数量等，根据题目需求调整；</p>
+</li>
+<li><p>构建缩点后的DAG：遍历原图的所有边<code>u→v</code>，若<code>bel[u] != bel[v]</code>，说明这是两个SCC之间的边，在缩点后的图中加边<code>bel[u] → bel[v]</code>，<strong>必须去重</strong>，避免重复加边导致入度统计错误；</p>
+</li>
+</ul>
+</li>
+<li><p><strong>拓扑排序</strong>：对缩点后的DAG执行Kahn算法，得到拓扑序列；</p>
+</li>
+<li><p><strong>问题求解</strong>：在缩点后的DAG上，按拓扑序做DP、统计、路径等操作，得到原问题的答案。</p>
+</li>
+</ol>
+<h3 id="3-3-高频竞赛应用场景详解"><a href="#3-3-高频竞赛应用场景详解" class="headerlink" title="3.3 高频竞赛应用场景详解"></a>3.3 高频竞赛应用场景详解</h3><h4 id="场景1：有向图的最大权路径（模板题：洛谷-P3387-缩点）"><a href="#场景1：有向图的最大权路径（模板题：洛谷-P3387-缩点）" class="headerlink" title="场景1：有向图的最大权路径（模板题：洛谷 P3387 缩点）"></a>场景1：有向图的最大权路径（模板题：洛谷 P3387 缩点）</h4><p>这是缩点+拓扑排序最经典的应用，也是竞赛必背模板题。</p>
+<ul>
+<li><p><strong>题意</strong>：给定有向图，每个点有权值，路径上的点权只算一次，求点权和最大的路径。</p>
+</li>
+<li><p><strong>问题难点</strong>：图中存在环，环上的点可以全部走到，点权可以全部拿到，直接DP有后效性。</p>
+</li>
+<li><p><strong>解法步骤</strong>：</p>
+<ol>
+<li><p>Tarjan求SCC，每个SCC的权值为内部所有点的权值之和；</p>
+</li>
+<li><p>缩点建DAG，去重边，统计每个超级点的入度；</p>
+</li>
+<li><p>对DAG拓扑排序，按拓扑序求最长路，<code>dp[u]</code>表示到达超级点u的最大权值和；</p>
+</li>
+<li><p>所有<code>dp[u]</code>的最大值就是答案。</p>
+</li>
+</ol>
+</li>
+<li><p><strong>核心代码片段</strong>：</p>
+</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 缩点后的图</span></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; new_g[MAXN];</span><br><span class="line"><span class="type">int</span> scc_w[MAXN]; <span class="comment">// 每个SCC的权值和</span></span><br><span class="line"><span class="type">int</span> bel[MAXN], scc_cnt; <span class="comment">// 每个点所属的SCC编号，SCC总数</span></span><br><span class="line"><span class="type">int</span> dp[MAXN];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 拓扑排序+DP</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">topo_dp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= scc_cnt; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (in_degree[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            q.<span class="built_in">push</span>(i);</span><br><span class="line">            dp[i] = scc_w[i]; <span class="comment">// 初始化：SCC自身的权值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>();</span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> v : new_g[u]) &#123;</span><br><span class="line">            dp[v] = <span class="built_in">max</span>(dp[v], dp[u] + scc_w[v]);</span><br><span class="line">            in_degree[v]--;</span><br><span class="line">            <span class="keyword">if</span> (in_degree[v] == <span class="number">0</span>) q.<span class="built_in">push</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 统计答案</span></span><br><span class="line">    <span class="type">int</span> ans = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= scc_cnt; i++) ans = <span class="built_in">max</span>(ans, dp[i]);</span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="场景2：有向图可达性统计"><a href="#场景2：有向图可达性统计" class="headerlink" title="场景2：有向图可达性统计"></a>场景2：有向图可达性统计</h4><ul>
+<li><p><strong>问题</strong>：给定n&#x3D;1e4、m&#x3D;1e5的有向图，求每个点能到达的节点数量，暴力DFS每个点会超时。</p>
+</li>
+<li><p><strong>解法</strong>：</p>
+<ol>
+<li><p>缩点后，同一个SCC内的点可达性完全一致，只需统计每个超级点的可达性；</p>
+</li>
+<li><p>对缩点后的DAG按<strong>逆拓扑序</strong>遍历，用<code>bitset</code>统计每个超级点能到达的超级点集合；</p>
+</li>
+<li><p>每个点的可达数量 &#x3D; 所属SCC的大小 + 可达的其他SCC的大小之和。</p>
+</li>
+</ol>
+</li>
+<li><p><strong>优势</strong>：缩点后点数大幅减少，bitset优化后时间复杂度降至O(n+m + n²&#x2F;64)，可处理1e4规模的数据。</p>
+</li>
+</ul>
+<h4 id="场景3：有向图的必经点-必经边"><a href="#场景3：有向图的必经点-必经边" class="headerlink" title="场景3：有向图的必经点&#x2F;必经边"></a>场景3：有向图的必经点&#x2F;必经边</h4><p>缩点后，DAG上的必经点&#x2F;必经边可以通过拓扑序+逆拓扑序的路径计数快速求解，是竞赛中进阶考点。</p>
+<h3 id="3-4-常见坑点避坑"><a href="#3-4-常见坑点避坑" class="headerlink" title="3.4 常见坑点避坑"></a>3.4 常见坑点避坑</h3><ol>
+<li><p><strong>缩点后加边不去重</strong>：这是初学者最容易犯的致命错误！原图中多条边对应同一个SCC间的边，重复加边会导致入度统计错误，拓扑排序完全失效。必须用set或哈希去重；</p>
+</li>
+<li><p><strong>SCC信息统计错误</strong>：<code>bel</code>数组标记错误、SCC权值和算错，会导致后续DP全错，必须先验证SCC求解的正确性；</p>
+</li>
+<li><p><strong>拓扑排序的对象错误</strong>：缩点后必须对<strong>新的DAG</strong>跑拓扑排序，而不是原图，很多初学者会在这里搞混；</p>
+</li>
+<li><p><strong>Tarjan算法实现错误</strong>：low值更新错误、栈操作错误，会导致SCC求解错误，是整个流程的基础，必须先把Tarjan模板写对。</p>
+</li>
+</ol>
+<hr>
+<h2 id="四、差分约束系统的拓扑解法"><a href="#四、差分约束系统的拓扑解法" class="headerlink" title="四、差分约束系统的拓扑解法"></a>四、差分约束系统的拓扑解法</h2><p>差分约束系统是竞赛中高频的不等式组求解问题，绝大多数初学者只知道用SPFA求解，却不知道<strong>当约束对应的图是DAG时，拓扑排序解法效率更高、更稳定，不会被卡</strong>。</p>
+<h3 id="4-1-差分约束系统基础"><a href="#4-1-差分约束系统基础" class="headerlink" title="4.1 差分约束系统基础"></a>4.1 差分约束系统基础</h3><p>差分约束系统，就是给定n个变量<code>x₁~xₙ</code>，和m个形如<code>xᵢ - xⱼ ≤ c</code>（或<code>≥</code>、<code>=</code>）的不等式，求变量的一组可行解，或某个变量的最大值&#x2F;最小值。</p>
+<p>核心是<strong>不等式到图的边的转化</strong>，所有约束都可以转化为有向边：</p>
+<table>
+<thead>
+<tr>
+<th>不等式</th>
+<th>变形</th>
+<th>对应图的边</th>
+<th>对应模型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>xᵢ - xⱼ ≤ c</td>
+<td>xᵢ ≤ xⱼ + c</td>
+<td>j → i，边权c</td>
+<td>最短路模型</td>
+</tr>
+<tr>
+<td>xᵢ - xⱼ ≥ c</td>
+<td>xⱼ ≤ xᵢ - c</td>
+<td>i → j，边权-c</td>
+<td>最短路模型</td>
+</tr>
+<tr>
+<td>xᵢ - xⱼ ≥ c</td>
+<td>xᵢ ≥ xⱼ + c</td>
+<td>j → i，边权c</td>
+<td>最长路模型</td>
+</tr>
+<tr>
+<td>xᵢ &#x3D; xⱼ</td>
+<td>xᵢ ≤ xⱼ+0 且 xⱼ ≤ xᵢ+0</td>
+<td>j→i(0)、i→j(0)</td>
+<td>通用</td>
+</tr>
+<tr>
+<td>转化完成后，问题就变成了图的单源最短&#x2F;最长路问题：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>求变量的<strong>最大值</strong>：用最短路模型；</p>
+</li>
+<li><p>求变量的<strong>最小值</strong>：用最长路模型；</p>
+</li>
+<li><p>无解情况：图中存在负环（最短路）或正环（最长路），说明不等式组矛盾。</p>
+</li>
+</ul>
+<h3 id="4-2-拓扑排序解法的核心逻辑"><a href="#4-2-拓扑排序解法的核心逻辑" class="headerlink" title="4.2 拓扑排序解法的核心逻辑"></a>4.2 拓扑排序解法的核心逻辑</h3><p>如果转化后的图是<strong>DAG</strong>，那么完全不需要用SPFA，直接用拓扑排序求解最短&#x2F;最长路，优势极大：</p>
+<ul>
+<li><p>时间复杂度O(n+m)，线性时间，比SPFA快得多，且不会被卡；</p>
+</li>
+<li><p>无需判环，DAG天然无环，不会出现不等式矛盾的情况；</p>
+</li>
+<li><p>代码更简洁，没有SPFA的队列优化和负环判断，不易写错。</p>
+</li>
+</ul>
+<h3 id="4-3-完整实现步骤"><a href="#4-3-完整实现步骤" class="headerlink" title="4.3 完整实现步骤"></a>4.3 完整实现步骤</h3><ol>
+<li><p><strong>不等式转化</strong>：把所有约束转化为对应的有向边，构建图；</p>
+</li>
+<li><p><strong>建立超级源点</strong>：差分约束系统需要一个统一的起点，通常建立超级源点0，对每个变量xᵢ，加边<code>0→i</code>，边权根据题目需求设置（比如要求xᵢ≥1，边权设为1；无特殊要求设为0）；</p>
+</li>
+<li><p><strong>拓扑排序</strong>：对包含超级源点的图跑Kahn算法，得到拓扑序列；</p>
+</li>
+<li><p><strong>按拓扑序求解</strong>：</p>
+<ul>
+<li><p>最长路模型（求最小值）：初始化<code>dis[0] = 0</code>，其余为<code>-INF</code>，按拓扑序正序遍历，对边<code>u→v</code>，<code>dis[v] = max(dis[v], dis[u] + w[u][v])</code>；</p>
+</li>
+<li><p>最短路模型（求最大值）：初始化<code>dis[0] = 0</code>，其余为<code>INF</code>，按拓扑序正序遍历，对边<code>u→v</code>，<code>dis[v] = min(dis[v], dis[u] + w[u][v])</code>；</p>
+</li>
+</ul>
+</li>
+<li><p><strong>输出解</strong>：<code>dis[1]~dis[n]</code>就是变量<code>x₁~xₙ</code>的一组可行解。</p>
+</li>
+</ol>
+<h3 id="4-4-经典例题：洛谷-P1983-NOIP2013-普及组-车站分级"><a href="#4-4-经典例题：洛谷-P1983-NOIP2013-普及组-车站分级" class="headerlink" title="4.4 经典例题：洛谷 P1983 [NOIP2013 普及组] 车站分级"></a>4.4 经典例题：洛谷 P1983 [NOIP2013 普及组] 车站分级</h3><ul>
+<li><p><strong>题意</strong>：火车经过的车站中，停靠的车站等级必须严格大于不停靠的车站等级，求最少需要多少个等级。</p>
+</li>
+<li><p><strong>建模</strong>：</p>
+<ul>
+<li><p>变量<code>a[i]</code>表示第i个车站的等级，要求最小值，用最长路模型；</p>
+</li>
+<li><p>对于每个车次，停靠的车站集合为S，不停靠的为T，对任意u∈T、v∈S，有<code>a[v] ≥ a[u] + 1</code>，转化为边<code>u→v</code>，边权1；</p>
+</li>
+<li><p>建立超级源点0，加边<code>0→i</code>，边权1（每个车站等级至少为1）。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>解法</strong>：转化后的图是DAG，直接拓扑排序求最长路，所有<code>dis[i]</code>的最大值就是最少需要的等级数。</p>
+</li>
+</ul>
+<h3 id="4-5-与SPFA的场景选择"><a href="#4-5-与SPFA的场景选择" class="headerlink" title="4.5 与SPFA的场景选择"></a>4.5 与SPFA的场景选择</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>首选方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>转化后的图是DAG（约束无环，如层级、先后顺序）</td>
+<td>拓扑排序解法</td>
+</tr>
+<tr>
+<td>图中存在环，需要判环找矛盾</td>
+<td>SPFA</td>
+</tr>
+<tr>
+<td>大数据量，无环</td>
+<td>拓扑排序解法，避免SPFA被卡</td>
+</tr>
+</tbody></table>
+<h3 id="4-6-常见坑点避坑"><a href="#4-6-常见坑点避坑" class="headerlink" title="4.6 常见坑点避坑"></a>4.6 常见坑点避坑</h3><ol>
+<li><p><strong>不等式转化错误</strong>：把<code>≤</code>和<code>≥</code>搞反，导致边的方向和权值错误，结果全错，这是最常见的致命错误；</p>
+</li>
+<li><p><strong>忘记建立超级源点</strong>：导致图不连通，很多节点的dis值无法更新，得到错误的解；</p>
+</li>
+<li><p><strong>最长路和最短路模型搞混</strong>：求变量的最小值必须用最长路模型，求最大值必须用最短路模型，初学者极易搞反；</p>
+</li>
+<li><p><strong>边权符号错误</strong>：不等式变形时，边权的正负号写错，导致约束完全相反。</p>
+</li>
+</ol>
+<hr>
+<h2 id="五、2-SAT问题中的拓扑排序应用"><a href="#五、2-SAT问题中的拓扑排序应用" class="headerlink" title="五、2-SAT问题中的拓扑排序应用"></a>五、2-SAT问题中的拓扑排序应用</h2><p>2-SAT是省选及以上难度的高频考点，拓扑排序（逆拓扑序）是2-SAT问题<strong>有解时赋值的核心依据</strong>，没有拓扑排序，就无法得到合法的变量赋值。</p>
+<h3 id="5-1-2-SAT问题基础"><a href="#5-1-2-SAT问题基础" class="headerlink" title="5.1 2-SAT问题基础"></a>5.1 2-SAT问题基础</h3><p>2-SAT问题：给定n个布尔变量（每个变量只能取true&#x2F;false），和m个二元约束（每个约束仅涉及两个变量），求变量的一组合法赋值，或判断无解。</p>
+<h4 id="核心拆点与建图规则"><a href="#核心拆点与建图规则" class="headerlink" title="核心拆点与建图规则"></a>核心拆点与建图规则</h4><p>把每个布尔变量<code>a</code>拆成两个节点：</p>
+<ul>
+<li><p><code>2a</code>：表示<code>a</code>取false（¬a）；</p>
+</li>
+<li><p><code>2a+1</code>：表示<code>a</code>取true（a）。</p>
+</li>
+</ul>
+<p>每个约束转化为<strong>两条有向边（逆否命题）</strong>，比如最常见的约束<code>a∨b</code>（a为真或b为真），等价于：</p>
+<ul>
+<li><p>若a为假，则b必须为真：<code>¬a → b</code> → 边<code>2a → 2b+1</code>；</p>
+</li>
+<li><p>若b为假，则a必须为真：<code>¬b → a</code> → 边<code>2b → 2a+1</code>。</p>
+</li>
+</ul>
+<h4 id="无解判定"><a href="#无解判定" class="headerlink" title="无解判定"></a>无解判定</h4><p>用Tarjan算法对建图后的有向图求SCC，若对于某个变量<code>a</code>，<code>2a</code>和<code>2a+1</code>在同一个SCC中，说明<code>a</code>既要为真又要为假，矛盾，问题无解。</p>
+<h3 id="5-2-拓扑排序在2-SAT中的核心作用"><a href="#5-2-拓扑排序在2-SAT中的核心作用" class="headerlink" title="5.2 拓扑排序在2-SAT中的核心作用"></a>5.2 拓扑排序在2-SAT中的核心作用</h3><p>若问题有解，如何给变量赋值？这里必须用到<strong>缩点后DAG的逆拓扑序</strong>，这是2-SAT赋值的唯一正确方法。</p>
+<h4 id="为什么必须用逆拓扑序？"><a href="#为什么必须用逆拓扑序？" class="headerlink" title="为什么必须用逆拓扑序？"></a>为什么必须用逆拓扑序？</h4><p>缩点后的图是DAG，边<code>u→v</code>的含义是“若u为真，则v必须为真”。</p>
+<ul>
+<li><p>若按<strong>正拓扑序</strong>赋值：先给上游节点赋值，可能出现“上游赋值为真，导致下游必须为真，但下游已经被赋值为假”的冲突；</p>
+</li>
+<li><p>若按<strong>逆拓扑序</strong>赋值：先给下游节点赋值，再给上游节点赋值，保证赋值时，当前节点的所有后继（出边指向的节点）已经赋值完毕，绝对不会出现约束冲突。</p>
+</li>
+</ul>
+<h4 id="赋值规则（必须牢记）"><a href="#赋值规则（必须牢记）" class="headerlink" title="赋值规则（必须牢记）"></a>赋值规则（必须牢记）</h4><p>对于每个变量<code>a</code>，设<code>bel[2a]</code>是<code>¬a</code>所在的SCC编号，<code>bel[2a+1]</code>是<code>a</code>所在的SCC编号：</p>
+<p><code>a = (bel[2a+1] &gt; bel[2a])</code></p>
+<p>这个规则的本质是：<strong>选择SCC编号更大的那个取值</strong>。因为Tarjan算法求SCC时，SCC的编号顺序就是缩点后DAG的<strong>逆拓扑序</strong>——编号越大的SCC，在逆拓扑序中越靠前，赋值优先级越高。</p>
+<h3 id="5-3-2-SAT完整实现流程（含拓扑排序）"><a href="#5-3-2-SAT完整实现流程（含拓扑排序）" class="headerlink" title="5.3 2-SAT完整实现流程（含拓扑排序）"></a>5.3 2-SAT完整实现流程（含拓扑排序）</h3><ol>
+<li><p><strong>拆点</strong>：每个变量<code>a</code>拆为<code>2a</code>（¬a）和<code>2a+1</code>（a）；</p>
+</li>
+<li><p><strong>建图</strong>：把每个约束转化为对应的两条有向边；</p>
+</li>
+<li><p><strong>求SCC</strong>：用Tarjan算法求所有SCC，标记每个节点的<code>bel</code>编号；</p>
+</li>
+<li><p><strong>无解判定</strong>：遍历每个变量，若<code>bel[2a] == bel[2a+1]</code>，输出无解；</p>
+</li>
+<li><p><strong>赋值</strong>：按逆拓扑序（Tarjan的SCC编号），对每个变量<code>a</code>，赋值<code>a = (bel[2a+1] &gt; bel[2a])</code>；</p>
+</li>
+<li><p><strong>输出结果</strong>：输出每个变量的赋值。</p>
+</li>
+</ol>
+<h3 id="5-4-模板题代码实现（洛谷-P4782-【模板】2-SAT-问题）"><a href="#5-4-模板题代码实现（洛谷-P4782-【模板】2-SAT-问题）" class="headerlink" title="5.4 模板题代码实现（洛谷 P4782 【模板】2-SAT 问题）"></a>5.4 模板题代码实现（洛谷 P4782 【模板】2-SAT 问题）</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MAXN = <span class="number">2e6</span> + <span class="number">5</span>; <span class="comment">// 每个变量拆2个点，开2倍空间</span></span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; g[MAXN];</span><br><span class="line"><span class="type">int</span> dfn[MAXN], low[MAXN], tim;</span><br><span class="line"><span class="type">int</span> bel[MAXN], scc_cnt;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; stk;</span><br><span class="line"><span class="type">bool</span> in_stk[MAXN];</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Tarjan求SCC，SCC编号就是逆拓扑序</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> u)</span> </span>&#123;</span><br><span class="line">    dfn[u] = low[u] = ++tim;</span><br><span class="line">    stk.<span class="built_in">push</span>(u);</span><br><span class="line">    in_stk[u] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> v : g[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!dfn[v]) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(v);</span><br><span class="line">            low[u] = <span class="built_in">min</span>(low[u], low[v]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (in_stk[v]) &#123;</span><br><span class="line">            low[u] = <span class="built_in">min</span>(low[u], dfn[v]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (dfn[u] == low[u]) &#123;</span><br><span class="line">        scc_cnt++;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">            <span class="type">int</span> v = stk.<span class="built_in">top</span>();</span><br><span class="line">            stk.<span class="built_in">pop</span>();</span><br><span class="line">            in_stk[v] = <span class="number">0</span>;</span><br><span class="line">            bel[v] = scc_cnt;</span><br><span class="line">            <span class="keyword">if</span> (v == u) <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="number">0</span>);</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= m; i++) &#123;</span><br><span class="line">        <span class="type">int</span> a, va, b, vb;</span><br><span class="line">        cin &gt;&gt; a &gt;&gt; va &gt;&gt; b &gt;&gt; vb;</span><br><span class="line">        <span class="comment">// 约束：a=va 或 b=vb</span></span><br><span class="line">        <span class="comment">// 转化为：¬(a=va) → b=vb 和 ¬(b=vb) → a=va</span></span><br><span class="line">        <span class="type">int</span> nota = <span class="number">2</span>*a + (va^<span class="number">1</span>); <span class="comment">// a≠va对应的节点</span></span><br><span class="line">        <span class="type">int</span> truea = <span class="number">2</span>*a + va;     <span class="comment">// a=va对应的节点</span></span><br><span class="line">        <span class="type">int</span> notb = <span class="number">2</span>*b + (vb^<span class="number">1</span>); <span class="comment">// b≠vb对应的节点</span></span><br><span class="line">        <span class="type">int</span> trueb = <span class="number">2</span>*b + vb;     <span class="comment">// b=vb对应的节点</span></span><br><span class="line">        g[nota].<span class="built_in">push_back</span>(trueb);</span><br><span class="line">        g[notb].<span class="built_in">push_back</span>(truea);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 求SCC</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">2</span>; i &lt;= <span class="number">2</span>*n<span class="number">+1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!dfn[i]) <span class="built_in">tarjan</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 无解判定</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (bel[<span class="number">2</span>*i] == bel[<span class="number">2</span>*i<span class="number">+1</span>]) &#123;</span><br><span class="line">            cout &lt;&lt; <span class="string">&quot;IMPOSSIBLE&quot;</span> &lt;&lt; endl;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 按逆拓扑序赋值，输出解</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;POSSIBLE&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; i++) &#123;</span><br><span class="line">        <span class="comment">// bel[2i+1] &gt; bel[2i] 选true，否则选false</span></span><br><span class="line">        cout &lt;&lt; (bel[<span class="number">2</span>*i<span class="number">+1</span>] &gt; bel[<span class="number">2</span>*i]) &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-5-常见坑点避坑"><a href="#5-5-常见坑点避坑" class="headerlink" title="5.5 常见坑点避坑"></a>5.5 常见坑点避坑</h3><ol>
+<li><p><strong>拆点编号错误</strong>：变量的true&#x2F;false对应的节点编号搞反，导致赋值完全错误，必须严格按“2a为false，2a+1为true”的规则拆点；</p>
+</li>
+<li><p><strong>约束转化错误</strong>：忘记加逆否命题的边，导致约束不全，结果错误；</p>
+</li>
+<li><p><strong>逆拓扑序搞反</strong>：用正拓扑序赋值，导致约束冲突，必须用Tarjan的SCC编号（逆拓扑序）赋值；</p>
+</li>
+<li><p><strong>空间开小</strong>：每个变量拆2个点，边数是约束数的2倍，必须开2倍以上的空间，否则会数组越界。</p>
+</li>
+</ol>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2026/04/01/bitset/">bitset</a></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/">拓扑排序</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%93%E6%89%91%E5%9B%BE%E7%9A%84%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8"><span class="toc-text">拓扑图的深入应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%9C%89%E5%90%91%E5%9B%BE%E5%88%A4%E7%8E%AF%E4%B8%8E%E7%8E%AF%E5%AE%9A%E4%BD%8D"><span class="toc-text">一、有向图判环与环定位</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86"><span class="toc-text">1.1 核心原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E4%B8%A4%E7%A7%8D%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88%E8%AF%A6%E8%A7%A3"><span class="toc-text">1.2 两种实现方案详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%A1%881%EF%BC%9AKahn%E7%AE%97%E6%B3%95%E5%88%A4%E7%8E%AF"><span class="toc-text">方案1：Kahn算法判环</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="toc-text">完整实现步骤</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%8E%AF%E5%AE%9A%E4%BD%8D"><span class="toc-text">环定位</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B8%A6%E7%8E%AF%E5%AE%9A%E4%BD%8D%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">带环定位的代码实现</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%96%B9%E6%A1%882%EF%BC%9ADFS%E9%80%86%E5%BA%8F%E6%B3%95%E5%88%A4%E7%8E%AF%EF%BC%88%E4%BC%98%E5%8A%BF%EF%BC%9A%E7%9B%B4%E6%8E%A5%E8%BE%93%E5%87%BA%E7%8E%AF%E7%9A%84%E8%B7%AF%E5%BE%84%EF%BC%89"><span class="toc-text">方案2：DFS逆序法判环（优势：直接输出环的路径）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E7%8A%B6%E6%80%81%E5%AE%9A%E4%B9%89"><span class="toc-text">核心状态定义</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%A4%E7%8E%AF%E4%B8%8E%E7%8E%AF%E8%B7%AF%E5%BE%84%E8%BE%93%E5%87%BA%E9%80%BB%E8%BE%91"><span class="toc-text">判环与环路径输出逻辑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%B8%A6%E7%8E%AF%E8%B7%AF%E5%BE%84%E8%BE%93%E5%87%BA%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-text">带环路径输出的代码实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E4%B8%A4%E7%A7%8D%E6%96%B9%E6%A1%88%E7%9A%84%E7%AB%9E%E8%B5%9B%E5%9C%BA%E6%99%AF%E9%80%89%E6%8B%A9"><span class="toc-text">1.3 两种方案的竞赛场景选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E9%81%BF%E5%9D%91"><span class="toc-text">1.4 常见坑点避坑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81DAG%E4%B8%8A%E7%9A%84%E5%8A%A8%E6%80%81%E8%A7%84%E5%88%92"><span class="toc-text">二、DAG上的动态规划</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%EF%BC%9A%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E8%A7%A3%E5%86%B3DP%E7%9A%84%E6%97%A0%E5%90%8E%E6%95%88%E6%80%A7%E9%97%AE%E9%A2%98"><span class="toc-text">2.1 核心原理：拓扑排序解决DP的无后效性问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-DAG%E4%B8%8ADP%E7%9A%84%E9%80%9A%E7%94%A8%E4%B8%87%E8%83%BD%E6%AD%A5%E9%AA%A4"><span class="toc-text">2.2 DAG上DP的通用万能步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E7%AB%9E%E8%B5%9B%E9%AB%98%E9%A2%91DP%E7%B1%BB%E5%9E%8B%E8%AF%A6%E8%A7%A3"><span class="toc-text">2.3 竞赛高频DP类型详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B1%EF%BC%9ADAG%E4%B8%8A%E7%9A%84%E6%9C%80%E9%95%BF%E8%B7%AF-%E6%9C%80%E7%9F%AD%E8%B7%AF"><span class="toc-text">类型1：DAG上的最长路&#x2F;最短路</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8Dijkstra-SPFA%EF%BC%8C%E8%80%8C%E7%94%A8%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%EF%BC%9F"><span class="toc-text">为什么不用Dijkstra&#x2F;SPFA，而用拓扑排序？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E9%95%BF%E8%B7%AF%E5%AE%9E%E7%8E%B0%E8%AF%A6%E8%A7%A3"><span class="toc-text">最长路实现详解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%AE%9E%E7%8E%B0%E8%AF%A6%E8%A7%A3"><span class="toc-text">最短路实现详解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8%E4%BE%8B%E9%A2%98%EF%BC%9A%E6%B4%9B%E8%B0%B7-P1113-%E6%9D%82%E7%89%A9"><span class="toc-text">经典例题：洛谷 P1113 杂物</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B2%EF%BC%9ADAG%E4%B8%8A%E7%9A%84%E8%AE%A1%E6%95%B0DP"><span class="toc-text">类型2：DAG上的计数DP</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%AE%9E%E7%8E%B0%E9%80%BB%E8%BE%91"><span class="toc-text">核心实现逻辑</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8%E4%BE%8B%E9%A2%98%EF%BC%9A%E6%B4%9B%E8%B0%B7-P4017-%E6%9C%80%E5%A4%A7%E9%A3%9F%E7%89%A9%E9%93%BE%E8%AE%A1%E6%95%B0"><span class="toc-text">经典例题：洛谷 P4017 最大食物链计数</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B3%EF%BC%9ADAG%E4%B8%8A%E7%9A%84%E6%A6%82%E7%8E%87-%E6%9C%9F%E6%9C%9BDP"><span class="toc-text">类型3：DAG上的概率&#x2F;期望DP</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="toc-text">核心逻辑</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E9%81%BF%E5%9D%91"><span class="toc-text">2.4 常见坑点避坑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%E7%BC%A9%E7%82%B9%E5%90%8E%E7%9A%84DAG%E5%A4%84%E7%90%86"><span class="toc-text">三、强连通分量缩点后的DAG处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86"><span class="toc-text">3.1 核心原理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E7%AB%9E%E8%B5%9B%E9%80%9A%E7%94%A8%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B"><span class="toc-text">3.2 竞赛通用标准流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E9%AB%98%E9%A2%91%E7%AB%9E%E8%B5%9B%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E8%AF%A6%E8%A7%A3"><span class="toc-text">3.3 高频竞赛应用场景详解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF1%EF%BC%9A%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E6%9C%80%E5%A4%A7%E6%9D%83%E8%B7%AF%E5%BE%84%EF%BC%88%E6%A8%A1%E6%9D%BF%E9%A2%98%EF%BC%9A%E6%B4%9B%E8%B0%B7-P3387-%E7%BC%A9%E7%82%B9%EF%BC%89"><span class="toc-text">场景1：有向图的最大权路径（模板题：洛谷 P3387 缩点）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF2%EF%BC%9A%E6%9C%89%E5%90%91%E5%9B%BE%E5%8F%AF%E8%BE%BE%E6%80%A7%E7%BB%9F%E8%AE%A1"><span class="toc-text">场景2：有向图可达性统计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9C%BA%E6%99%AF3%EF%BC%9A%E6%9C%89%E5%90%91%E5%9B%BE%E7%9A%84%E5%BF%85%E7%BB%8F%E7%82%B9-%E5%BF%85%E7%BB%8F%E8%BE%B9"><span class="toc-text">场景3：有向图的必经点&#x2F;必经边</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E9%81%BF%E5%9D%91"><span class="toc-text">3.4 常见坑点避坑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%B7%AE%E5%88%86%E7%BA%A6%E6%9D%9F%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%8B%93%E6%89%91%E8%A7%A3%E6%B3%95"><span class="toc-text">四、差分约束系统的拓扑解法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%B7%AE%E5%88%86%E7%BA%A6%E6%9D%9F%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80"><span class="toc-text">4.1 差分约束系统基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E8%A7%A3%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%E9%80%BB%E8%BE%91"><span class="toc-text">4.2 拓扑排序解法的核心逻辑</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%AE%8C%E6%95%B4%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="toc-text">4.3 完整实现步骤</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E7%BB%8F%E5%85%B8%E4%BE%8B%E9%A2%98%EF%BC%9A%E6%B4%9B%E8%B0%B7-P1983-NOIP2013-%E6%99%AE%E5%8F%8A%E7%BB%84-%E8%BD%A6%E7%AB%99%E5%88%86%E7%BA%A7"><span class="toc-text">4.4 经典例题：洛谷 P1983 [NOIP2013 普及组] 车站分级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E4%B8%8ESPFA%E7%9A%84%E5%9C%BA%E6%99%AF%E9%80%89%E6%8B%A9"><span class="toc-text">4.5 与SPFA的场景选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E9%81%BF%E5%9D%91"><span class="toc-text">4.6 常见坑点避坑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%812-SAT%E9%97%AE%E9%A2%98%E4%B8%AD%E7%9A%84%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%BA%94%E7%94%A8"><span class="toc-text">五、2-SAT问题中的拓扑排序应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-2-SAT%E9%97%AE%E9%A2%98%E5%9F%BA%E7%A1%80"><span class="toc-text">5.1 2-SAT问题基础</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%8B%86%E7%82%B9%E4%B8%8E%E5%BB%BA%E5%9B%BE%E8%A7%84%E5%88%99"><span class="toc-text">核心拆点与建图规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E8%A7%A3%E5%88%A4%E5%AE%9A"><span class="toc-text">无解判定</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E5%9C%A82-SAT%E4%B8%AD%E7%9A%84%E6%A0%B8%E5%BF%83%E4%BD%9C%E7%94%A8"><span class="toc-text">5.2 拓扑排序在2-SAT中的核心作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E7%94%A8%E9%80%86%E6%8B%93%E6%89%91%E5%BA%8F%EF%BC%9F"><span class="toc-text">为什么必须用逆拓扑序？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%8B%E5%80%BC%E8%A7%84%E5%88%99%EF%BC%88%E5%BF%85%E9%A1%BB%E7%89%A2%E8%AE%B0%EF%BC%89"><span class="toc-text">赋值规则（必须牢记）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-2-SAT%E5%AE%8C%E6%95%B4%E5%AE%9E%E7%8E%B0%E6%B5%81%E7%A8%8B%EF%BC%88%E5%90%AB%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%EF%BC%89"><span class="toc-text">5.3 2-SAT完整实现流程（含拓扑排序）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E6%A8%A1%E6%9D%BF%E9%A2%98%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%EF%BC%88%E6%B4%9B%E8%B0%B7-P4782-%E3%80%90%E6%A8%A1%E6%9D%BF%E3%80%912-SAT-%E9%97%AE%E9%A2%98%EF%BC%89"><span class="toc-text">5.4 模板题代码实现（洛谷 P4782 【模板】2-SAT 问题）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-%E5%B8%B8%E8%A7%81%E5%9D%91%E7%82%B9%E9%81%BF%E5%9D%91"><span class="toc-text">5.5 常见坑点避坑</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script defer type="text/javascript" src="https://gcore.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "auto" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
