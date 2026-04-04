@@ -1,0 +1,1581 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.33.1" theme-name="Stellar" theme-version="1.33.1">
+  
+  
+  <meta name="generator" content="Hexo 8.1.1">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  <title>扩展讲解 - Yanpb's Blog</title>
+
+  
+    <meta name="description" content="竞赛向1. 宏定义（#define）宏定义是 C++ 的预处理指令，用于在编译前进行文本替换，能简化重复代码、提升编写速度。 1.1 常用宏123456789101112131415161718192021#include &lt;iostream&gt;using namespace std;&#x2F;&#x2F; 1. 循环宏：简化 for 循环写法#define rep(i, a, b) for (int i">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展讲解">
+<meta property="og:url" content="https://xyb7910.github.io/2026/04/04/%E6%89%A9%E5%B1%95%E8%AE%B2%E8%A7%A3/">
+<meta property="og:site_name" content="Yanpb&#39;s Blog">
+<meta property="og:description" content="竞赛向1. 宏定义（#define）宏定义是 C++ 的预处理指令，用于在编译前进行文本替换，能简化重复代码、提升编写速度。 1.1 常用宏123456789101112131415161718192021#include &lt;iostream&gt;using namespace std;&#x2F;&#x2F; 1. 循环宏：简化 for 循环写法#define rep(i, a, b) for (int i">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+<meta property="article:published_time" content="2026-04-04T03:10:07.290Z">
+<meta property="article:modified_time" content="2026-04-04T03:10:21.156Z">
+<meta property="article:author" content="Yan peng bo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg">
+  
+  
+  
+  
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.33.1">
+
+
+  
+
+  
+
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"},"dateCreated":"2026-04-04T11:10:07+08:00","dateModified":"2026-04-04T11:10:21+08:00","datePublished":"2026-04-04T11:10:07+08:00","description":"","headline":"扩展讲解","mainEntityOfPage":{"@type":"WebPage","@id":"https://xyb7910.github.io/2026/04/04/%E6%89%A9%E5%B1%95%E8%AE%B2%E8%A7%A3/"},"publisher":{"@type":"Organization","name":"Yan peng bo","sameAs":[],"image":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg","logo":{"@type":"ImageObject","url":"https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg"}},"url":"https://xyb7910.github.io/2026/04/04/%E6%89%A9%E5%B1%95%E8%AE%B2%E8%A7%A3/","image":[]}</script>
+  
+</head>
+<body>
+
+<div class="l_body content" id="start" layout="post" type="tech" ><aside class="l_left"><div class="sidebg"></div><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><a class="avatar" href="/about/"><div class="bg" style="opacity:0;background-image:url(https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/rainbow64@3x.webp);"></div><img no-lazy class="avatar" src="https://res.xaox.cc/gh/cdn-x/wiki@main/stellar/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></a><a class="title" href="/"><div class="main">Yanpb's Blog</div><div class="sub cap">硬核少年 寻找最优解</div></a></div></header>
+
+<div class="nav-area">
+
+<nav class="menu dis-select"><a class="nav-item active" title="博客" href="/" style="color:#1BCDFC"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M5.879 2.879C5 3.757 5 5.172 5 8v8c0 2.828 0 4.243.879 5.121C6.757 22 8.172 22 11 22h2c2.828 0 4.243 0 5.121-.879C19 20.243 19 18.828 19 16V8c0-2.828 0-4.243-.879-5.121C17.243 2 15.828 2 13 2h-2c-2.828 0-4.243 0-5.121.879M8.25 17a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1-.75-.75M9 12.25a.75.75 0 0 0 0 1.5h6a.75.75 0 0 0 0-1.5zM8.25 9A.75.75 0 0 1 9 8.25h6a.75.75 0 0 1 0 1.5H9A.75.75 0 0 1 8.25 9" clip-rule="evenodd"/><path fill="currentColor" d="M5.235 4.058C5 4.941 5 6.177 5 8v8c0 1.823 0 3.058.235 3.942L5 19.924c-.975-.096-1.631-.313-2.121-.803C2 18.243 2 16.828 2 14v-4c0-2.829 0-4.243.879-5.121c.49-.49 1.146-.707 2.121-.803zm13.53 15.884C19 19.058 19 17.822 19 16V8c0-1.823 0-3.059-.235-3.942l.235.018c.975.096 1.631.313 2.121.803C22 5.757 22 7.17 22 9.999v4c0 2.83 0 4.243-.879 5.122c-.49.49-1.146.707-2.121.803z" opacity=".5"/></svg></a><a class="nav-item" title="关于" href="/about/" style="color:#3DC550"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M14.25 4.48v3.057c0 .111 0 .27.02.406a.936.936 0 0 0 .445.683a.96.96 0 0 0 .783.072c.13-.04.272-.108.378-.159L17 8.005l1.124.534c.106.05.248.119.378.16a.958.958 0 0 0 .783-.073a.936.936 0 0 0 .444-.683c.021-.136.021-.295.021-.406V3.031c.113-.005.224-.01.332-.013C21.154 2.98 22 3.86 22 4.933v11.21c0 1.112-.906 2.01-2.015 2.08c-.97.06-2.108.179-2.985.41c-1.082.286-1.99 1.068-3.373 1.436c-.626.167-1.324.257-1.627.323V5.174c.32-.079 1.382-.203 1.674-.371c.184-.107.377-.216.576-.323m5.478 8.338a.75.75 0 0 1-.546.91l-4 1a.75.75 0 0 1-.364-1.456l4-1a.75.75 0 0 1 .91.546" clip-rule="evenodd"/><path fill="currentColor" d="M18.25 3.151c-.62.073-1.23.18-1.75.336a8.2 8.2 0 0 0-.75.27v3.182l.75-.356l.008-.005a1.13 1.13 0 0 1 .492-.13c.047 0 .094.004.138.01c.175.029.315.1.354.12l.009.005l.749.356V3.647z"/><path fill="currentColor" d="M12 5.214c-.334-.064-1.057-.161-1.718-.339C8.938 4.515 8.05 3.765 7 3.487c-.887-.234-2.041-.352-3.018-.412C2.886 3.007 2 3.9 2 4.998v11.146c0 1.11.906 2.01 2.015 2.079c.97.06 2.108.179 2.985.41c.486.129 1.216.431 1.873.726c1.005.451 2.052.797 3.127 1.034z" opacity=".5"/><path fill="currentColor" d="M4.273 12.818a.75.75 0 0 1 .91-.545l4 1a.75.75 0 1 1-.365 1.455l-4-1a.75.75 0 0 1-.545-.91m.909-4.545a.75.75 0 1 0-.364 1.455l4 1a.75.75 0 0 0 .364-1.455z"/></svg></a><a class="nav-item" title="OI路线" href="/oi/" style="color:#FA6400"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M20 12a8 8 0 1 1-16 0a8 8 0 0 1 16 0" opacity=".5"/><path fill="currentColor" d="M17.712 5.453c1.047-.193 2.006-.259 2.797-.152c.77.103 1.536.393 1.956 1.064c.446.714.312 1.542-.012 2.258c-.33.728-.918 1.499-1.672 2.268c-1.516 1.547-3.836 3.226-6.597 4.697c-2.763 1.472-5.495 2.484-7.694 2.92c-1.095.217-2.098.299-2.923.201c-.8-.095-1.6-.383-2.032-1.075c-.47-.752-.296-1.63.07-2.379c.375-.768 1.032-1.586 1.872-2.403L4 12.416c0 .219.083.71.168 1.146c.045.23.09.444.123.596c-.652.666-1.098 1.263-1.339 1.756c-.277.567-.208.825-.145.925c.072.116.305.305.937.38c.609.073 1.44.018 2.455-.183c2.02-.4 4.613-1.351 7.28-2.772c2.667-1.42 4.85-3.015 6.23-4.423c.694-.707 1.15-1.334 1.377-1.836c.233-.515.167-.75.107-.844c-.07-.112-.289-.294-.883-.374c-.542-.072-1.272-.041-2.163.112L16.87 5.656c.338-.101.658-.17.842-.203"/></svg></a><a class="nav-item" title="acm路线图" href="/acm/" style="color:#F44336"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m13.629 20.472l-.542.916c-.483.816-1.69.816-2.174 0l-.542-.916c-.42-.71-.63-1.066-.968-1.262c-.338-.197-.763-.204-1.613-.219c-1.256-.021-2.043-.098-2.703-.372a5 5 0 0 1-2.706-2.706C2 14.995 2 13.83 2 11.5v-1c0-3.273 0-4.91.737-6.112a5 5 0 0 1 1.65-1.651C5.59 2 7.228 2 10.5 2h3c3.273 0 4.91 0 6.113.737a5 5 0 0 1 1.65 1.65C22 5.59 22 7.228 22 10.5v1c0 2.33 0 3.495-.38 4.413a5 5 0 0 1-2.707 2.706c-.66.274-1.447.35-2.703.372c-.85.015-1.275.022-1.613.219c-.338.196-.548.551-.968 1.262" opacity=".5"/><path fill="currentColor" d="M10.99 14.308c-1.327-.978-3.49-2.84-3.49-4.593c0-2.677 2.475-3.677 4.5-1.609c2.025-2.068 4.5-1.068 4.5 1.609c0 1.752-2.163 3.615-3.49 4.593c-.454.335-.681.502-1.01.502c-.329 0-.556-.167-1.01-.502"/></svg></a></nav>
+</div>
+<div class="widgets">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+
+<widget class="widget-wrapper recent post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2026/04/04/%E6%89%A9%E5%B1%95%E8%AE%B2%E8%A7%A3/"><span class="title">扩展讲解</span></a><a class="item title" href="/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/"><span class="title">二进制</span></a><a class="item title" href="/2026/04/01/bitset/"><span class="title">bitset</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F%E6%B7%B1%E5%85%A5%E5%BA%94%E7%94%A8/"><span class="title">拓扑排序深入应用</span></a><a class="item title" href="/2026/04/01/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/"><span class="title">拓扑排序</span></a><a class="item title" href="/2026/04/01/%E5%9B%BE%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E4%B8%8E%E9%81%8D%E5%8E%86/"><span class="title">图的基本概念与遍历</span></a><a class="item title" href="/2026/03/20/%E7%BA%BF%E6%AE%B5%E6%A0%91/"><span class="title">线段树</span></a><a class="item title" href="/2026/03/17/%E6%9C%80%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91%E4%B8%8E%E6%AC%A1%E5%B0%8F%E7%94%9F%E6%88%90%E6%A0%91/"><span class="title">最小生成树与次小生成树</span></a><a class="item title" href="/2026/03/17/LCA-%E9%97%AE%E9%A2%98/"><span class="title">LCA 问题</span></a><a class="item title" href="/2026/03/17/%E5%80%8D%E5%A2%9E%E4%B8%8ERMQ%E9%97%AE%E9%A2%98/"><span class="title">倍增与RMQ问题</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2026-04-04T03:10:07.290Z">2026-04-04</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2026-04-04T03:10:21.156Z">2026-04-04</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>扩展讲解</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="竞赛向"><a href="#竞赛向" class="headerlink" title="竞赛向"></a>竞赛向</h1><h2 id="1-宏定义（-define）"><a href="#1-宏定义（-define）" class="headerlink" title="1. 宏定义（#define）"></a>1. 宏定义（<code>#define</code>）</h2><p>宏定义是 C++ 的预处理指令，用于在编译前进行<strong>文本替换</strong>，能简化重复代码、提升编写速度。</p>
+<h3 id="1-1-常用宏"><a href="#1-1-常用宏" class="headerlink" title="1.1 常用宏"></a>1.1 常用宏</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. 循环宏：简化 for 循环写法</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(i, a, b) for (int i = (a); i &lt;= (b); ++i)  <span class="comment">// 注意加括号避免优先级问题</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> per(i, a, b) for (int i = (a); i &gt;= (b); --i)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 快速输入输出宏：提升 cin/cout 速度</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOS ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 类型简化宏：替代冗长的类型名</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ll long long</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> pii pair<span class="string">&lt;int, int&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    IOS;  <span class="comment">// 启用快速 IO</span></span><br><span class="line">    ll sum = <span class="number">0</span>;</span><br><span class="line">    <span class="built_in">rep</span>(i, <span class="number">1</span>, <span class="number">10</span>) sum += i;  <span class="comment">// 等价于 for (int i=1; i&lt;=10; ++i)</span></span><br><span class="line">    cout &lt;&lt; sum &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-注意事项"><a href="#1-2-注意事项" class="headerlink" title="1.2 注意事项"></a>1.2 注意事项</h3><ul>
+<li><p>宏是<strong>纯文本替换</strong>，务必加括号避免优先级错误（如 <code>#define mul(a,b) (a)*(b)</code>）；</p>
+</li>
+<li><p>复杂逻辑建议用 <code>inline</code> 函数替代宏（更安全，有类型检查）；</p>
+</li>
+<li><p>避免用宏定义变量名，防止命名冲突。</p>
+</li>
+</ul>
+<h2 id="2-typedef-类型重命名"><a href="#2-typedef-类型重命名" class="headerlink" title="2. typedef 类型重命名"></a>2. typedef 类型重命名</h2><p><code>typedef</code> 是 C&#x2F;C++ 中的关键字，用于为<strong>已存在的数据类型</strong>创建<strong>别名</strong>，核心作用是简化复杂类型名、提升代码可读性，是算法竞赛中必备的基础技巧。</p>
+<h3 id="2-1-核心语法"><a href="#2-1-核心语法" class="headerlink" title="2.1 核心语法"></a>2.1 核心语法</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> 原类型名 别名;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>原类型名：可以是基本数据类型（<code>int</code>、<code>long long</code>）、复合类型（<code>pair</code>、<code>vector</code>、数组指针）、自定义结构体&#x2F;类；</p>
+</li>
+<li><p>别名：自定义的简洁名称，竞赛中习惯用短字母、小写组合（如 <code>ll</code>、<code>pii</code>），命名需简洁易记。</p>
+</li>
+</ul>
+<h3 id="2-2-竞赛常用场景及示例"><a href="#2-2-竞赛常用场景及示例" class="headerlink" title="2.2 竞赛常用场景及示例"></a>2.2 竞赛常用场景及示例</h3><h4 id="（1）简化基础大类型"><a href="#（1）简化基础大类型" class="headerlink" title="（1）简化基础大类型"></a>（1）简化基础大类型</h4><p>竞赛中频繁处理大数运算，<code>long long</code> 与 <code>unsigned long long</code> 出现频率极高，用 <code>typedef</code> 简化后可大幅缩短代码长度，减少输入错误。</p>
+<table>
+<thead>
+<tr>
+<th>原类型</th>
+<th>简化别名</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>long long</code></td>
+<td><code>ll</code>（竞赛通用简写）</td>
+<td><code>typedef long long ll; ll ans = 1e18;</code></td>
+</tr>
+<tr>
+<td><code>unsigned long long</code></td>
+<td><code>ull</code></td>
+<td><code>typedef unsigned long long ull; ull hash_val = 2e19;</code></td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td><code>i32</code>（可选，适配跨平台场景）</td>
+<td><code>typedef int i32; i32 arr[100];</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 简化大数类型，竞赛必备</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> ull;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 无需重复书写 long long，代码更简洁</span></span><br><span class="line">    ll num = <span class="number">123456789012345LL</span>;</span><br><span class="line">    ull big_num = <span class="number">987654321098765ULL</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 大数运算示例</span></span><br><span class="line">    num = num * <span class="number">2</span> + <span class="number">100</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;大数运算结果：&quot;</span> &lt;&lt; num &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="（2）简化复合容器类型"><a href="#（2）简化复合容器类型" class="headerlink" title="（2）简化复合容器类型"></a>（2）简化复合容器类型</h4><p>竞赛中频繁使用 <code>pair</code>、<code>vector</code> 等容器组合，其完整类型名冗长（如 <code>vector&lt;pair&lt;int, vector&lt;int&gt;&gt;&gt;</code>），用 <code>typedef</code> 简化后可读性和编写效率翻倍，尤其适合嵌套容器。</p>
+<table>
+<thead>
+<tr>
+<th>原复杂类型</th>
+<th>简化别名</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>pair&lt;int, int&gt;</code></td>
+<td><code>pii</code>（竞赛通用简写）</td>
+<td><code>typedef pair&lt;int, int&gt; pii; pii edge = {1, 2};</code></td>
+</tr>
+<tr>
+<td><code>pair&lt;long long, long long&gt;</code></td>
+<td><code>pll</code></td>
+<td><code>typedef pair&lt;ll, ll&gt; pll; pll pos = {1e10, 2e10};</code></td>
+</tr>
+<tr>
+<td><code>vector&lt;int&gt;</code></td>
+<td><code>vi</code></td>
+<td><code>typedef vector&lt;int&gt; vi; vi v = {1, 2, 3};</code></td>
+</tr>
+<tr>
+<td><code>vector&lt;pair&lt;int, int&gt;&gt;</code></td>
+<td><code>vpii</code></td>
+<td><code>typedef vector&lt;pii&gt; vpii; vpii edges;</code></td>
+</tr>
+<tr>
+<td><code>map&lt;int, int&gt;</code></td>
+<td><code>mii</code></td>
+<td><code>typedef map&lt;int, int&gt; mii; mii cnt;</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;utility&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 简化容器及组合类型，适配图论、数组统计等场景</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt; pii;</span><br><span class="line"><span class="keyword">typedef</span> vector&lt;pii&gt; vpii;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 存储图的边集，无需书写冗长类型</span></span><br><span class="line">    vpii edges;</span><br><span class="line">    edges.<span class="built_in">push_back</span>(&#123;<span class="number">1</span>, <span class="number">2</span>&#125;);  <span class="comment">// 等价于 edges.push_back(make_pair(1, 2));</span></span><br><span class="line">    edges.<span class="built_in">push_back</span>(&#123;<span class="number">3</span>, <span class="number">4</span>&#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 遍历简化后的容器</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> e : edges) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;边：&quot;</span> &lt;&lt; e.first &lt;&lt; <span class="string">&quot; -&gt; &quot;</span> &lt;&lt; e.second &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="（3）简化迭代器类型"><a href="#（3）简化迭代器类型" class="headerlink" title="（3）简化迭代器类型"></a>（3）简化迭代器类型</h4><p>遍历容器时，迭代器类型名冗长（如 <code>vector&lt;int&gt;::iterator</code>），用 <code>typedef</code> 简化后可减少重复输入，尤其在嵌套容器、多层遍历场景中优势明显。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> vector&lt;<span class="type">int</span>&gt; vi;</span><br><span class="line"><span class="comment">// 简化 vector&lt;int&gt; 的迭代器类型</span></span><br><span class="line"><span class="keyword">typedef</span> vi::iterator viit;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    vi v = &#123;<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>&#125;;</span><br><span class="line">    <span class="comment">// 用 viit 替代 vector&lt;int&gt;::iterator，代码更简洁</span></span><br><span class="line">    <span class="keyword">for</span> (viit it = v.<span class="built_in">begin</span>(); it != v.<span class="built_in">end</span>(); ++it) &#123;</span><br><span class="line">        cout &lt;&lt; *it &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-3-与宏定义（-define）的核心区别（竞赛必背！）"><a href="#2-3-与宏定义（-define）的核心区别（竞赛必背！）" class="headerlink" title="2.3 与宏定义（#define）的核心区别（竞赛必背！）"></a>2.3 与宏定义（<code>#define</code>）的核心区别（竞赛必背！）</h3><p>很多同学易混淆两者，核心逻辑完全不同，竞赛中需严格区分，避免编译错误。</p>
+<table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th><code>typedef</code>（类型别名）</th>
+<th><code>#define</code>（文本替换）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>作用对象</td>
+<td>仅针对<strong>数据类型</strong>（int、pair、vector 等）</td>
+<td>针对<strong>任意文本</strong>（类型、变量、表达式、代码片段）</td>
+</tr>
+<tr>
+<td>本质逻辑</td>
+<td>编译器层面的<strong>类型重命名</strong>，有严格类型检查</td>
+<td>预处理层面的<strong>纯文本替换</strong>，无类型检查</td>
+</tr>
+<tr>
+<td>语法特点</td>
+<td>别名是合法类型名，可参与类型推导</td>
+<td>替换文本为原始字符，优先级易出错（需加括号）</td>
+</tr>
+<tr>
+<td>分号要求</td>
+<td>末尾<strong>必须加分号</strong>（语句结束标志）</td>
+<td>末尾<strong>不加分号</strong>（避免替换内容多分号）</td>
+</tr>
+<tr>
+<td>示例对比</td>
+<td><code>typedef long long ll; ll a = 10;</code>（合法）</td>
+<td><code>#define ll long long; ll a = 10;</code>（非法，多了分号）</td>
+</tr>
+</tbody></table>
+<h3 id="2-4-竞赛易错点（重点规避）"><a href="#2-4-竞赛易错点（重点规避）" class="headerlink" title="2.4 竞赛易错点（重点规避）"></a>2.4 竞赛易错点（重点规避）</h3><ol>
+<li><p><strong>分号陷阱</strong>：<code>typedef</code> 是语句，末尾<strong>必须加分号</strong>，漏写会直接编译报错；而宏定义绝对不能加分号，两者需严格区分。</p>
+</li>
+<li><p><strong>命名冲突</strong>：避免将别名命名为 C++ 关键字（如 <code>int</code>、<code>char</code>、<code>if</code>）或标准库函数名（如 <code>sort</code>、<code>max</code>、<code>min</code>），否则会导致编译错误。</p>
+</li>
+<li><p><strong>嵌套简化顺序</strong>：多层嵌套类型需从内到外逐步简化，例如先简化 <code>pair&lt;int, int&gt;</code> 为 <code>pii</code>，再简化 <code>vector&lt;pii&gt;</code> 为 <code>vpii</code>，不可一步到位简化，否则会降低可读性。</p>
+</li>
+<li><p><strong>不滥用别名</strong>：仅简化<strong>频繁使用、类型名冗长</strong>的类型（如 <code>long long</code>、<code>pair</code>、容器迭代器），简单类型（如 <code>int</code>、<code>char</code>、<code>double</code>）无需简化，避免降低代码可读性。</p>
+</li>
+</ol>
+<h2 id="2-auto-关键字（C-11-）"><a href="#2-auto-关键字（C-11-）" class="headerlink" title="2. auto 关键字（C++11+）"></a>2. <code>auto</code> 关键字（C++11+）</h2><p><code>auto</code> 用于<strong>自动推导变量类型</strong>，能简化复杂类型的书写（如 STL 迭代器）。</p>
+<h3 id="2-1-用法示例"><a href="#2-1-用法示例" class="headerlink" title="2.1 用法示例"></a>2.1 用法示例</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 基本类型推导</span></span><br><span class="line">    <span class="keyword">auto</span> a = <span class="number">10</span>;         <span class="comment">// 推导为 int</span></span><br><span class="line">    <span class="keyword">auto</span> b = <span class="number">3.14</span>;       <span class="comment">// 推导为 double</span></span><br><span class="line">    <span class="keyword">auto</span> c = <span class="string">&quot;hello&quot;</span>;    <span class="comment">// 推导为 const char*</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. STL 迭代器简化（最常用场景）</span></span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; v = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>&#125;;</span><br><span class="line">    <span class="comment">// 传统写法：vector&lt;int&gt;::iterator it = v.begin();</span></span><br><span class="line">    <span class="keyword">auto</span> it = v.<span class="built_in">begin</span>();  <span class="comment">// 自动推导为 vector&lt;int&gt;::iterator</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 3. 复杂类型推导</span></span><br><span class="line">    map&lt;<span class="type">int</span>, string&gt; mp;</span><br><span class="line">    <span class="keyword">auto</span> p = <span class="built_in">make_pair</span>(<span class="number">1</span>, <span class="string">&quot;oi&quot;</span>);  <span class="comment">// 推导为 pair&lt;int, string&gt;</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-注意事项"><a href="#2-2-注意事项" class="headerlink" title="2.2 注意事项"></a>2.2 注意事项</h3><ul>
+<li><p><code>auto</code> 必须<strong>初始化</strong>（否则无法推导类型）；</p>
+</li>
+<li><p>C++11 中 <code>auto</code> 不能用于函数参数。</p>
+</li>
+</ul>
+<h2 id="3-范围-for-循环（Range-based-for-loop，C-11-）"><a href="#3-范围-for-循环（Range-based-for-loop，C-11-）" class="headerlink" title="3. 范围 for 循环（Range-based for loop，C++11+）"></a>3. 范围 <code>for</code> 循环（Range-based for loop，C++11+）</h2><p>范围 <code>for</code> 用于<strong>遍历容器或数组</strong>，语法简洁，分为“加 <code>&amp;</code>”和“不加 <code>&amp;</code>”两种形式。</p>
+<h3 id="3-1-语法与区别"><a href="#3-1-语法与区别" class="headerlink" title="3.1 语法与区别"></a>3.1 语法与区别</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; v = &#123;<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 1. 不加 &amp;：拷贝元素，只读不修改原容器</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;只读遍历：&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> x : v) &#123;  <span class="comment">// x 是 v 中元素的拷贝</span></span><br><span class="line">        cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">        x = <span class="number">10</span>;  <span class="comment">// 仅修改拷贝，v 本身不变</span></span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\nv 未改变：&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> x : v) cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出 1 2 3 4 5</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 加 &amp;：引用元素，可修改原容器，避免大对象拷贝</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n修改后：&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> &amp;x : v) &#123;  <span class="comment">// x 是 v 中元素的引用</span></span><br><span class="line">        x *= <span class="number">2</span>;  <span class="comment">// 直接修改 v 中的元素</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> x : v) cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;  <span class="comment">// 输出 2 4 6 8 10</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-适用场景"><a href="#3-2-适用场景" class="headerlink" title="3.2 适用场景"></a>3.2 适用场景</h3><ul>
+<li><p>不加 <code>&amp;</code>：只读遍历小类型（如 <code>int</code>、<code>char</code>）；</p>
+</li>
+<li><p>加 <code>&amp;</code>：需修改容器元素，或遍历大对象（如 <code>string</code>、自定义结构体）以提升效率。</p>
+</li>
+</ul>
+<h2 id="4-STL-常见容器学习与使用"><a href="#4-STL-常见容器学习与使用" class="headerlink" title="4. STL 常见容器学习与使用"></a>4. STL 常见容器学习与使用</h2><p>STL（标准模板库）是算法竞赛的“神器”，提供了封装好的数据结构，能大幅减少代码量。以下补充各类容器高频扩展操作，适配竞赛高频场景。</p>
+<h3 id="4-1-序列式容器"><a href="#4-1-序列式容器" class="headerlink" title="4.1 序列式容器"></a>4.1 序列式容器</h3><h4 id="（1）vector（动态数组）"><a href="#（1）vector（动态数组）" class="headerlink" title="（1）vector（动态数组）"></a>（1）<code>vector</code>（动态数组）</h4><ul>
+<li><p>特点：随机访问 O(1)，尾部插入删除 O(1)，中间插入删除 O(n)；</p>
+</li>
+<li><p>常用操作及扩展操作：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>push_back(val)</td>
+<td>尾部插入元素val</td>
+<td>O(1)</td>
+<td><code>v.push_back(10);</code></td>
+</tr>
+<tr>
+<td>pop_back()</td>
+<td>尾部删除元素</td>
+<td>O(1)</td>
+<td><code>v.pop_back();</code></td>
+</tr>
+<tr>
+<td>[]</td>
+<td>随机访问指定位置元素</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; v[2];</code></td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回元素个数</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; v.size();</code></td>
+</tr>
+<tr>
+<td>clear()</td>
+<td>清空所有元素</td>
+<td>O(n)</td>
+<td><code>v.clear();</code></td>
+</tr>
+<tr>
+<td>insert(pos, val)</td>
+<td>在迭代器pos位置插入val</td>
+<td>O(n)</td>
+<td><code>v.insert(v.begin()+2, 5);</code></td>
+</tr>
+<tr>
+<td>erase(pos)</td>
+<td>删除迭代器pos位置元素</td>
+<td>O(n)</td>
+<td><code>v.erase(v.begin()+1);</code></td>
+</tr>
+<tr>
+<td>resize(n)</td>
+<td>调整容器大小为n，不足补默认值</td>
+<td>O(n)</td>
+<td><code>v.resize(8, 0);</code></td>
+</tr>
+<tr>
+<td>reserve(n)</td>
+<td>预分配n个元素空间，不改变实际大小</td>
+<td>O(1)</td>
+<td><code>v.reserve(100);</code></td>
+</tr>
+<tr>
+<td>front()&#x2F;back()</td>
+<td>获取首&#x2F;尾元素</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; v.front() &lt;&lt; v.back();</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    vector&lt;<span class="type">int</span>&gt; v;</span><br><span class="line">    v.<span class="built_in">push_back</span>(<span class="number">1</span>);  <span class="comment">// 尾部插入</span></span><br><span class="line">    v.<span class="built_in">push_back</span>(<span class="number">2</span>);</span><br><span class="line">    v.<span class="built_in">insert</span>(v.<span class="built_in">begin</span>()<span class="number">+1</span>, <span class="number">3</span>);  <span class="comment">// 中间插入</span></span><br><span class="line">    cout &lt;&lt; v.<span class="built_in">front</span>() &lt;&lt; <span class="string">&quot; &quot;</span> &lt;&lt; v.<span class="built_in">back</span>() &lt;&lt; endl;  <span class="comment">// 首尾元素</span></span><br><span class="line">    v.<span class="built_in">erase</span>(v.<span class="built_in">begin</span>()<span class="number">+2</span>);  <span class="comment">// 中间删除</span></span><br><span class="line">    v.<span class="built_in">resize</span>(<span class="number">5</span>, <span class="number">0</span>);  <span class="comment">// 调整大小</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> x : v) cout &lt;&lt; x &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    v.<span class="built_in">clear</span>();  <span class="comment">// 清空</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li><p>避免频繁在中间插入&#x2F;删除：中间操作时间复杂度为O(n)，数据量较大（如1e5以上）时会超时，优先用<code>vector</code>做尾部操作，中间操作可考虑<code>list</code>；</p>
+</li>
+<li><p>区分resize和reserve：<code>resize(n)</code>会改变容器实际大小（补默认值），<code>reserve(n)</code>仅预分配空间，不改变大小，避免频繁扩容可提前用<code>reserve</code>；</p>
+</li>
+<li><p>禁止越界访问：<code>[]</code>操作不做边界检查，空容器或访问下标≥size()时会报RE，不确定下标合法性时，优先用<code>at()</code>（会抛异常，竞赛中可结合empty()判断）；</p>
+</li>
+<li><p>clear()不释放空间：<code>v.clear()</code>仅清空元素，不释放底层内存，若需释放空间，可使用<code>vector&lt;int&gt;().swap(v);</code>。</p>
+</li>
+</ul>
+<h4 id="（2）string（字符串）"><a href="#（2）string（字符串）" class="headerlink" title="（2）string（字符串）"></a>（2）<code>string</code>（字符串）</h4><ul>
+<li><p>特点：类似 <code>vector&lt;char&gt;</code>，但有字符串专用操作，支持拼接、查找、替换等；</p>
+</li>
+<li><p>常用操作及扩展操作：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>+&#x3D;</td>
+<td>拼接字符串</td>
+<td>O(len(str))</td>
+<td><code>s += &quot;world&quot;;</code></td>
+</tr>
+<tr>
+<td>substr(pos, len)</td>
+<td>取子串（起始位置，长度）</td>
+<td>O(len)</td>
+<td><code>s.substr(0, 5);</code></td>
+</tr>
+<tr>
+<td>find(str)</td>
+<td>查找子串，返回起始位置（未找到返回-1）</td>
+<td>O(n*m)</td>
+<td><code>s.find(&quot;abc&quot;);</code></td>
+</tr>
+<tr>
+<td>append(str)</td>
+<td>拼接字符串（与+&#x3D;功能类似）</td>
+<td>O(len(str))</td>
+<td><code>s.append(&quot;123&quot;);</code></td>
+</tr>
+<tr>
+<td>replace(pos, len, str)</td>
+<td>从pos开始，替换len个字符为str</td>
+<td>O(n)</td>
+<td><code>s.replace(1, 2, &quot;xy&quot;);</code></td>
+</tr>
+<tr>
+<td>erase(pos, len)</td>
+<td>从pos开始，删除len个字符</td>
+<td>O(n)</td>
+<td><code>s.erase(0, 1);</code></td>
+</tr>
+<tr>
+<td>compare(str)</td>
+<td>与str比较，返回差值（同strcmp）</td>
+<td>O(n)</td>
+<td><code>s.compare(&quot;test&quot;) == 0;</code></td>
+</tr>
+<tr>
+<td>c_str()</td>
+<td>转换为C风格字符串（const char*）</td>
+<td>O(1)</td>
+<td><code>printf(&quot;%s&quot;, s.c_str());</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    string s = <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    s += <span class="string">&quot; world&quot;</span>;  <span class="comment">// 拼接</span></span><br><span class="line">    s.<span class="built_in">append</span>(<span class="string">&quot;!&quot;</span>);  <span class="comment">// 补充拼接</span></span><br><span class="line">    cout &lt;&lt; s.<span class="built_in">substr</span>(<span class="number">0</span>, <span class="number">5</span>) &lt;&lt; endl;  <span class="comment">// 取子串</span></span><br><span class="line">    s.<span class="built_in">replace</span>(<span class="number">6</span>, <span class="number">5</span>, <span class="string">&quot;java&quot;</span>);  <span class="comment">// 替换子串</span></span><br><span class="line">    s.<span class="built_in">erase</span>(<span class="number">11</span>, <span class="number">1</span>);  <span class="comment">// 删除字符</span></span><br><span class="line">    <span class="keyword">if</span> (s.<span class="built_in">compare</span>(<span class="string">&quot;hello java&quot;</span>) == <span class="number">0</span>) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;匹配成功&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;%s&quot;</span>, s.<span class="built_in">c_str</span>());  <span class="comment">// C风格输出</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li><p>find()返回值判断：<code>s.find(str)</code>未找到时返回<code>string::npos</code>，而非-1，用<code>if (s.find(str) == -1)</code>会出错，正确写法是<code>if (s.find(str) == string::npos)</code>；</p>
+</li>
+<li><p>字符串拼接效率：频繁用<code>+=</code>拼接短字符串效率可接受，拼接大量短字符串时，优先用<code>stringstream</code>，避免多次扩容耗时；</p>
+</li>
+<li><p>c_str()的有效期：<code>s.c_str()</code>返回的指针仅在当前string对象有效，若string被修改（如拼接、删除），指针会失效，避免保存该指针后续使用；</p>
+</li>
+<li><p>substr()参数注意：第二个参数是“长度”而非“结束下标”，如<code>s.substr(1,3)</code>是从下标1开始，取3个字符，而非取到下标3。</p>
+</li>
+</ul>
+<h3 id="4-2-容器适配器"><a href="#4-2-容器适配器" class="headerlink" title="4.2 容器适配器"></a>4.2 容器适配器</h3><p>竞赛中最常用的三类适配器为<code>queue</code>（队列）、<code>stack</code>（栈）与<code>priority_queue</code>（优先队列）。其中<code>queue</code>与<code>stack</code>为基础线性适配器，逻辑规则互补。</p>
+<h4 id="（1）queue（队列，FIFO）与stack（栈，LIFO）"><a href="#（1）queue（队列，FIFO）与stack（栈，LIFO）" class="headerlink" title="（1）queue（队列，FIFO）与stack（栈，LIFO）"></a>（1）<code>queue</code>（队列，FIFO）与<code>stack</code>（栈，LIFO）</h4><p>两者核心特性对比如下，可直观区分使用场景：</p>
+<table>
+<thead>
+<tr>
+<th>核心维度</th>
+<th><code>queue</code>（队列）</th>
+<th><code>stack</code>（栈）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>访问规则</td>
+<td>先进先出（FIFO）：队尾入队，队首出队</td>
+<td>后进先出（LIFO）：栈顶入栈，栈顶出栈</td>
+</tr>
+<tr>
+<td>底层容器</td>
+<td>默认基于<code>deque</code>实现，可指定<code>list</code></td>
+<td>默认基于<code>deque</code>实现，可指定<code>vector</code>&#x2F;<code>list</code></td>
+</tr>
+<tr>
+<td>访问权限</td>
+<td>仅可访问队首、队尾元素，不支持随机访问</td>
+<td>仅可访问栈顶元素，不支持随机访问&#x2F;遍历中间元素</td>
+</tr>
+<tr>
+<td>核心操作复杂度</td>
+<td>入队、出队、访问首尾均为O(1)</td>
+<td>入栈、出栈、访问栈顶均为O(1)</td>
+</tr>
+<tr>
+<td>竞赛核心场景</td>
+<td>BFS广度优先搜索、排队模拟、滑动窗口</td>
+<td>括号匹配、表达式求值、DFS非递归模拟、单调栈</td>
+</tr>
+</tbody></table>
+<h5 id="①-queue-详细用法"><a href="#①-queue-详细用法" class="headerlink" title="① queue 详细用法"></a>① <code>queue</code> 详细用法</h5><ul>
+<li>常用操作（核心接口固定，无额外扩展操作，重点掌握）：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>push(val)</td>
+<td>队尾入队</td>
+<td>O(1)</td>
+<td><code>q.push(1);</code></td>
+</tr>
+<tr>
+<td>pop()</td>
+<td>队首出队（无返回值）</td>
+<td>O(1)</td>
+<td><code>q.pop();</code></td>
+</tr>
+<tr>
+<td>front()</td>
+<td>获取队首元素</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; q.front();</code></td>
+</tr>
+<tr>
+<td>back()</td>
+<td>获取队尾元素</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; q.back();</code></td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回元素个数</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; q.size();</code></td>
+</tr>
+<tr>
+<td>empty()</td>
+<td>判断队列是否为空</td>
+<td>O(1)</td>
+<td><code>if (q.empty()) {}</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;</span><br><span class="line">    q.<span class="built_in">push</span>(<span class="number">1</span>);  <span class="comment">// 入队</span></span><br><span class="line">    q.<span class="built_in">push</span>(<span class="number">2</span>);</span><br><span class="line">    q.<span class="built_in">push</span>(<span class="number">3</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;队首：&quot;</span> &lt;&lt; q.<span class="built_in">front</span>() &lt;&lt; <span class="string">&quot; 队尾：&quot;</span> &lt;&lt; q.<span class="built_in">back</span>() &lt;&lt; endl;</span><br><span class="line">    q.<span class="built_in">pop</span>();  <span class="comment">// 出队</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;出队后队首：&quot;</span> &lt;&lt; q.<span class="built_in">front</span>() &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;队列大小：&quot;</span> &lt;&lt; q.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">while</span> (!q.<span class="built_in">empty</span>()) &#123;  <span class="comment">// 清空队列</span></span><br><span class="line">        q.<span class="built_in">pop</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="注意事项-2"><a href="#注意事项-2" class="headerlink" title="注意事项"></a>注意事项</h6><ul>
+<li><p>pop()无返回值：严禁写<code>int x = q.pop();</code>，需先通过<code>front()</code>获取队首元素，再执行<code>pop()</code>；</p>
+</li>
+<li><p>无随机访问能力：无法用<code>[]</code>或迭代器访问中间元素，仅能访问队首和队尾，若需访问中间元素，需换用<code>deque</code>；</p>
+</li>
+<li><p>清空队列方式：无<code>clear()</code>方法，需用<code>while(!q.empty()) q.pop();</code>手动清空；</p>
+</li>
+</ul>
+<h5 id="②-stack-详细用法"><a href="#②-stack-详细用法" class="headerlink" title="② stack 详细用法"></a>② <code>stack</code> 详细用法</h5><ul>
+<li>常用操作（竞赛必背核心接口）：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>push(val)</td>
+<td>将元素val压入栈顶</td>
+<td>O(1)</td>
+<td><code>st.push(10);</code></td>
+</tr>
+<tr>
+<td>pop()</td>
+<td>移除栈顶元素（无返回值，易错点！）</td>
+<td>O(1)</td>
+<td><code>st.pop();</code></td>
+</tr>
+<tr>
+<td>top()</td>
+<td>获取栈顶元素（不移除）</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; st.top();</code></td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回栈中元素个数</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; st.size();</code></td>
+</tr>
+<tr>
+<td>empty()</td>
+<td>判断栈是否为空（空返回true）</td>
+<td>O(1)</td>
+<td><code>if (st.empty()) {}</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 判断左右括号是否匹配</span></span><br><span class="line"><span class="function"><span class="type">bool</span> <span class="title">isMatch</span><span class="params">(<span class="type">char</span> left, <span class="type">char</span> right)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (left == <span class="string">&#x27;(&#x27;</span> &amp;&amp; right == <span class="string">&#x27;)&#x27;</span>) || </span><br><span class="line">           (left == <span class="string">&#x27;[&#x27;</span> &amp;&amp; right == <span class="string">&#x27;]&#x27;</span>) || </span><br><span class="line">           (left == <span class="string">&#x27;&#123;&#x27;</span> &amp;&amp; right == <span class="string">&#x27;&#125;&#x27;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    string s;</span><br><span class="line">    cin &gt;&gt; s;</span><br><span class="line">    stack&lt;<span class="type">char</span>&gt; st;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">char</span> c : s) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;(&#x27;</span> || c == <span class="string">&#x27;[&#x27;</span> || c == <span class="string">&#x27;&#123;&#x27;</span>) &#123;</span><br><span class="line">            st.<span class="built_in">push</span>(c);  <span class="comment">// 左括号入栈</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 右括号：先判断栈是否为空</span></span><br><span class="line">            <span class="keyword">if</span> (st.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;非法括号&quot;</span> &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 判断括号是否匹配</span></span><br><span class="line">            <span class="keyword">if</span> (!<span class="built_in">isMatch</span>(st.<span class="built_in">top</span>(), c)) &#123;</span><br><span class="line">                cout &lt;&lt; <span class="string">&quot;非法括号&quot;</span> &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            st.<span class="built_in">pop</span>();  <span class="comment">// 匹配成功，弹栈</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 遍历结束后，栈为空则合法</span></span><br><span class="line">    cout &lt;&lt; (st.<span class="built_in">empty</span>() ? <span class="string">&quot;合法括号&quot;</span> : <span class="string">&quot;非法括号&quot;</span>) &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="注意事项-3"><a href="#注意事项-3" class="headerlink" title="注意事项"></a>注意事项</h6><ul>
+<li><p><code>pop()</code>无返回值：严禁写<code>int x = st.pop();</code>，会编译报错！正确写法是先通过<code>top()</code>获取栈顶元素，再执行<code>pop()</code>；</p>
+</li>
+<li><p>空栈操作报错：空栈状态下调用<code>top()</code>或<code>pop()</code>，会导致运行错误（RE），竞赛中必须先通过<code>empty()</code>判断栈非空，再进行操作；</p>
+</li>
+<li><p>不支持迭代器：无法用范围<code>for</code>循环、<code>auto</code>迭代器遍历栈，只能通过<code>top()</code>+<code>pop()</code>逐个访问并弹出元素。</p>
+</li>
+</ul>
+<h4 id="（2）priority-queue（优先队列，堆）"><a href="#（2）priority-queue（优先队列，堆）" class="headerlink" title="（2）priority_queue（优先队列，堆）"></a>（2）<code>priority_queue</code>（优先队列，堆）</h4><ul>
+<li><p>特点：自动排序，默认大顶堆，可指定为小顶堆；底层基于vector实现，核心用于贪心、TopK等场景；</p>
+</li>
+<li><p>常用操作及扩展说明：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>push(val)</td>
+<td>元素入堆，自动调整堆结构</td>
+<td>O(log n)</td>
+<td><code>big_heap.push(3);</code></td>
+</tr>
+<tr>
+<td>pop()</td>
+<td>堆顶元素出堆（无返回值）</td>
+<td>O(log n)</td>
+<td><code>big_heap.pop();</code></td>
+</tr>
+<tr>
+<td>top()</td>
+<td>获取堆顶元素（大顶堆为最大，小顶堆为最小）</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; big_heap.top();</code></td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回堆中元素个数</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; big_heap.size();</code></td>
+</tr>
+<tr>
+<td>empty()</td>
+<td>判断堆是否为空</td>
+<td>O(1)</td>
+<td><code>if (big_heap.empty()) {}</code></td>
+</tr>
+<tr>
+<td>补充说明：小顶堆声明需指定容器和比较函数，格式为 <code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; small_heap;</code>，竞赛中高频用于求最小TopK问题。</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 默认大顶堆（用于求最大值、最大TopK）</span></span><br><span class="line">    priority_queue&lt;<span class="type">int</span>&gt; big_heap;</span><br><span class="line">    big_heap.<span class="built_in">push</span>(<span class="number">3</span>);</span><br><span class="line">    big_heap.<span class="built_in">push</span>(<span class="number">1</span>);</span><br><span class="line">    big_heap.<span class="built_in">push</span>(<span class="number">5</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;大顶堆顶：&quot;</span> &lt;&lt; big_heap.<span class="built_in">top</span>() &lt;&lt; endl;  <span class="comment">// 输出5</span></span><br><span class="line">    big_heap.<span class="built_in">pop</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;出堆后堆顶：&quot;</span> &lt;&lt; big_heap.<span class="built_in">top</span>() &lt;&lt; endl;  <span class="comment">// 输出3</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2. 小顶堆（用于求最小值、最小TopK）</span></span><br><span class="line">    priority_queue&lt;<span class="type">int</span>, vector&lt;<span class="type">int</span>&gt;, greater&lt;<span class="type">int</span>&gt;&gt; small_heap;</span><br><span class="line">    small_heap.<span class="built_in">push</span>(<span class="number">3</span>);</span><br><span class="line">    small_heap.<span class="built_in">push</span>(<span class="number">1</span>);</span><br><span class="line">    small_heap.<span class="built_in">push</span>(<span class="number">5</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;小顶堆顶：&quot;</span> &lt;&lt; small_heap.<span class="built_in">top</span>() &lt;&lt; endl;  <span class="comment">// 输出1</span></span><br><span class="line">    small_heap.<span class="built_in">pop</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;出堆后堆顶：&quot;</span> &lt;&lt; small_heap.<span class="built_in">top</span>() &lt;&lt; endl;  <span class="comment">// 输出3</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项（竞赛高频易错）"><a href="#注意事项（竞赛高频易错）" class="headerlink" title="注意事项（竞赛高频易错）"></a>注意事项（竞赛高频易错）</h4><ul>
+<li><p>默认排序规则：默认是大顶堆（降序），小顶堆必须显式声明<code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt;</code>，不可遗漏中间的<code>vector&lt;int&gt;</code>；</p>
+</li>
+<li><p>自定义类型排序：存储自定义结构体（如<code>pair</code>、自定义结构体）时，需重载比较函数，否则会编译报错；</p>
+</li>
+<li><p>pop()仅删除堆顶：无法删除指定元素，若需删除非堆顶元素，需重新构建堆或换用其他容器（如<code>set</code>）；</p>
+</li>
+<li><p>效率注意：<code>push</code>和<code>pop</code>均为O(log n)，适合TopK、贪心等场景，数据量极大时需注意时间限制。</p>
+</li>
+</ul>
+<h3 id="4-3-关联式容器"><a href="#4-3-关联式容器" class="headerlink" title="4.3 关联式容器"></a>4.3 关联式容器</h3><h4 id="（1）map（有序映射，红黑树）"><a href="#（1）map（有序映射，红黑树）" class="headerlink" title="（1）map（有序映射，红黑树）"></a>（1）<code>map</code>（有序映射，红黑树）</h4><ul>
+<li><p>特点：键值对存储，键唯一且有序（红黑树实现），查找、插入、删除均为O(log n)；核心用于映射、统计、字符匹配等场景；</p>
+</li>
+<li><p>常用操作及扩展操作：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>mp[key] &#x3D; val</td>
+<td>插入&#x2F;修改键值对</td>
+<td>O(log n)</td>
+<td><code>mp[&quot;Alice&quot;] = 100;</code></td>
+</tr>
+<tr>
+<td>count(key)</td>
+<td>判断键是否存在（返回0或1）</td>
+<td>O(log n)</td>
+<td><code>if (mp.count(&quot;Bob&quot;)) {}</code></td>
+</tr>
+<tr>
+<td>find(key)</td>
+<td>查找键，返回对应迭代器（未找到返回mp.end()）</td>
+<td>O(log n)</td>
+<td><code>auto it = mp.find(&quot;Alice&quot;);</code></td>
+</tr>
+<tr>
+<td>erase(key)</td>
+<td>删除指定键对应的键值对</td>
+<td>O(log n)</td>
+<td><code>mp.erase(&quot;Bob&quot;);</code></td>
+</tr>
+<tr>
+<td>lower_bound(key)</td>
+<td>返回第一个≥key的键值对迭代器</td>
+<td>O(log n)</td>
+<td><code>auto it = mp.lower_bound(5);</code></td>
+</tr>
+<tr>
+<td>upper_bound(key)</td>
+<td>返回第一个&gt;key的键值对迭代器</td>
+<td>O(log n)</td>
+<td><code>auto it = mp.upper_bound(5);</code></td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回键值对个数</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; mp.size();</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;map&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    map&lt;string, <span class="type">int</span>&gt; mp;</span><br><span class="line">    <span class="comment">// 插入键值对</span></span><br><span class="line">    mp[<span class="string">&quot;Alice&quot;</span>] = <span class="number">100</span>;</span><br><span class="line">    mp[<span class="string">&quot;Bob&quot;</span>] = <span class="number">90</span>;</span><br><span class="line">    mp[<span class="string">&quot;Cindy&quot;</span>] = <span class="number">95</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找键</span></span><br><span class="line">    <span class="keyword">auto</span> it = mp.<span class="built_in">find</span>(<span class="string">&quot;Bob&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (it != mp.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        cout &lt;&lt; it-&gt;first &lt;&lt; <span class="string">&quot;:&quot;</span> &lt;&lt; it-&gt;second &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 范围查找</span></span><br><span class="line">    <span class="keyword">auto</span> low = mp.<span class="built_in">lower_bound</span>(<span class="number">90</span>);</span><br><span class="line">    <span class="keyword">auto</span> up = mp.<span class="built_in">upper_bound</span>(<span class="number">95</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> i = low; i != up; ++i) &#123;</span><br><span class="line">        cout &lt;&lt; i-&gt;first &lt;&lt; <span class="string">&quot;:&quot;</span> &lt;&lt; i-&gt;second &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除键</span></span><br><span class="line">    mp.<span class="built_in">erase</span>(<span class="string">&quot;Cindy&quot;</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n删除后大小：&quot;</span> &lt;&lt; mp.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项-4"><a href="#注意事项-4" class="headerlink" title="注意事项"></a>注意事项</h4><ul>
+<li><p>[]操作的坑：<code>mp[key]</code>若key不存在，会自动插入该key，值为默认值（如int为0），仅判断key是否存在时，优先用<code>count(key)</code>或<code>find(key)</code>，避免误插入；</p>
+</li>
+<li><p>迭代器失效：删除迭代器指向的元素后，该迭代器会失效，不可继续使用，需通过<code>it = mp.erase(it)</code>更新迭代器；</p>
+</li>
+<li><p>排序规则：按键升序排列，不可直接修改键值（会破坏排序结构），需删除原键值对后重新插入；</p>
+</li>
+<li><p>效率对比：<code>map</code>查询、插入、删除均为O(log n)，若无需排序，优先用<code>unordered_map</code>（O(1)平均效率），但需注意哈希冲突。</p>
+</li>
+</ul>
+<h4 id="（2）set（有序集合，红黑树）"><a href="#（2）set（有序集合，红黑树）" class="headerlink" title="（2）set（有序集合，红黑树）"></a>（2）<code>set</code>（有序集合，红黑树）</h4><ul>
+<li><p>特点：元素唯一且有序（红黑树实现），查找、插入、删除均为O(log n)；核心用于去重、排序、区间查询等场景；</p>
+</li>
+<li><p>常用操作及扩展操作：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>功能</th>
+<th>时间复杂度</th>
+<th>代码示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>insert(val)</td>
+<td>插入元素（重复元素自动忽略）</td>
+<td>O(log n)</td>
+<td><code>st.insert(3);</code></td>
+</tr>
+<tr>
+<td>count(val)</td>
+<td>判断元素是否存在（返回0或1）</td>
+<td>O(log n)</td>
+<td><code>if (st.count(1)) {}</code></td>
+</tr>
+<tr>
+<td>find(val)</td>
+<td>查找元素，返回对应迭代器（未找到返回st.end()）</td>
+<td>O(log n)</td>
+<td><code>auto it = st.find(5);</code></td>
+</tr>
+<tr>
+<td>erase(val&#x2F;it)</td>
+<td>删除元素（按值或迭代器，迭代器删除更快）</td>
+<td>O(log n)</td>
+<td><code>st.erase(3);</code> &#x2F; <code>st.erase(it);</code></td>
+</tr>
+<tr>
+<td>lower_bound(val)</td>
+<td>返回第一个≥val的元素迭代器</td>
+<td>O(log n)</td>
+<td><code>auto it = st.lower_bound(2);</code></td>
+</tr>
+<tr>
+<td>upper_bound(val)</td>
+<td>返回第一个&gt;val的元素迭代器</td>
+<td>O(log n)</td>
+<td><code>auto it = st.upper_bound(2);</code></td>
+</tr>
+<tr>
+<td>size()</td>
+<td>返回元素个数</td>
+<td>O(1)</td>
+<td><code>cout &lt;&lt; st.size();</code></td>
+</tr>
+</tbody></table>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;set&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    set&lt;<span class="type">int</span>&gt; st;</span><br><span class="line">    <span class="comment">// 插入元素（重复元素自动去重）</span></span><br><span class="line">    st.<span class="built_in">insert</span>(<span class="number">3</span>);</span><br><span class="line">    st.<span class="built_in">insert</span>(<span class="number">1</span>);</span><br><span class="line">    st.<span class="built_in">insert</span>(<span class="number">3</span>);</span><br><span class="line">    st.<span class="built_in">insert</span>(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 查找元素</span></span><br><span class="line">    <span class="keyword">auto</span> it = st.<span class="built_in">find</span>(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">if</span> (it != st.<span class="built_in">end</span>()) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;找到元素：&quot;</span> &lt;&lt; *it &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 范围查找与遍历</span></span><br><span class="line">    <span class="keyword">auto</span> low = st.<span class="built_in">lower_bound</span>(<span class="number">2</span>);</span><br><span class="line">    <span class="keyword">auto</span> up = st.<span class="built_in">upper_bound</span>(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> i = low; i != up; ++i) &#123;</span><br><span class="line">        cout &lt;&lt; *i &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 按迭代器删除</span></span><br><span class="line">    st.<span class="built_in">erase</span>(it);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;\n删除后大小：&quot;</span> &lt;&lt; st.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-编程模板优化"><a href="#5-编程模板优化" class="headerlink" title="5. 编程模板优化"></a>5. 编程模板优化</h2><h3 id="5-1-完整模板示例"><a href="#5-1-完整模板示例" class="headerlink" title="5.1 完整模板示例"></a>5.1 完整模板示例</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类型简化</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">long</span> <span class="type">long</span> ll;</span><br><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">long</span> <span class="type">long</span> ull;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt; pii;</span><br><span class="line"><span class="keyword">typedef</span> pair&lt;ll, ll&gt; pll;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 常用宏</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> rep(i, a, b) for (int i = (a); i &lt;= (b); ++i)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> per(i, a, b) for (int i = (a); i &gt;= (b); --i)</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> IOS ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> debug(x) cout &lt;&lt; #x &lt;&lt; <span class="string">&quot; = &quot;</span> &lt;&lt; x &lt;&lt; endl</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 常用函数封装</span></span><br><span class="line"><span class="function">ll <span class="title">gcd</span><span class="params">(ll a, ll b)</span> </span>&#123; <span class="keyword">return</span> b ? <span class="built_in">gcd</span>(b, a % b) : a; &#125;</span><br><span class="line"><span class="function">ll <span class="title">lcm</span><span class="params">(ll a, ll b)</span> </span>&#123; <span class="keyword">return</span> a / <span class="built_in">gcd</span>(a, b) * b; &#125;</span><br><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(ll a, ll b, ll mod)</span> </span>&#123;</span><br><span class="line">    ll res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (b) &#123;</span><br><span class="line">        <span class="keyword">if</span> (b &amp; <span class="number">1</span>) res = res * a % mod;</span><br><span class="line">        a = a * a % mod;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    IOS;</span><br><span class="line">    <span class="comment">// 你的代码</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="课后训练题目"><a href="#课后训练题目" class="headerlink" title="课后训练题目"></a>课后训练题目</h2><table>
+<thead>
+<tr>
+<th>题目编号</th>
+<th>题目名称</th>
+<th>主要练习点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1059</td>
+<td>[NOIP2006 普及组] 明明的随机数</td>
+<td><code>set</code> 去重排序、范围 <code>for</code></td>
+</tr>
+<tr>
+<td>P1090</td>
+<td>[NOIP2004 提高组] 合并果子</td>
+<td><code>priority_queue</code> 贪心</td>
+</tr>
+<tr>
+<td>P1071</td>
+<td>[NOIP2009 提高组] 潜伏者</td>
+<td><code>map</code> 字符映射</td>
+</tr>
+<tr>
+<td>P1308</td>
+<td>[NOIP2011 普及组] 统计单词数</td>
+<td><code>string</code> 操作、<code>auto</code></td>
+</tr>
+<tr>
+<td>P1427</td>
+<td>小鱼的数字游戏</td>
+<td><code>vector</code> 逆序遍历</td>
+</tr>
+<tr>
+<td>P1739</td>
+<td>表达式括号匹配</td>
+<td><code>stack</code> 括号匹配</td>
+</tr>
+</tbody></table>
+</article>
+<div class="article-footer">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+
+</div>
+
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2026/04/01/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a></div></section></div>
+
+
+
+
+
+
+<footer class="page-footer footnote"><hr><div class="text"><p>本博客所有文章除特别声明外，均采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> 许可协议，转载请注明出处。</p>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AB%9E%E8%B5%9B%E5%90%91"><span class="toc-text">竞赛向</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AE%8F%E5%AE%9A%E4%B9%89%EF%BC%88-define%EF%BC%89"><span class="toc-text">1. 宏定义（#define）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%B8%B8%E7%94%A8%E5%AE%8F"><span class="toc-text">1.1 常用宏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">1.2 注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-typedef-%E7%B1%BB%E5%9E%8B%E9%87%8D%E5%91%BD%E5%90%8D"><span class="toc-text">2. typedef 类型重命名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%A0%B8%E5%BF%83%E8%AF%AD%E6%B3%95"><span class="toc-text">2.1 核心语法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%AB%9E%E8%B5%9B%E5%B8%B8%E7%94%A8%E5%9C%BA%E6%99%AF%E5%8F%8A%E7%A4%BA%E4%BE%8B"><span class="toc-text">2.2 竞赛常用场景及示例</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%881%EF%BC%89%E7%AE%80%E5%8C%96%E5%9F%BA%E7%A1%80%E5%A4%A7%E7%B1%BB%E5%9E%8B"><span class="toc-text">（1）简化基础大类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%882%EF%BC%89%E7%AE%80%E5%8C%96%E5%A4%8D%E5%90%88%E5%AE%B9%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="toc-text">（2）简化复合容器类型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%883%EF%BC%89%E7%AE%80%E5%8C%96%E8%BF%AD%E4%BB%A3%E5%99%A8%E7%B1%BB%E5%9E%8B"><span class="toc-text">（3）简化迭代器类型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%B8%8E%E5%AE%8F%E5%AE%9A%E4%B9%89%EF%BC%88-define%EF%BC%89%E7%9A%84%E6%A0%B8%E5%BF%83%E5%8C%BA%E5%88%AB%EF%BC%88%E7%AB%9E%E8%B5%9B%E5%BF%85%E8%83%8C%EF%BC%81%EF%BC%89"><span class="toc-text">2.3 与宏定义（#define）的核心区别（竞赛必背！）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E7%AB%9E%E8%B5%9B%E6%98%93%E9%94%99%E7%82%B9%EF%BC%88%E9%87%8D%E7%82%B9%E8%A7%84%E9%81%BF%EF%BC%89"><span class="toc-text">2.4 竞赛易错点（重点规避）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-auto-%E5%85%B3%E9%94%AE%E5%AD%97%EF%BC%88C-11-%EF%BC%89"><span class="toc-text">2. auto 关键字（C++11+）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%94%A8%E6%B3%95%E7%A4%BA%E4%BE%8B"><span class="toc-text">2.1 用法示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">2.2 注意事项</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%8C%83%E5%9B%B4-for-%E5%BE%AA%E7%8E%AF%EF%BC%88Range-based-for-loop%EF%BC%8CC-11-%EF%BC%89"><span class="toc-text">3. 范围 for 循环（Range-based for loop，C++11+）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E8%AF%AD%E6%B3%95%E4%B8%8E%E5%8C%BA%E5%88%AB"><span class="toc-text">3.1 语法与区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-text">3.2 适用场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-STL-%E5%B8%B8%E8%A7%81%E5%AE%B9%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="toc-text">4. STL 常见容器学习与使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%BA%8F%E5%88%97%E5%BC%8F%E5%AE%B9%E5%99%A8"><span class="toc-text">4.1 序列式容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%881%EF%BC%89vector%EF%BC%88%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%89"><span class="toc-text">（1）vector（动态数组）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%882%EF%BC%89string%EF%BC%88%E5%AD%97%E7%AC%A6%E4%B8%B2%EF%BC%89"><span class="toc-text">（2）string（字符串）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-1"><span class="toc-text">注意事项</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%AE%B9%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8"><span class="toc-text">4.2 容器适配器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%881%EF%BC%89queue%EF%BC%88%E9%98%9F%E5%88%97%EF%BC%8CFIFO%EF%BC%89%E4%B8%8Estack%EF%BC%88%E6%A0%88%EF%BC%8CLIFO%EF%BC%89"><span class="toc-text">（1）queue（队列，FIFO）与stack（栈，LIFO）</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E2%91%A0-queue-%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95"><span class="toc-text">① queue 详细用法</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-2"><span class="toc-text">注意事项</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E2%91%A1-stack-%E8%AF%A6%E7%BB%86%E7%94%A8%E6%B3%95"><span class="toc-text">② stack 详细用法</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-3"><span class="toc-text">注意事项</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%882%EF%BC%89priority-queue%EF%BC%88%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97%EF%BC%8C%E5%A0%86%EF%BC%89"><span class="toc-text">（2）priority_queue（优先队列，堆）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9%EF%BC%88%E7%AB%9E%E8%B5%9B%E9%AB%98%E9%A2%91%E6%98%93%E9%94%99%EF%BC%89"><span class="toc-text">注意事项（竞赛高频易错）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%85%B3%E8%81%94%E5%BC%8F%E5%AE%B9%E5%99%A8"><span class="toc-text">4.3 关联式容器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%881%EF%BC%89map%EF%BC%88%E6%9C%89%E5%BA%8F%E6%98%A0%E5%B0%84%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%89"><span class="toc-text">（1）map（有序映射，红黑树）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9-4"><span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%EF%BC%882%EF%BC%89set%EF%BC%88%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%EF%BC%8C%E7%BA%A2%E9%BB%91%E6%A0%91%EF%BC%89"><span class="toc-text">（2）set（有序集合，红黑树）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%BC%96%E7%A8%8B%E6%A8%A1%E6%9D%BF%E4%BC%98%E5%8C%96"><span class="toc-text">5. 编程模板优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%AE%8C%E6%95%B4%E6%A8%A1%E6%9D%BF%E7%A4%BA%E4%BE%8B"><span class="toc-text">5.1 完整模板示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BE%E5%90%8E%E8%AE%AD%E7%BB%83%E9%A2%98%E7%9B%AE"><span class="toc-text">课后训练题目</span></a></li></ol></li></ol></div><div class="widget-footer"><a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Solar by 480 Design - https://creativecommons.org/licenses/by/4.0/ --><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"><path stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/><path d="M7 3.338A9.95 9.95 0 0 1 12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12c0-1.821.487-3.53 1.338-5"/></g></svg><span>回到顶部</span></a></div></widget>
+</div></aside><div class='float-panel'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+
+
+<script type="text/javascript">
+  window.canonical = {"originalHost":null,"officialHosts":["localhost"],"encoded":""};
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+    tag_plugins: {
+      chat: Object.assign({"api":"https://siteinfo.listentothewind.cn/api/v1"}),
+    }
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"skip_search":null,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+    loading: `https://api.iconify.design/eos-icons:three-dots-loading.svg?color=%231cd0fd`,
+  };
+  const deps = {
+    jquery: `https://gcore.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js`,
+    marked: `https://gcore.jsdelivr.net/npm/marked@13.0/lib/marked.umd.min.js`,
+    lazyload: `/%5Bobject%20Object%5D`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  
+  function RunItem() {
+    this.list = []; // 存放回调函数
+    this.start = () => {
+      for (var i = 0; i < this.list.length; i++) {
+        this.list[i].run();
+      }
+    };
+    this.push = (fn, name, setRequestAnimationFrame = true) => {
+      let myfn = fn
+      if (setRequestAnimationFrame) {
+        myfn = () => {
+          utils.requestAnimationFrame(fn)
+        }
+      }
+      var f = new Item(myfn, name);
+      this.list.push(f);
+    };
+    this.remove = (name) => {
+      for (let index = 0; index < this.list.length; index++) {
+        const e = this.list[index];
+        if (e.name == name) {
+          this.list.splice(index, 1);
+        }
+      }
+    }
+    // 构造一个可以run的对象
+    function Item(fn, name) {
+      // 函数名称
+      this.name = name || fn.name;
+      // run方法
+      this.run = () => {
+        try {
+          fn()
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    }
+  }
+
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')) {
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function () {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      const maxRetry = 3;
+      let retryCount = 0;
+
+      return new Promise((resolve, reject) => {
+        const load = () => {
+          utils.onLoading?.(el);
+
+          let timedOut = false;
+          const timeout = setTimeout(() => {
+            timedOut = true;
+            console.warn('[request] 超时:', url);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject('请求超时');
+            } else {
+              setTimeout(load, 1000);
+            }
+          }, 5000);
+
+          fetch(url).then(resp => {
+            if (timedOut) return;
+            clearTimeout(timeout);
+
+            if (!resp.ok) throw new Error('响应失败');
+            return resp;
+          }).then(data => {
+            if (timedOut) return;
+            utils.onLoadSuccess?.(el);
+            callback(data);
+            resolve(data);
+          }).catch(err => {
+            clearTimeout(timeout);
+            console.warn('[request] 错误:', err);
+
+            if (++retryCount >= maxRetry) {
+              utils.onLoadFailure?.(el);
+              onFailure?.();
+              reject(err);
+            } else {
+              setTimeout(load, 1000);
+            }
+          });
+        };
+
+        load();
+      });
+    },
+    requestWithoutLoading: (url, options = {}, maxRetry = 2, timeout = 5000) => {
+      return new Promise((resolve, reject) => {
+        let retryCount = 0;
+
+        const tryRequest = () => {
+          let timedOut = false;
+          const timer = setTimeout(() => {
+            timedOut = true;
+            if (++retryCount > maxRetry) reject('timeout');
+            else tryRequest();
+          }, timeout);
+
+          fetch(url, options)
+            .then(resp => {
+              clearTimeout(timer);
+              if (!resp.ok) throw new Error('bad response');
+              resolve(resp);
+            })
+            .catch(err => {
+              clearTimeout(timer);
+              if (++retryCount > maxRetry) reject(err);
+              else setTimeout(tryRequest, 500);
+            });
+        };
+
+        tryRequest();
+      });
+    },
+    /********************** requestAnimationFrame ********************************/
+    // 1、requestAnimationFrame 会把每一帧中的所有 DOM 操作集中起来，在一次重绘或回流中就完成，并且重绘或回流的时间间隔紧紧跟随浏览器的刷新频率，一般来说，这个频率为每秒60帧。
+    // 2、在隐藏或不可见的元素中，requestAnimationFrame 将不会进行重绘或回流，这当然就意味着更少的的 cpu，gpu 和内存使用量。
+    requestAnimationFrame: (fn) => {
+      if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame;
+      }
+      window.requestAnimationFrame(fn)
+    },
+    dark: {},
+  };
+
+  // utils.dark.mode 当前模式 dark or light
+  // utils.dark.toggle() 暗黑模式触发器
+  // utils.dark.push(callBack[,"callBackName"]) 传入触发器回调函数
+  utils.dark.method = {
+    toggle: new RunItem(),
+  };
+  utils.dark = Object.assign(utils.dark, {
+    push: utils.dark.method.toggle.push,
+  });
+</script>
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+<script async src="https://gcore.jsdelivr.net/npm/vanilla-lazyload@19.1/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+    callback_loaded: (el) => {
+      el.classList.add('loaded');
+      const wrapper = el.closest('.lazy-box');
+      const icon = wrapper?.querySelector('.lazy-icon');
+      if (icon) icon.remove();
+    }
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+
+  window.wrapLazyloadImages = (container) => {
+    if (typeof container === 'string') {
+      container = document.querySelector(container);
+    }
+    if (!container) return;
+    
+    const images = container.querySelectorAll('img');
+    images.forEach((img) => {
+      if (img.classList.contains('lazy')) return;
+
+      const src = img.getAttribute('src');
+      if (!src) return;
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'lazy-box';
+
+      const newImg = img.cloneNode();
+      newImg.removeAttribute('src');
+      newImg.setAttribute('data-src', src);
+      newImg.classList.add('lazy');
+
+      const icon = document.createElement('div');
+      icon.className = 'lazy-icon';
+      if (def.loading) {
+        icon.style.backgroundImage = `url("${def.loading}")`;
+      }
+
+      wrapper.appendChild(newImg);
+      wrapper.appendChild(icon);
+
+      img.replaceWith(wrapper);
+    });
+
+    // 通知 LazyLoad 更新
+    if (window.lazyLoadInstance?.update) {
+      window.lazyLoadInstance.update();
+    }
+  }
+  
+</script>
+
+<!-- required -->
+<script src="/js/main.js?v=1.33.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    // applyThemeToGiscus(theme)
+  }
+
+  // FIXME: 这会导致无法使用 preferred_color_scheme 以外的主题
+  const applyThemeToGiscus = (theme) => {
+    // theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+    utils.dark.mode = newTheme === 'auto' ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light") : newTheme;
+    utils.dark.method.toggle.start();
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    } else {
+      utils.dark.mode = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    utils.dark.method.toggle.start();
+  })()
+</script>
+
+
+<!-- optional -->
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"rating":{"js":"/js/services/rating.js","api":"https://star-vote.xaox.cc/api/rating"},"vote":{"js":"/js/services/vote.js","api":"https://star-vote.xaox.cc/api/vote"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"friends_and_posts":{"js":"/js/services/friends_and_posts.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"},"voice":{"js":"/js/plugins/voice.js"},"video":{"js":"/js/plugins/video.js"},"download-file":{"js":"/js/plugins/download-file.js"},"twikoo":{"js":"/js/services/twikoo_latest_comment.js"},"waline":{"js":"/js/services/waline_latest_comment.js"},"artalk":{"js":"/js/services/artalk_latest_comment.js"},"giscus":{"js":"/js/services/giscus_latest_comment.js"},"contributors":{"edit_this_page":{"_posts/":null,"wiki/stellar/":"https://github.com/xaoxuu/hexo-theme-stellar-docs/blob/main/"},"js":"/js/services/contributors.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else if (id == 'voice') {
+        ctx.voiceAudios = document.querySelectorAll('.voice>audio');
+        if (ctx.voiceAudios?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            createVoiceDom(ctx.voiceAudios);
+          });
+        }
+      } else if (id == 'video') {
+        ctx.videos = document.querySelectorAll('.video>video');
+        if (ctx.videos?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            videoEvents(ctx.videos);
+          });
+        }
+      } else if (id == 'download-file') {
+        ctx.files = document.querySelectorAll('.file');
+        if (ctx.files?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            downloadFileEvent(ctx.files);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+
+    // chat iphone time
+    let phoneTimes = document.querySelectorAll('.chat .status-bar .time');
+
+    if (phoneTimes.length > 0) {
+      NowTime();
+      var date = new Date();
+      var sec = date.getSeconds();
+      var firstAdjustInterval = setInterval(firstAdjustTime, 1000 * (60 - sec));
+    }
+
+    function firstAdjustTime() {
+      NowTime();
+      clearInterval(firstAdjustInterval);
+      setInterval(NowTime, 1000 * 60);
+    }
+
+    function NowTime() {
+      for (let i = 0; i < phoneTimes.length; ++i) {
+        var timeSpan = phoneTimes[i];
+        var date = new Date();
+        var hour = date.getHours();
+        var min = date.getMinutes();
+        timeSpan.innerHTML = check(hour) + ":" + check(min);
+      }
+    };
+
+    function check(val) {
+      if (val < 10) {
+        return ("0" + val);
+      }
+      return (val);
+    }
+
+    // chat quote
+    const chat_quote_obverser = new IntersectionObserver((entries, observer) => {
+      entries.filter((entry) => { return entry.isIntersecting }).sort((a, b) => a.intersectionRect.y !== b.intersectionRect.y ? a.intersectionRect.y - b.intersectionRect.y : a.intersectionRect.x - b.intersectionRect.x).forEach((entry, index) => {
+          observer.unobserve(entry.target);
+          setTimeout(() => {
+            entry.target.classList.add('quote-blink');
+            setTimeout(() => {
+              entry.target.classList.remove('quote-blink');
+            }, 1000);
+          }, Math.max(100, 16) * (index + 1));
+        });
+    });
+
+    var chatQuotes = document.querySelectorAll(".chat .talk .quote");
+    chatQuotes.forEach((quote) => {
+      quote.addEventListener('click', function () {
+        var chatCellDom = document.getElementById("quote-" + quote.getAttribute("quotedCellTag"));
+        if (chatCellDom) {
+          var chatDiv = chatCellDom.parentElement;
+          var mid = chatDiv.clientHeight / 2;
+          var offsetTop = chatCellDom.offsetTop;
+          if (offsetTop > mid - chatCellDom.clientHeight / 2) {
+            chatDiv.scrollTo({
+              top: chatCellDom.offsetTop - mid + chatCellDom.clientHeight / 2,
+              behavior: "smooth"
+            });
+          } else {
+            chatDiv.scrollTo({
+              top: 0,
+              behavior: "smooth"
+            });
+          }
+          chat_quote_obverser.observe(chatCellDom);
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://gcore.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://gcore.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error), .with-fancybox .atk-content img:not([atk-emoticon])';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const memos = document.getElementsByClassName('ds-memos');
+    if (memos != undefined && memos.length > 0) {
+      needFancybox = true;
+    }
+    const fancybox = document.getElementsByClassName('with-fancybox');
+    if (fancybox != undefined && fancybox.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+
+<script id="MathJax-script" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+  });
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script defer type="text/javascript" src="https://gcore.jsdelivr.net/npm/mermaid@v9/dist/mermaid.min.js"></script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    var mermaid_config = {
+      startOnLoad: true,
+      theme:
+        "auto" == "auto" &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "neutral",
+      logLevel: 3,
+      themeVariables: {
+        darkMode: true
+      },
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: "linear"
+      },
+      gantt: {
+        axisFormat: "%Y/%m/%d"
+      },
+      sequence: {
+        actorMargin: 50
+      }
+    }
+    mermaid.initialize(mermaid_config);
+  });
+</script><script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
